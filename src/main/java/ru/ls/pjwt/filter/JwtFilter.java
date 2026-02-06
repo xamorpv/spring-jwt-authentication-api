@@ -39,6 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // пропускаем эндпоинты, которые не требуют аутентификации
         if (requestMatcher.matches(request)) {
+            log.debug("skip: {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
