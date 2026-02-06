@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,12 @@ import java.util.List;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> badCredentials(BadCredentialsException e) {
+        log.error("bad credentials: {}", e.getMessage(), e);
+        return ApiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+
     @ExceptionHandler(JwtTokenRequestException.class)
     public ResponseEntity<ErrorResponse> jwtException(JwtTokenRequestException e) {
         log.error("jwt token exception: {}", e.getMessage(), e);
