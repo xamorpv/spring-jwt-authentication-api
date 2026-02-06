@@ -16,7 +16,7 @@ public class RequestMatcherUtils {
                 .map(matcher -> {
                     List<RequestMatcher> regexMatchers = new ArrayList<>();
                     for (String path : matcher.paths()) {
-                        regexMatchers.add(new RegexRequestMatcher(path, matcher.httpMethod().toString()));
+                        regexMatchers.add(new RegexRequestMatcher(path, matcher.httpMethod().name()));
                     }
                     return regexMatchers;
                 })
