@@ -28,6 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain httpSecurity(HttpSecurity http) {
         return http
                 .userDetailsService(userDetailsService)
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
