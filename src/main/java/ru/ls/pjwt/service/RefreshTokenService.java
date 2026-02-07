@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
@@ -23,7 +22,7 @@ import java.time.temporal.ChronoUnit;
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
+    private final Argon2PasswordEncoder passwordEncoder;
 
     public String createAndSaveToken(String username) {
         String token = jwtService.createRefreshToken(username);
