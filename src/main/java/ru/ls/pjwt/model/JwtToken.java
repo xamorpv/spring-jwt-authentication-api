@@ -43,7 +43,7 @@ public class JwtToken {
             return userDetails;
         }
         log.debug("exctract userDetails for claims {}", claims);
-        String username = getUsername();
+        String username = claims.getSubject();
         if (username == null) {
             log.warn("username not found");
             throw new JwtTokenRequestException("incorrect jwt"); // не раскрываем информацию - sub может отсутствовать только если пользователь пытался изменить токен
