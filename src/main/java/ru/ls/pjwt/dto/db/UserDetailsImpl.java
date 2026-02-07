@@ -15,7 +15,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public UserDetailsImpl(String username, List<String> authorities) {
         this.username = username;
-        this.authorities = authorities.stream().map(GrantedAuthorityImpl::new).collect(Collectors.toSet());
+        this.authorities = authorities == null ? null : authorities.stream().map(GrantedAuthorityImpl::new).collect(Collectors.toSet());
     }
 
     @Override
