@@ -23,7 +23,7 @@ public class JwtToken {
     }
 
     public void checkType(String type) {
-        if (claims.get("type", String.class).equals(type)) {
+        if (!claims.get("type", String.class).equals(type)) {
             log.debug("wrong token type {}, expected: {}", token, type);
             throw new JwtTokenRequestException("for this operation expected type was "+type);
         }
@@ -42,7 +42,7 @@ public class JwtToken {
         if (userDetails != null) {
             return userDetails;
         }
-        log.debug("exctract userDetails for claims {}", claims);
+        log.debug("extract userDetails for claims {}", claims);
         String username = claims.getSubject();
         if (username == null) {
             log.warn("username not found");
