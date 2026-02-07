@@ -31,13 +31,13 @@ public class User implements UserDetails {
     private String password;
 
     @Column(name = "account_non_expired")
-    private boolean accountNonExpired = false;
+    private boolean accountNonExpired = true;
     @Column(name = "account_non_locked")
-    private boolean accountNonLocked = false;
+    private boolean accountNonLocked = true;
     @Column(name = "credentials_non_expired")
-    private boolean credentialsNonExpired = false;
+    private boolean credentialsNonExpired = true;
     @Column(name = "enabled")
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user")

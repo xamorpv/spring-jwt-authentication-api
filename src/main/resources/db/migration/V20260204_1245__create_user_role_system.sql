@@ -3,10 +3,10 @@ create table if not exists users (
     username varchar(48) unique not null,
     email varchar(255) unique not null,
     password varchar(128) not null,
-    account_non_expired boolean default false,
-    account_non_locked boolean default false,
-    credentials_non_expired boolean default false,
-    enabled boolean default false
+    account_non_expired boolean default true,
+    account_non_locked boolean default true,
+    credentials_non_expired boolean default true,
+    enabled boolean default true
 );
 
 create table if not exists authorities (
