@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.repository.UserRepository;
 import ru.ls.pjwt.utils.JwtUtils;
 import ru.ls.pjwt.utils.TimeUtils;
@@ -44,7 +45,7 @@ public class JwtService {
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("type", type);
         if (isAccess) {
-            claims.put("authorities", userRepository.findRolesByUsername(username));
+            claims.put("authorities", userRepository.findRolesByUsername(username).stream().map(Authority::getAuthority).toList());
         }
         Instant time = isAccess?Instant.now().plus(Jwt.accessTokenExpirationMinutes, ChronoUnit.MINUTES) :
                 Instant.now().plus(Jwt.refreshTokenExpirationDays, ChronoUnit.DAYS);
