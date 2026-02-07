@@ -8,6 +8,7 @@ import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.repository.AuthorityRepository;
+import ru.ls.pjwt.repository.UserRepository;
 import ru.ls.pjwt.utils.constants.Roles;
 
 @Transactional
@@ -19,8 +20,9 @@ public class AuthorityService {
 
     public void addUserAuthority(User user) {
         log.debug("add user authority for {}", user);
-        Authority authority = authorityRepository.findByName(Roles.USER).orElseThrow(()->new ServerError("role USER not found!"));
+        Authority authority = authorityRepository.findByName(Roles.USER).orElseThrow(()->new ServerError("authority USER not found!"));
         authority.getUsers().add(user);
-        authorityRepository.save(authority);
+        user.getAuthorities().add(authority);
+        log.debug("authority saved {}", authority);
     }
 }

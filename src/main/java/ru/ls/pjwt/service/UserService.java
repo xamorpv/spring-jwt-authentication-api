@@ -9,8 +9,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.dto.auth.RegisterRequest;
-import ru.ls.pjwt.entity.Authority;
+import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
 import ru.ls.pjwt.repository.UserRepository;
@@ -55,14 +54,14 @@ public class UserService {
         log.debug("status {} success", userDetails);
     }
 
-    public UserDetails saveNewUser(String username, String password, String email) {
+    public User saveNewUser(String username, String password, String email) {
         log.debug("saving user {}", username);
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
-        authorityService.addUserAuthority(user);
         User saved = userRepository.save(user);
+        authorityService.addUserAuthority(user);
         log.debug("user {} saved", user);
         return saved;
     }
