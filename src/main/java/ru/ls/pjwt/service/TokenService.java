@@ -35,6 +35,6 @@ public class TokenService {
         String username = authService.authenticate(loginRequest.username(), loginRequest.password()).getUsername();
         String accessToken = jwtService.createAccessToken(username);
         String refreshToken = refreshTokenService.createAndSaveToken(username);
-        return new AuthResponse(accessToken, refreshToken);
+        return new AuthResponse(refreshToken, accessToken);
     }
 }
