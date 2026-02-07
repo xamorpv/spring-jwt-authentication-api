@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.RegisterRequest;
+import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
 import ru.ls.pjwt.repository.UserRepository;
@@ -20,6 +21,7 @@ import ru.ls.pjwt.utils.constants.Exceptions;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder;
 
     public void checkExists(RegisterRequest request) {
@@ -53,13 +55,15 @@ public class UserService {
         log.debug("status {} success", userDetails);
     }
 
-    public UserDetails save(String username, String password, String email) {
+    public UserDetails saveNewUser(String username, String password, String email) {
         log.debug("saving user {}", username);
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
+        authorityService.addUserAuthority(user);
+        User saved = userRepository.save(user);
         log.debug("user {} saved", user);
-        return userRepository.save(user);
+        return saved;
     }
 }

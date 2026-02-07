@@ -43,6 +43,6 @@ public class AuthService {
     public UserDetails register(RegisterRequest registerRequest) {
         userService.checkExists(registerRequest);
         log.debug("register: user {}", registerRequest.username());
-        return userService.save(registerRequest.username(), registerRequest.password(), registerRequest.email());
+        return userService.saveNewUser(registerRequest.username(), registerRequest.password(), registerRequest.email());
     }
 }
