@@ -8,7 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.dto.auth.RegisterRequest;
+import ru.ls.pjwt.dto.auth.request.RegisterRequest;
+import ru.ls.pjwt.dto.auth.response.RegisterResponse;
+import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
@@ -19,6 +21,7 @@ public class AuthService {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final UserMapper userMapper;
 
     public UserDetails authenticate(String username, String password) {
         log.debug("auth process started with username: {}", username);
@@ -40,9 +43,9 @@ public class AuthService {
         userService.checkAccountStatus(userDetails);
     }
 
-    public UserDetails register(RegisterRequest registerRequest) {
+    public RegisterResponse register(RegisterRequest registerRequest) {
         userService.checkExists(registerRequest);
         log.debug("register: user {}", registerRequest.username());
-        return userService.saveNewUser(registerRequest.username(), registerRequest.password(), registerRequest.email());
+        return userMapper.userToResponse(userService.saveNewUser(registerRequest.username(), registerRequest.password(), registerRequest.email()));
     }
 }

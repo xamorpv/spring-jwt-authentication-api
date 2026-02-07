@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ls.pjwt.dto.StandardResponse;
-import ru.ls.pjwt.dto.auth.AuthResponse;
-import ru.ls.pjwt.dto.auth.LoginRequest;
-import ru.ls.pjwt.dto.auth.RefreshTokenRequest;
-import ru.ls.pjwt.dto.auth.RegisterRequest;
+import ru.ls.pjwt.dto.auth.response.AuthResponse;
+import ru.ls.pjwt.dto.auth.request.LoginRequest;
+import ru.ls.pjwt.dto.auth.request.RefreshTokenRequest;
+import ru.ls.pjwt.dto.auth.request.RegisterRequest;
+import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.service.AuthService;
 import ru.ls.pjwt.service.RefreshTokenService;
 import ru.ls.pjwt.service.TokenService;
@@ -53,7 +54,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<StandardResponse<UserDetails>> register(@RequestBody @Valid RegisterRequest registerRequest) {
+    public ResponseEntity<StandardResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) {
         log.info("handling register request {} - {}", registerRequest.username(), registerRequest.email());
         return ApiResponse.success(authService.register(registerRequest), "registered successfully", HttpStatus.OK);
     }
