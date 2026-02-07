@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                                 .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(Roles.USER)
                         .requestMatchers(requestMatcher).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()// /api/v1/test/protected here
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

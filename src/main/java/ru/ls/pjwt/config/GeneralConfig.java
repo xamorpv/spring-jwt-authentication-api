@@ -18,7 +18,7 @@ public class GeneralConfig {
                 new FluentOrRequestMatcher()
                         .or(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/refresh",
                                 "/api/v1/auth/invalidate-refresh-token", "/api/v1/auth/register")
-                        .or(HttpMethod.GET, "/api/v1/test/public", "/api/v1/test/protected", "/api/v1/test/user-only")
+                        .or(HttpMethod.GET, "/api/v1/test/public")
         );
     }
 }
