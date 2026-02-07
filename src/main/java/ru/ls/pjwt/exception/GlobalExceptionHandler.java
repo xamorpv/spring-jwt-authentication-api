@@ -63,8 +63,8 @@ public class GlobalExceptionHandler {
         return ApiResponse.failure(errors, Exceptions.VALIDATION, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ServerError.class)
-    public ResponseEntity<ErrorResponse> serverError(ServerError e) {
+    @ExceptionHandler({ServerError.class, Exception.class})
+    public ResponseEntity<ErrorResponse> serverError(Exception e) {
         log.error("internal server error (my): {}", e.getMessage(), e);
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "something went wrong... contact with a support to fix it");
     }
