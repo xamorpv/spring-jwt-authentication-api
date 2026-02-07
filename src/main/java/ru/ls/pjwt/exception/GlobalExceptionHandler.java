@@ -13,6 +13,7 @@ import ru.ls.pjwt.dto.FieldErrorDto;
 import ru.ls.pjwt.dto.StandardResponse;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
+import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.utils.ApiResponse;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
@@ -60,5 +61,11 @@ public class GlobalExceptionHandler {
                 errors.add(new FieldErrorDto(fe.getField(), fe.getRejectedValue(), fe.getDefaultMessage())));
         log.error("validation exception: {}. errors: {}", e.getMessage(), errors, e);
         return ApiResponse.failure(errors, Exceptions.VALIDATION, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ServerError.class)
+    public ResponseEntity<ErrorResponse> serverError(ServerError e) {
+        log.error("internal server error (my): {}", e.getMessage(), e);
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "something went wrong... contact with a support to fix it");
     }
 }
