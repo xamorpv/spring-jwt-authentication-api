@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 
-    @Query("select u from User u join fetch u.authorities where username = :username")
+    @Query("select u from User u left join fetch u.authorities where username = :username")
     Optional<User> findByUsername(@Param("username") String username);
 
     @Query("select u.authorities from User u where username = :username")
