@@ -21,6 +21,6 @@ public class ApiResponse {
     }
 
     public ResponseEntity<StandardResponse<Void>> success(String message, HttpStatus status) {
-        return ResponseEntity.status(status).body(new StandardResponse<>(null, message, false));
+        return ResponseEntity.status(status).body(new StandardResponse<>(null, message, true));
     }
 }
