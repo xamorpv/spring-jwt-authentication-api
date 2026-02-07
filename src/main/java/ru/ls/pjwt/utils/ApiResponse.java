@@ -17,7 +17,7 @@ public class ApiResponse {
     }
 
     public <T> ResponseEntity<StandardResponse<T>> success(T data, String message, HttpStatus status) {
-        return ResponseEntity.status(status).body(new StandardResponse<>(data, message, false));
+        return ResponseEntity.status(status).body(new StandardResponse<>(data, message, true));
     }
 
     public ResponseEntity<StandardResponse<Void>> success(String message, HttpStatus status) {
