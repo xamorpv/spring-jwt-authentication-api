@@ -4,8 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.dto.auth.AuthResponse;
-import ru.ls.pjwt.dto.auth.LoginRequest;
+import ru.ls.pjwt.dto.auth.response.AuthResponse;
+import ru.ls.pjwt.dto.auth.request.LoginRequest;
 import ru.ls.pjwt.model.JwtToken;
 import ru.ls.pjwt.utils.constants.Jwt;
 
