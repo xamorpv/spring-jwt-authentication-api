@@ -1,6 +1,7 @@
 package ru.ls.pjwt.dto.db;
 
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ToString
 @Getter
 public class UserDetailsImpl implements UserDetails {
     private final String username;
