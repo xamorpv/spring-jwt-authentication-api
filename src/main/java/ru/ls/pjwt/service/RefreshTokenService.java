@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
@@ -48,7 +49,11 @@ public class RefreshTokenService {
     }
 
     private RefreshToken getToken(String token) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUsername(new JwtToken(token).getUsername()).orElseThrow(()->new JwtTokenRequestException("token not found"));
+        // находим точное совпадение токена в бд (для начала ищем по username, чтобы не перебирать все токены
+        RefreshToken refreshToken = refreshTokenRepository.findByUsername(new JwtToken(token).getUsername())
+                .stream().filter(t -> passwordEncoder.matches(token, t.getToken()))
+                .findFirst()
+                .orElseThrow(()->new JwtTokenRequestException("token not found"));
         checkUsed(refreshToken);
         return refreshToken;
     }
@@ -77,6 +82,6 @@ public class RefreshTokenService {
 
     @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     private void clearRefreshTokens() {
-        refreshTokenRepository.deleteUsed30daysLater(Instant.now().plus(30, ChronoUnit.DAYS));
+        refreshTokenRepository.deleteUsedLater(Instant.now().plus(30, ChronoUnit.DAYS));
     }
 }
