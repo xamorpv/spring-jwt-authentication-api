@@ -27,7 +27,7 @@ public class TokenService {
         String accessToken = jwtService.createAccessToken(username);
         String refreshToken = refreshTokenService.updateRefreshToken(token);
         log.debug("successful refresh for {}", token);
-        return new AuthResponse(accessToken, refreshToken);
+        return new AuthResponse(refreshToken, accessToken);
     }
 
     public AuthResponse createTokens(LoginRequest loginRequest) {
