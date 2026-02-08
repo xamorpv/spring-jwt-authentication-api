@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.model.JwtToken;
@@ -23,6 +24,7 @@ public class RefreshTokenService {
     private final JwtService jwtService;
     private final Argon2PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final TransactionTemplate transactionTemplate;
 
     public String createAndSaveToken(String username) {
         String token = jwtService.createRefreshToken(username);
@@ -60,7 +62,10 @@ public class RefreshTokenService {
     private void checkUsed(RefreshToken refreshToken) {
         if (refreshToken.getUsed()) {
             log.warn("token already used: {}", refreshToken);
-            refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::use);
+            transactionTemplate.execute(status -> {
+                refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::use);
+                return null;
+            });
             throw new JwtTokenRequestException("refresh token was compromised. you may be get hacked. please re-login");
         }
     }
