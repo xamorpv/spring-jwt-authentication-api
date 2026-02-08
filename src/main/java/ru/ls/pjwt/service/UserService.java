@@ -2,10 +2,7 @@ package ru.ls.pjwt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AccountExpiredException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,5 +61,10 @@ public class UserService {
         authorityService.addUserAuthority(user);
         log.debug("user {} saved", user);
         return saved;
+    }
+
+    public User loadUser(String username) {
+        log.debug("loading user {}...", username);
+        return userRepository.findByUsername(username).orElseThrow(() -> new BadCredentialsException(Exceptions.BAD_CREDENTIALS));
     }
 }

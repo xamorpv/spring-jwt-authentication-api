@@ -2,23 +2,19 @@ package ru.ls.pjwt.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import ru.ls.pjwt.repository.UserRepository;
-import ru.ls.pjwt.utils.constants.Exceptions;
+import ru.ls.pjwt.service.UserService;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class DbUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.debug("loading user {}...", username);
-        return userRepository.findByUsername(username).orElseThrow(() -> new BadCredentialsException(Exceptions.BAD_CREDENTIALS));
+    public UserDetails loadUserByUsername(String username) {
+        return userService.loadUser(username);
     }
 }
