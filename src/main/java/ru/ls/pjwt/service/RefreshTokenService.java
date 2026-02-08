@@ -23,6 +23,7 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final Argon2PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     public String createAndSaveToken(String username) {
         String token = jwtService.createRefreshToken(username);
@@ -74,7 +75,7 @@ public class RefreshTokenService {
 
     private String save(String token) {
         String encoded = passwordEncoder.encode(token);
-        refreshTokenRepository.save(new RefreshToken(encoded));
+        refreshTokenRepository.save(new RefreshToken(encoded, userService.loadUser(new JwtToken(token).getUsername())));
         return encoded;
     }
 

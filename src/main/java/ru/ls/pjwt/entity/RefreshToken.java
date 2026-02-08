@@ -31,7 +31,8 @@ public class RefreshToken {
     @Column(name = "used_at")
     private Instant usedAt;
 
-    public RefreshToken(String token) {
+    public RefreshToken(String token, User user) {
         this.token = token;
+        this.user = user;
     }
 }
