@@ -1,6 +1,7 @@
 package ru.ls.pjwt.model;
 
 import io.jsonwebtoken.Claims;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.ls.pjwt.dto.db.UserDetailsImpl;
@@ -9,6 +10,7 @@ import ru.ls.pjwt.utils.JwtUtils;
 
 import java.util.List;
 
+@ToString
 @Slf4j
 public class JwtToken {
     private final Claims claims;
