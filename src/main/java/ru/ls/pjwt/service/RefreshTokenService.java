@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
@@ -24,7 +26,15 @@ public class RefreshTokenService {
     private final JwtService jwtService;
     private final Argon2PasswordEncoder passwordEncoder;
     private final UserService userService;
-    private final TransactionTemplate transactionTemplate;
+    private final PlatformTransactionManager transactionManager;
+
+    // Создаем TransactionTemplate с REQUIRES_NEW
+    private TransactionTemplate getNewTransactionTemplate() {
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        template.setTimeout(30); // таймаут в секундах
+        return template;
+    }
 
     public String createAndSaveToken(String username) {
         String token = jwtService.createRefreshToken(username);
@@ -62,7 +72,7 @@ public class RefreshTokenService {
     private void checkUsed(RefreshToken refreshToken) {
         if (refreshToken.getUsed()) {
             log.warn("token already used: {}", refreshToken);
-            transactionTemplate.execute(status -> {
+            getNewTransactionTemplate().execute(status -> {
                 refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::use);
                 return null;
             });
