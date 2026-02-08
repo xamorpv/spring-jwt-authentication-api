@@ -68,6 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
             context.setAuthentication(token);
 
             log.info("user {} authenticated with token {}", userDetails, jwt);
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
             log.error("exception in filter: {}", e.getMessage(), e);
             handlerExceptionResolver.resolveException(request, response, null, e);
