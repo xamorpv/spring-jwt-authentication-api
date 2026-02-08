@@ -37,7 +37,7 @@ public class JwtService {
         String username = claims.getSubject();
         HashMap<String, Object> claimsMap = new HashMap<>();
         claimsMap.put("type", Jwt.REFRESH);
-        return createToken(username, time, claimsMap);
+        return buildToken(username, time, claimsMap);
     }
 
     private String createToken(String username, String type) {
@@ -49,10 +49,10 @@ public class JwtService {
         }
         Instant time = isAccess?Instant.now().plus(Jwt.accessTokenExpirationMinutes, ChronoUnit.MINUTES) :
                 Instant.now().plus(Jwt.refreshTokenExpirationDays, ChronoUnit.DAYS);
-        return createToken(username, time, claims);
+        return buildToken(username, time, claims);
     }
 
-    private String createToken(String username, Instant time, HashMap<String, Object> claims) {
+    private String buildToken(String username, Instant time, HashMap<String, Object> claims) {
         log.info("creating token: username={}, time={}, claims={}", username, TimeUtils.formatter.format(time), claims);
         return Jwts.builder()
                 .signWith(Jwt.secretKey)

@@ -28,11 +28,10 @@ public class RefreshTokenService {
     private final UserService userService;
     private final PlatformTransactionManager transactionManager;
 
-    // Создаем TransactionTemplate с REQUIRES_NEW
     private TransactionTemplate getNewTransactionTemplate() {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        template.setTimeout(30); // таймаут в секундах
+        template.setTimeout(30);
         return template;
     }
 

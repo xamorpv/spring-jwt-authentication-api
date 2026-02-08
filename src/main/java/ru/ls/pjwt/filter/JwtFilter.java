@@ -19,7 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.model.JwtToken;
-import ru.ls.pjwt.service.JwtService;
 import ru.ls.pjwt.utils.constants.Jwt;
 
 import java.io.IOException;
@@ -29,7 +28,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final RequestMatcher requestMatcher;
-    private final JwtService jwtService;
 
     @Qualifier("handlerExceptionResolver")
     @Autowired

@@ -8,7 +8,6 @@ import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.repository.AuthorityRepository;
-import ru.ls.pjwt.repository.UserRepository;
 import ru.ls.pjwt.utils.constants.Roles;
 
 @Transactional

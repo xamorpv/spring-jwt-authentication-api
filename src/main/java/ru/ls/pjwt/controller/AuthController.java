@@ -31,7 +31,6 @@ public class AuthController {
     private final TokenService tokenService;
     private final RefreshTokenService refreshTokenService;
 
-
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<AuthResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         log.info("handling login request {}", loginRequest.username());
@@ -51,7 +50,6 @@ public class AuthController {
         refreshTokenService.deleteToken(refreshTokenRequest.refreshToken());
         return ApiResponse.success("token deleted successfully", HttpStatus.OK);
     }
-
 
     @PostMapping("/register")
     public ResponseEntity<StandardResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) {
