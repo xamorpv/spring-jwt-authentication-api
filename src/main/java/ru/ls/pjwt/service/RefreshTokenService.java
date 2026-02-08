@@ -8,7 +8,6 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.exception.exceptions.RefreshTokenCompromiseException;
 import ru.ls.pjwt.model.JwtToken;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 
@@ -62,7 +61,7 @@ public class RefreshTokenService {
         if (refreshToken.getUsed()) {
             log.warn("token already used: {}", refreshToken);
             refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::use);
-            throw new RefreshTokenCompromiseException();
+            throw new JwtTokenRequestException("refresh token was compromised. you may be get hacked. please re-login");
         }
     }
 
