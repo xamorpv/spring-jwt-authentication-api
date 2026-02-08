@@ -33,7 +33,7 @@ public class JwtService {
 
     public String updateRefreshToken(String token) {
         Claims claims = JwtUtils.getClaims(token);
-        Instant time = claims.get("exp", Date.class).toInstant();
+        Instant time = Instant.ofEpochSecond(claims.get("exp", Long.class));
         String username = claims.getSubject();
         HashMap<String, Object> claimsMap = new HashMap<>();
         claimsMap.put("type", Jwt.REFRESH);
