@@ -30,8 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final RequestMatcher requestMatcher;
 
     @Qualifier("handlerExceptionResolver")
-    @Autowired
-    private HandlerExceptionResolver handlerExceptionResolver;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
