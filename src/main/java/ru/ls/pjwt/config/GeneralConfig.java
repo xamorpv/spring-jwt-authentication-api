@@ -6,8 +6,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import ru.ls.pjwt.utils.pathMatchers.FluentOrRequestMatcher;
 import ru.ls.pjwt.utils.pathMatchers.RequestMatcherUtils;
@@ -17,7 +15,7 @@ public class GeneralConfig {
 
     @Bean
     public RequestMatcher requestMatcher() {
-        return RequestMatcherUtils.createOrRequestMatherFluent(
+        return RequestMatcherUtils.createOrRequestMatcherFluent(
                 new FluentOrRequestMatcher()
                         .or(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/refresh",
                                 "/api/v1/auth/invalidate-refresh-token", "/api/v1/auth/register")

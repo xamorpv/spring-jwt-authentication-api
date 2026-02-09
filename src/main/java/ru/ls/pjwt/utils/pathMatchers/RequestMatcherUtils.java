@@ -11,7 +11,7 @@ import java.util.List;
 
 @UtilityClass
 public class RequestMatcherUtils {
-    public OrRequestMatcher createOrRequestMatherFluent(FluentOrRequestMatcher fluentOrRequestMatcher) {
+    public OrRequestMatcher createOrRequestMatcherFluent(FluentOrRequestMatcher fluentOrRequestMatcher) {
         return new OrRequestMatcher(fluentOrRequestMatcher.getBasicMatchers().stream()
                 .map(matcher -> {
                     List<RequestMatcher> regexMatchers = new ArrayList<>();
