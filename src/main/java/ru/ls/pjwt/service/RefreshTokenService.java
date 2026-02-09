@@ -95,6 +95,6 @@ public class RefreshTokenService {
 
     @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     private void clearRefreshTokens() {
-        refreshTokenRepository.deleteUsedLater(Instant.now().plus(30, ChronoUnit.DAYS));
+        refreshTokenRepository.deleteUsedLater(Instant.now().minus(30, ChronoUnit.DAYS));
     }
 }
