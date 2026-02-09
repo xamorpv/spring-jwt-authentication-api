@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public UserDetailsImpl(String username, List<String> authorities) {
         this.username = username;
-        this.authorities = authorities == null ? null : authorities.stream().map(GrantedAuthorityImpl::new).collect(Collectors.toSet());
+        this.authorities = authorities == null ? new HashSet<>() : authorities.stream().map(GrantedAuthorityImpl::new).collect(Collectors.toSet());
     }
 
     @Override
