@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -18,8 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.model.JwtToken;
-import ru.ls.pjwt.utils.constants.Jwt;
+import ru.ls.pjwt.service.JwtFilterService;
 
 import java.io.IOException;
 
@@ -28,6 +26,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final RequestMatcher requestMatcher;
+    private final JwtFilterService jwtFilterService;
 
     @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -37,6 +36,11 @@ public class JwtFilter extends OncePerRequestFilter {
         // пропускаем эндпоинты, которые не требуют аутентификации
         if (requestMatcher.matches(request)) {
             log.debug("skip: {}", request.getRequestURI());
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (jwtFilterService.isEndpointExists(request)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -58,7 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String jwt = header.substring(7);
 
-            UserDetails userDetails = getUserDetails(jwt);
+            UserDetails userDetails = jwtFilterService.getUserDetails(jwt);
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -70,12 +74,5 @@ public class JwtFilter extends OncePerRequestFilter {
             log.error("exception in filter: {}", e.getMessage(), e);
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
-    }
-
-    // todo check fingerprint (add in future)
-    private UserDetails getUserDetails(String jwt) {
-        JwtToken jwtToken = new JwtToken(jwt);
-        jwtToken.checkType(Jwt.ACCESS);
-        return jwtToken.getUserDetails();
     }
 }
