@@ -9,6 +9,7 @@ import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.repository.UserRepository;
 import ru.ls.pjwt.utils.JwtUtils;
 import ru.ls.pjwt.utils.TimeUtils;
+import ru.ls.pjwt.utils.UUIDUtils;
 import ru.ls.pjwt.utils.constants.App;
 import ru.ls.pjwt.utils.constants.Jwt;
 
@@ -16,6 +17,7 @@ import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -46,6 +48,8 @@ public class JwtService {
         claims.put("type", type);
         if (isAccess) {
             claims.put("authorities", userRepository.findRolesByUsername(username).stream().map(Authority::getAuthority).toList());
+        } else {
+            claims.put("uuid", UUIDUtils.random());
         }
         Instant time = isAccess?Instant.now().plus(Jwt.accessTokenExpirationMinutes, ChronoUnit.MINUTES) :
                 Instant.now().plus(Jwt.refreshTokenExpirationDays, ChronoUnit.DAYS);

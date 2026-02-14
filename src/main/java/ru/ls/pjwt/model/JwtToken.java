@@ -18,6 +18,7 @@ public class JwtToken {
 
     private UserDetails userDetails;
     private String username;
+    private String uuid;
 
     public JwtToken(String token) {
         this.token = token;
@@ -29,6 +30,13 @@ public class JwtToken {
             log.debug("wrong token type {}, expected: {}", token, type);
             throw new JwtTokenRequestException("for this operation expected type was "+type);
         }
+    }
+
+    public String getUuid() {
+        if (uuid == null) {
+            uuid = claims.get("uuid", String.class);
+        }
+        return uuid;
     }
 
     public String getUsername() {

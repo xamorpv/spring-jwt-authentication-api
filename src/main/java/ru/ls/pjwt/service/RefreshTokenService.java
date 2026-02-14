@@ -59,10 +59,7 @@ public class RefreshTokenService {
     }
 
     private RefreshToken getToken(String token) {
-        // находим точное совпадение токена в бд (для начала ищем по username, чтобы не перебирать все токены
-        RefreshToken refreshToken = refreshTokenRepository.findByUsername(new JwtToken(token).getUsername())
-                .stream().filter(t -> passwordEncoder.matches(token, t.getToken()))
-                .findFirst()
+        RefreshToken refreshToken = refreshTokenRepository.findByUuid(new JwtToken(token).getUuid())
                 .orElseThrow(()->new JwtTokenRequestException("token not found"));
         checkUsed(refreshToken);
         return refreshToken;
@@ -88,7 +85,8 @@ public class RefreshTokenService {
 
     private String save(String token) {
         String encoded = passwordEncoder.encode(token);
-        refreshTokenRepository.save(new RefreshToken(encoded, userService.loadUser(new JwtToken(token).getUsername())));
+        JwtToken jwtToken = new JwtToken(token);
+        refreshTokenRepository.save(new RefreshToken(encoded, jwtToken.getUuid(), userService.loadUser(jwtToken.getUsername())));
         return encoded;
     }
 

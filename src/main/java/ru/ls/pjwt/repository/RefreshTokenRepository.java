@@ -8,10 +8,10 @@ import ru.ls.pjwt.entity.RefreshToken;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
-    @Query("select rt from RefreshToken rt where rt.user.username = :username")
-    List<RefreshToken> findByUsername(@Param("username") String username);
+    Optional<RefreshToken> findByUuid(String uuid);
 
     @Query("select rt from RefreshToken rt where rt.user.username = :username and rt.used = false")
     List<RefreshToken> findActiveByUsername(@Param("username") String username);
