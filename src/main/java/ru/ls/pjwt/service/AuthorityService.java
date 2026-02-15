@@ -8,6 +8,7 @@ import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.repository.AuthorityRepository;
+import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Roles;
 
 @Transactional
@@ -16,12 +17,22 @@ import ru.ls.pjwt.utils.constants.Roles;
 @RequiredArgsConstructor
 public class AuthorityService {
     private final AuthorityRepository authorityRepository;
+    private volatile Authority authority;
+    private final Object lock = new Object[0];
 
     public void addUserAuthority(User user) {
         log.debug("add user authority for user with id={}, username={}", user.getUsername(), user.getId());
-        Authority authority = authorityRepository.findByName(Roles.USER).orElseThrow(()->new ServerError("authority USER not found!"));
+
+        if (authority == null) {
+            synchronized (lock) {
+                if (authority == null) {
+                    authority = authorityRepository.findByName(Roles.USER).orElseThrow(()->new ServerError("authority USER not found!"));
+                }
+            }
+        }
+
         authority.getUsers().add(user);
         user.getAuthorities().add(authority);
-        log.debug("authority saved {}", authority);
+        log.debug("authority saved for user: {}", LogUtils.safeUserDetails(user));
     }
 }
