@@ -27,7 +27,7 @@ public class RefreshTokenFactory {
         // todo grace period
         // если прошло меньше 30 секунд, то делаем вид, что этот токен работает (не создавать новый, а вернуть тот, что был выдан меньше 30 секунд назад)
 
-        log.debug("updating token {}", token);
+        log.debug("updating token");
         refreshTokenSecurity.use(refreshTokenService.getToken(token));
         String newToken = jwtFactory.updateRefreshToken(token);
         RefreshToken refreshToken = refreshTokenService.save(newToken);
