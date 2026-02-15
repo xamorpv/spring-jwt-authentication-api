@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
-import ru.ls.pjwt.model.JwtToken;
+import ru.ls.pjwt.model.JwtClaims;
 import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Jwt;
 
@@ -18,16 +18,17 @@ public class TokenService {
     private final JwtFactory jwtFactory;
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
+    private final JwtClaimsFactory claimsFactory;
 
     public AuthResponse refreshTokens(String token) {
-        JwtToken jwtToken = new JwtToken(token);
-        log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtToken.getUserDetails()));
-        jwtToken.checkType(Jwt.REFRESH);
-        String username = jwtToken.getUsername();
+        JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
+        log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtClaims.getUserDetails()));
+        jwtClaims.checkType(Jwt.REFRESH);
+        String username = jwtClaims.getUsername();
         authService.validateUsername(username);
         String accessToken = jwtFactory.createAccessToken(username);
         String refreshToken = refreshTokenService.updateRefreshToken(token);
-        log.debug("successful refresh for {}", jwtToken.getUsername());
+        log.debug("successful refresh for {}", jwtClaims.getUsername());
         return new AuthResponse(refreshToken, accessToken);
     }
 

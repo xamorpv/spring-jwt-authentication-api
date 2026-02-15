@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerMapping;
-import ru.ls.pjwt.model.JwtToken;
+import ru.ls.pjwt.model.JwtClaims;
 import ru.ls.pjwt.utils.constants.Jwt;
 
 import java.util.List;
@@ -14,12 +14,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtFilterService {
     private final List<HandlerMapping> handlerMapping;
+    private final JwtClaimsFactory claimsFactory;
 
     // todo check fingerprint (add in future)
     public UserDetails getUserDetails(String jwt) {
-        JwtToken jwtToken = new JwtToken(jwt);
-        jwtToken.checkType(Jwt.ACCESS);
-        return jwtToken.getUserDetails();
+        JwtClaims jwtClaims = claimsFactory.createJwtClaims(jwt);
+        jwtClaims.checkType(Jwt.ACCESS);
+        return jwtClaims.getUserDetails();
     }
 
     public boolean isEndpointExists(HttpServletRequest request) {

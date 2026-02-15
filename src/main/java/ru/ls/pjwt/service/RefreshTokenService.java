@@ -11,7 +11,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.model.JwtToken;
+import ru.ls.pjwt.model.JwtClaims;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 
 import java.time.Instant;
@@ -27,6 +27,7 @@ public class RefreshTokenService {
     private final Argon2PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final PlatformTransactionManager transactionManager;
+    private final JwtClaimsFactory claimsFactory;
 
     private TransactionTemplate getNewTransactionTemplate() {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
@@ -61,7 +62,7 @@ public class RefreshTokenService {
     }
 
     private RefreshToken getToken(String token) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUuid(new JwtToken(token).getUuid())
+        RefreshToken refreshToken = refreshTokenRepository.findByUuid(claimsFactory.createJwtClaims(token).getUuid())
                 .orElseThrow(()->new JwtTokenRequestException("token not found"));
         checkUsed(refreshToken);
         return refreshToken;
@@ -86,8 +87,8 @@ public class RefreshTokenService {
     }
 
     private RefreshToken save(String token) {
-        JwtToken jwtToken = new JwtToken(token);
-        return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtToken.getUuid(), userService.loadUser(jwtToken.getUsername())));
+        JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
+        return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtClaims.getUuid(), userService.loadUser(jwtClaims.getUsername())));
     }
 
 
