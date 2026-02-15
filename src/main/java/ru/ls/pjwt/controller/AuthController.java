@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,7 @@ import ru.ls.pjwt.dto.auth.request.RefreshTokenRequest;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.service.AuthService;
-import ru.ls.pjwt.service.RefreshTokenService;
+import ru.ls.pjwt.service.RefreshTokenFactory;
 import ru.ls.pjwt.service.TokenService;
 import ru.ls.pjwt.utils.ApiResponse;
 
@@ -29,7 +28,7 @@ import ru.ls.pjwt.utils.ApiResponse;
 public class AuthController {
     private final AuthService authService;
     private final TokenService tokenService;
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenFactory refreshTokenFactory;
 
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<AuthResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
@@ -47,7 +46,7 @@ public class AuthController {
     @PostMapping("/invalidate-refresh-token")
     public ResponseEntity<StandardResponse<Void>> logout(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("invalidating token");
-        refreshTokenService.deleteToken(refreshTokenRequest.refreshToken());
+        refreshTokenFactory.invalidateRefreshToken(refreshTokenRequest.refreshToken());
         return ApiResponse.success("token deleted successfully", HttpStatus.OK);
     }
 
