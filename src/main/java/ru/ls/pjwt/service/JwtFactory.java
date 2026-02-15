@@ -17,12 +17,11 @@ import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
-import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JwtService {
+public class JwtFactory {
     private final UserRepository userRepository;
 
     public String createAccessToken(String username) {

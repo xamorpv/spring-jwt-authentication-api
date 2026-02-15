@@ -15,7 +15,7 @@ import ru.ls.pjwt.utils.constants.Jwt;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-    private final JwtService jwtService;
+    private final JwtFactory jwtFactory;
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
 
@@ -25,7 +25,7 @@ public class TokenService {
         jwtToken.checkType(Jwt.REFRESH);
         String username = jwtToken.getUsername();
         authService.validateUsername(username);
-        String accessToken = jwtService.createAccessToken(username);
+        String accessToken = jwtFactory.createAccessToken(username);
         String refreshToken = refreshTokenService.updateRefreshToken(token);
         log.debug("successful refresh for {}", jwtToken.getUsername());
         return new AuthResponse(refreshToken, accessToken);
@@ -34,7 +34,7 @@ public class TokenService {
     public AuthResponse createTokens(LoginRequest loginRequest) {
         log.info("creating tokens for login request {}", loginRequest.username());
         String username = authService.authenticate(loginRequest.username(), loginRequest.password()).getUsername();
-        String accessToken = jwtService.createAccessToken(username);
+        String accessToken = jwtFactory.createAccessToken(username);
         String refreshToken = refreshTokenService.createAndSaveToken(username);
         return new AuthResponse(refreshToken, accessToken);
     }

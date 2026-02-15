@@ -23,7 +23,7 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtService jwtService;
+    private final JwtFactory jwtFactory;
     private final Argon2PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final PlatformTransactionManager transactionManager;
@@ -36,7 +36,7 @@ public class RefreshTokenService {
     }
 
     public String createAndSaveToken(String username) {
-        String token = jwtService.createRefreshToken(username);
+        String token = jwtFactory.createRefreshToken(username);
         RefreshToken refreshToken = save(token);
         log.debug("refresh token saved for user {}, token: {}", username, refreshToken);
         return token;
@@ -48,7 +48,7 @@ public class RefreshTokenService {
 
         log.debug("updating token {}", token);
         use(getToken(token));
-        String newToken = jwtService.updateRefreshToken(token);
+        String newToken = jwtFactory.updateRefreshToken(token);
         RefreshToken refreshToken = save(newToken);
         log.debug("refresh token updated: {}", refreshToken);
         return newToken;
