@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import ru.ls.pjwt.filter.JwtFilter;
-import ru.ls.pjwt.utils.constants.Roles;
+import ru.ls.pjwt.utils.constants.Authorities;
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                                .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(Roles.USER)
+                                .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(Authorities.USER)
                         .requestMatchers(requestMatcher).permitAll()
                         .anyRequest().authenticated()// /api/v1/test/protected here
                 )

@@ -9,7 +9,7 @@ import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.repository.AuthorityRepository;
 import ru.ls.pjwt.utils.LogUtils;
-import ru.ls.pjwt.utils.constants.Roles;
+import ru.ls.pjwt.utils.constants.Authorities;
 
 @Transactional
 @Slf4j
@@ -26,7 +26,7 @@ public class AuthorityService {
         if (authority == null) {
             synchronized (lock) {
                 if (authority == null) {
-                    authority = authorityRepository.findByName(Roles.USER).orElseThrow(()->new ServerError("authority USER not found!"));
+                    authority = authorityRepository.findByName(Authorities.USER).orElseThrow(()->new ServerError("authority USER not found!"));
                 }
             }
         }
