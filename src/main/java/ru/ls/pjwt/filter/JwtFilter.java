@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (jwtFilterService.isEndpointExists(request)) {
+        if (!jwtFilterService.isEndpointExists(request)) {
             filterChain.doFilter(request, response);
             return;
         }
