@@ -8,7 +8,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 @Service
 @RequiredArgsConstructor
-public class TransactionManager {
+public class TransactionExecutor {
     private final PlatformTransactionManager transactionManager;
 
     private TransactionTemplate getNewTransactionTemplate() {

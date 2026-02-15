@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
-import ru.ls.pjwt.service.TransactionManager;
+import ru.ls.pjwt.service.TransactionExecutor;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -17,12 +17,12 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class RefreshTokenSecurity {
     private final RefreshTokenRepository refreshTokenRepository;
-    private final TransactionManager transactionManager;
+    private final TransactionExecutor transactionExecutor;
 
     public void checkUsed(RefreshToken refreshToken) {
         if (refreshToken.getUsed()) {
             log.warn("token already used; using all tokens for this user");
-            transactionManager.executeInNonRollbackableTransaction(() ->
+            transactionExecutor.executeInNonRollbackableTransaction(() ->
                     refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::use));
             throw new JwtTokenRequestException("refresh token was compromised. you may be get hacked. please re-login");
         }
