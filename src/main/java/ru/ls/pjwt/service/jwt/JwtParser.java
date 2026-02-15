@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service;
+package ru.ls.pjwt.service.jwt;
 
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;

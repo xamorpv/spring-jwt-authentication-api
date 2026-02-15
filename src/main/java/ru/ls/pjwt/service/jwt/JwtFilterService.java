@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service;
+package ru.ls.pjwt.service.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

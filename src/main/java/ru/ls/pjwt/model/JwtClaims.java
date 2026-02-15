@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.ls.pjwt.service.JwtParser;
+import ru.ls.pjwt.service.jwt.JwtParser;
 import ru.ls.pjwt.utils.JwtUtils;
 
 @ToString

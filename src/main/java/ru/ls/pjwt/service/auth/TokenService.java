@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service;
+package ru.ls.pjwt.service.auth;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
 import ru.ls.pjwt.model.JwtClaims;
+import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
+import ru.ls.pjwt.service.jwt.JwtFactory;
+import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Jwt;
 

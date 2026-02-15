@@ -1,14 +1,11 @@
-package ru.ls.pjwt.service;
+package ru.ls.pjwt.service.refresh;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
-import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.model.JwtClaims;
-import ru.ls.pjwt.repository.RefreshTokenRepository;
+import ru.ls.pjwt.service.jwt.JwtFactory;
 
 @Slf4j
 @Transactional
