@@ -8,8 +8,8 @@ import ru.ls.pjwt.dto.StandardResponse;
 
 @UtilityClass
 public class ApiResponse {
-    public ResponseEntity<ErrorResponse> error(HttpStatus status, String message) {
-        return ResponseEntity.status(status).body(new ErrorResponse(message, status.value(), status.getReasonPhrase(), TimeUtils.timestamp()));
+    public ResponseEntity<StandardResponse<ErrorResponse>> error(HttpStatus status, String message) {
+        return ApiResponse.failure(new ErrorResponse(status.value(), status.getReasonPhrase(), TimeUtils.timestamp()), message, status);
     }
 
     public <T> ResponseEntity<StandardResponse<T>> failure(T data, String message, HttpStatus status) {
