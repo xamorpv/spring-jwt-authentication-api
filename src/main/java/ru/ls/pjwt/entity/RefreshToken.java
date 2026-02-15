@@ -21,7 +21,6 @@ public class RefreshToken {
     @Column(nullable = false, unique = true, name = "token", length = 128) // len = 128 для расширяемости
     private String token;
 
-    @Generated
     @Column(nullable = false, unique = true, name = "token_uuid", length = 64)
     private String uuid;
 
