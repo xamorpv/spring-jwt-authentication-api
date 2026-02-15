@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.support.TransactionTemplate;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
+import ru.ls.pjwt.service.TransactionManager;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -18,23 +16,14 @@ import java.time.temporal.ChronoUnit;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenSecurity {
-    private final PlatformTransactionManager transactionManager;
     private final RefreshTokenRepository refreshTokenRepository;
-
-    private TransactionTemplate getNewTransactionTemplate() {
-        TransactionTemplate template = new TransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        template.setTimeout(30);
-        return template;
-    }
+    private final TransactionManager transactionManager;
 
     public void checkUsed(RefreshToken refreshToken) {
         if (refreshToken.getUsed()) {
             log.warn("token already used; using all tokens for this user");
-            getNewTransactionTemplate().execute(status -> {
-                refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::use);
-                return null;
-            });
+            transactionManager.executeInNonRollbackableTransaction(() ->
+                    refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::use));
             throw new JwtTokenRequestException("refresh token was compromised. you may be get hacked. please re-login");
         }
     }
