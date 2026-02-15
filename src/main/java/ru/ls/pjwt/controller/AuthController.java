@@ -40,13 +40,13 @@ public class AuthController {
     //пока что для простоты через dto
     @PostMapping("/refresh")
     public ResponseEntity<StandardResponse<AuthResponse>> refresh(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
-        log.info("handling refresh request {}", refreshTokenRequest);
+        log.info("handling refresh request");
         return ApiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.OK);
     }
 
     @PostMapping("/invalidate-refresh-token")
     public ResponseEntity<StandardResponse<Void>> logout(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
-        log.info("invalidating token {}", refreshTokenRequest);
+        log.info("invalidating token");
         refreshTokenService.deleteToken(refreshTokenRequest.refreshToken());
         return ApiResponse.success("token deleted successfully", HttpStatus.OK);
     }

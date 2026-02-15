@@ -18,7 +18,7 @@ public class AuthorityService {
     private final AuthorityRepository authorityRepository;
 
     public void addUserAuthority(User user) {
-        log.debug("add user authority for {}", user);
+        log.debug("add user authority for user with id={}, username={}", user.getUsername(), user.getId());
         Authority authority = authorityRepository.findByName(Roles.USER).orElseThrow(()->new ServerError("authority USER not found!"));
         authority.getUsers().add(user);
         user.getAuthorities().add(authority);

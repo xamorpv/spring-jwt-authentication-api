@@ -15,7 +15,6 @@ import ru.ls.pjwt.utils.constants.Jwt;
 public class JwtUtils {
     public Claims getClaims(String token) {
         try {
-            log.debug("get claims: {}", token);
             return Jwts.parser()
                     .verifyWith(Jwt.secretKey) // подпись и expiration time уже проверены. username нужно проверить на null, а его наличие уже проверено
                     .requireIssuer(App.name)

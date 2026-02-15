@@ -10,6 +10,7 @@ import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
 import ru.ls.pjwt.repository.UserRepository;
+import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
@@ -48,7 +49,7 @@ public class UserService {
             throw new DisabledException(Exceptions.ACCOUNT_DISABLED);
         }
 
-        log.debug("status {} success", userDetails);
+        log.debug("status {} success", LogUtils.safeUserDetails(userDetails));
     }
 
     public User saveNewUser(String username, String password, String email) {
@@ -59,7 +60,7 @@ public class UserService {
         user.setEmail(email);
         User saved = userRepository.save(user);
         authorityService.addUserAuthority(user);
-        log.debug("user {} saved", user);
+        log.debug("user {} saved", LogUtils.safeUserDetails(user));
         return saved;
     }
 

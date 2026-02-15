@@ -41,6 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (!jwtFilterService.isEndpointExists(request)) {
+            log.debug("skip: {} (endpoint does not exists)", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }

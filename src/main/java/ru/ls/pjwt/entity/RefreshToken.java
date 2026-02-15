@@ -17,6 +17,7 @@ public class RefreshToken {
     @Column(name = "id")
     private Long id;
 
+    @ToString.Exclude
     @Column(nullable = false, unique = true, name = "token", length = 128) // len = 128 для расширяемости
     private String token;
 

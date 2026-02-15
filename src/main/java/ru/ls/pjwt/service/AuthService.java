@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.mapper.UserMapper;
+import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class AuthService {
     public void validateUsername(String username) {
         log.debug("validating username {}", username);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        log.debug("user loaded {}", userDetails);
+        log.debug("user loaded {}", LogUtils.safeUserDetails(userDetails));
         userService.checkAccountStatus(userDetails);
     }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
 import ru.ls.pjwt.model.JwtToken;
+import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Jwt;
 
 @Slf4j
@@ -19,14 +20,14 @@ public class TokenService {
     private final RefreshTokenService refreshTokenService;
 
     public AuthResponse refreshTokens(String token) {
-        log.debug("refreshing tokens for {}", token);
         JwtToken jwtToken = new JwtToken(token);
+        log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtToken.getUserDetails()));
         jwtToken.checkType(Jwt.REFRESH);
         String username = jwtToken.getUsername();
         authService.validateUsername(username);
         String accessToken = jwtService.createAccessToken(username);
         String refreshToken = refreshTokenService.updateRefreshToken(token);
-        log.debug("successful refresh for {}", token);
+        log.debug("successful refresh for {}", jwtToken.getUsername());
         return new AuthResponse(refreshToken, accessToken);
     }
 

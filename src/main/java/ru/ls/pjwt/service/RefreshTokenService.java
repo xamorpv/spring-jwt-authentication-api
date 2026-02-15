@@ -37,7 +37,8 @@ public class RefreshTokenService {
 
     public String createAndSaveToken(String username) {
         String token = jwtService.createRefreshToken(username);
-        log.debug("refresh token saved for user {}, token: {}", username, save(token));
+        RefreshToken refreshToken = save(token);
+        log.debug("refresh token saved for user {}, token: {}", username, refreshToken);
         return token;
     }
 
@@ -48,13 +49,14 @@ public class RefreshTokenService {
         log.debug("updating token {}", token);
         use(getToken(token));
         String newToken = jwtService.updateRefreshToken(token);
-        log.debug("refresh token updated; before: {}, after: {}", token, save(newToken));
+        RefreshToken refreshToken = save(newToken);
+        log.debug("refresh token updated: {}", refreshToken);
         return newToken;
     }
 
     public void deleteToken(String token) {
-        log.debug("try delete token {}", token);
         RefreshToken refreshToken = getToken(token);
+        log.debug("try delete token {}", refreshToken);
         use(refreshToken);
     }
 
@@ -67,7 +69,7 @@ public class RefreshTokenService {
 
     private void checkUsed(RefreshToken refreshToken) {
         if (refreshToken.getUsed()) {
-            log.warn("token already used: {}", refreshToken);
+            log.warn("token already used; using all tokens for this user");
             getNewTransactionTemplate().execute(status -> {
                 refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::use);
                 return null;
@@ -83,16 +85,15 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    private String save(String token) {
-        String encoded = passwordEncoder.encode(token);
+    private RefreshToken save(String token) {
         JwtToken jwtToken = new JwtToken(token);
-        refreshTokenRepository.save(new RefreshToken(encoded, jwtToken.getUuid(), userService.loadUser(jwtToken.getUsername())));
-        return encoded;
+        return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtToken.getUuid(), userService.loadUser(jwtToken.getUsername())));
     }
 
 
     @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     private void clearRefreshTokens() {
+        log.debug("clearing tokens");
         refreshTokenRepository.deleteUsedLater(Instant.now().minus(30, ChronoUnit.DAYS));
     }
 }
