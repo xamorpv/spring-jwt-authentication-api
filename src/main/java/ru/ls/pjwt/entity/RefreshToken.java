@@ -31,6 +31,9 @@ public class RefreshToken {
     @Column(name = "used")
     private Boolean used = false;
 
+    @Column(name = "compromised")
+    private Boolean compromised = false;
+
     @Column(name = "used_at")
     private Instant usedAt;
 
