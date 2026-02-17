@@ -33,12 +33,13 @@ public class JwtFactory {
     }
 
     public String updateRefreshToken(String token) {
-        Claims claims = JwtUtils.getClaims(token);
-        Instant time = Instant.ofEpochSecond(claims.get("exp", Long.class));
-        String username = claims.getSubject();
-        HashMap<String, Object> claimsMap = new HashMap<>();
-        claimsMap.put("type", Jwt.REFRESH);
-        return buildToken(username, time, claimsMap);
+        Claims oldClaims = JwtUtils.getClaims(token);
+        Instant time = Instant.ofEpochSecond(oldClaims.get("exp", Long.class));
+        String username = oldClaims.getSubject();
+        HashMap<String, Object> newClaims = new HashMap<>();
+        newClaims.put("type", Jwt.REFRESH);
+        newClaims.put("uuid", UUIDUtils.random());
+        return buildToken(username, time, newClaims);
     }
 
     private String createToken(String username, String type) {
