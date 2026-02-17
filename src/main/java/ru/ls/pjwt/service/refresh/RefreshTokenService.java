@@ -11,6 +11,7 @@ import ru.ls.pjwt.model.JwtClaims;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 import ru.ls.pjwt.service.auth.UserService;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
+import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
 @Service
@@ -29,11 +30,16 @@ public class RefreshTokenService {
     }
 
     public RefreshToken getToken(String token) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUuid(claimsFactory.createJwtClaims(token).getUuid())
+        String uuid = claimsFactory.createJwtClaims(token).getUuid();
+        if (uuid == null) {
+            log.warn("jwt token without uuid, may be deprecated");
+            throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
+        }
+        RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
                 .orElseThrow(()->new JwtTokenRequestException("token not found"));
         if (!passwordEncoder.matches(token, refreshToken.getToken())) {
-            log.warn("user has uuid in jwt token, but token does not matches. this is uuid repeat? token with same uuid: {}", refreshToken);
-            throw new BadCredentialsException("bad credentials; please re-login");
+            log.warn("user has uuid in jwt token, but token does not matches. token with same uuid: {}", refreshToken);
+            throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
         }
         refreshTokenSecurity.checkUsed(refreshToken);
         return refreshToken;
