@@ -8,7 +8,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import ru.ls.pjwt.filter.JwtFilter;
@@ -32,7 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                                 .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(Authorities.USER)
                         .requestMatchers(requestMatcher).permitAll()
-                        .anyRequest().authenticated()// /api/v1/test/protected here
+                        .requestMatchers(HttpMethod.GET, "/api/v1/test/protected").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
