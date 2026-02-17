@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotUniqueDataException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> userExists(NotUniqueDataException e) {
         log.error(e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
+        return ApiResponse.error(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler({ServerError.class, Exception.class})
