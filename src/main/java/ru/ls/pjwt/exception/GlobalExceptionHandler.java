@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
         return ApiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
-    @ExceptionHandler(SignatureException.class)
+    @ExceptionHandler({SignatureException.class, io.jsonwebtoken.security.SignatureException.class})
     public ResponseEntity<StandardResponse<ErrorResponse>> jwtSignatureException(SignatureException e) {
         log.error("signature exception: {}", e.getMessage(), e);
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "something went wrong"); // не даем информации злоумышленнику
