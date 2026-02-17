@@ -28,7 +28,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private final RequestMatcher requestMatcher;
     private final JwtFilterService jwtFilterService;
 
-    @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
