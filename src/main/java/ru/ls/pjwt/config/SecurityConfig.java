@@ -1,9 +1,11 @@
 package ru.ls.pjwt.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,8 +16,10 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import ru.ls.pjwt.filter.JwtFilter;
+import ru.ls.pjwt.utils.JsonApiResponse;
 import ru.ls.pjwt.utils.constants.Authorities;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -37,7 +41,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/test/protected").authenticated()
                         .anyRequest().permitAll()
                 )
+                .exceptionHandling(e ->
+                        e.authenticationEntryPoint(authenticationEntryPoint())
+                )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, e) -> {
+            log.error("authentication entry point: {}", e.getMessage(), e);
+            JsonApiResponse.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
+                    "; hint: may be your forgot header Authorization: Bearer <token> to become a authenticated");
+        };
     }
 }
