@@ -39,12 +39,6 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!jwtFilterService.isEndpointExists(request)) {
-            log.debug("skip: {} (endpoint does not exists)", request.getRequestURI());
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         SecurityContext context = SecurityContextHolder.getContext();
         // если по какой-то причине пользователь уже аутентифицирован
         if (context.getAuthentication() != null) {
@@ -57,7 +51,8 @@ public class JwtFilter extends OncePerRequestFilter {
             String header = request.getHeader("Authorization");
             if (header == null || !header.startsWith("Bearer ")) {
                 log.debug("jwt token exception in filter: wrong header ({})", header);
-                throw new JwtTokenRequestException("missing header Authorization: Bearer <token>");
+                filterChain.doFilter(request, response);
+                return;
             }
 
             String jwt = header.substring(7);
@@ -71,6 +66,7 @@ public class JwtFilter extends OncePerRequestFilter {
             log.info("user {} authenticated with token {}", userDetails, jwt);
             filterChain.doFilter(request, response);
         } catch (Exception e) {
+            SecurityContextHolder.clearContext(); // стандарт безопасности
             log.error("exception in filter: {}", e.getMessage(), e);
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
