@@ -15,8 +15,8 @@ public class RefreshTokenOperator {
     private final RefreshTokenRepository refreshTokenRepository;
 
     public void useAndCompromise(RefreshToken refreshToken) {
-        use(refreshToken);
         compromise(refreshToken);
+        use(refreshToken);
     }
 
     public void compromise(RefreshToken refreshToken) {
