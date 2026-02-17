@@ -2,6 +2,7 @@ package ru.ls.pjwt.service.refresh;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
@@ -30,6 +31,10 @@ public class RefreshTokenService {
     public RefreshToken getToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByUuid(claimsFactory.createJwtClaims(token).getUuid())
                 .orElseThrow(()->new JwtTokenRequestException("token not found"));
+        if (!passwordEncoder.matches(token, refreshToken.getToken())) {
+            log.warn("user has uuid in jwt token, but token does not matches. this is uuid repeat? token with same uuid: {}", refreshToken);
+            throw new BadCredentialsException("bad credentials; please re-login");
+        }
         refreshTokenSecurity.checkUsed(refreshToken);
         return refreshToken;
     }
