@@ -44,7 +44,7 @@ public class AuthController {
     }
 
     @PostMapping("/invalidate-refresh-token")
-    public ResponseEntity<StandardResponse<Void>> logout(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
+    public ResponseEntity<StandardResponse<Void>> invalidateRT(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("invalidating token");
         refreshTokenFactory.invalidateRefreshToken(refreshTokenRequest.refreshToken());
         return ApiResponse.success("token deleted successfully", HttpStatus.OK);
