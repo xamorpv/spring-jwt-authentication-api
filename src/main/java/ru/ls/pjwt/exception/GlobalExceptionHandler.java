@@ -8,6 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import ru.ls.pjwt.dto.ErrorResponse;
 import ru.ls.pjwt.dto.FieldErrorDto;
 import ru.ls.pjwt.dto.StandardResponse;
@@ -52,6 +53,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<StandardResponse<ErrorResponse>> userExists(NotUniqueDataException e) {
         log.error(e.getMessage(), e);
         return ApiResponse.error(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<StandardResponse<ErrorResponse>> userExists(NoResourceFoundException e) {
+        log.error(e.getMessage(), e);
+        return ApiResponse.error(HttpStatus.NOT_FOUND, "url not found");
     }
 
     @ExceptionHandler({ServerError.class, Exception.class})
