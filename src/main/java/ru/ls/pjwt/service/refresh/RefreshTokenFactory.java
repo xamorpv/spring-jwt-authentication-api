@@ -15,6 +15,7 @@ public class RefreshTokenFactory {
     private final JwtFactory jwtFactory;
     private final RefreshTokenService refreshTokenService;
     private final RefreshTokenSecurity refreshTokenSecurity;
+    private final RefreshTokenOperator refreshTokenOperator;
 
     public String createAndSaveToken(String username) {
         String token = jwtFactory.createRefreshToken(username);
@@ -28,7 +29,7 @@ public class RefreshTokenFactory {
         // если прошло меньше 30 секунд, то делаем вид, что этот токен работает (не создавать новый, а вернуть тот, что был выдан меньше 30 секунд назад)
 
         log.debug("updating token");
-        refreshTokenSecurity.use(refreshTokenService.getToken(token));
+        refreshTokenOperator.use(refreshTokenService.getToken(token));
         String newToken = jwtFactory.updateRefreshToken(token);
         RefreshToken refreshToken = refreshTokenService.save(newToken);
         log.debug("refresh token updated: {}", refreshToken);

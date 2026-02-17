@@ -22,11 +22,12 @@ public class RefreshTokenService {
     private final JwtClaimsFactory claimsFactory;
     private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenSecurity refreshTokenSecurity;
+    private final RefreshTokenOperator refreshTokenOperator;
 
     public void deleteToken(String token) {
         RefreshToken refreshToken = getToken(token);
         log.debug("try delete token {}", refreshToken);
-        refreshTokenSecurity.use(refreshToken);
+        refreshTokenOperator.use(refreshToken);
     }
 
     public RefreshToken getToken(String token) {

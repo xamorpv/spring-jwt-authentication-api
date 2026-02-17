@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 public class RefreshTokenSecurity {
     private final RefreshTokenRepository refreshTokenRepository;
     private final TransactionExecutor transactionExecutor;
+    private final RefreshTokenOperator refreshTokenOperator;
 
     /**
     * проверяет - был ли использован токен
@@ -38,35 +39,11 @@ public class RefreshTokenSecurity {
 
                 transactionExecutor.executeInNonRollbackableTransaction(() ->
                 {
-                    refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(this::useAndCompromise);
-                    compromise(refreshToken);
+                    refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(refreshTokenOperator::useAndCompromise);
+                    refreshTokenOperator.compromise(refreshToken);
                 });
             }
             throw new JwtTokenRequestException("refresh token was compromised. you may be get hacked. please re-login");
         }
-    }
-
-    public void useAndCompromise(RefreshToken refreshToken) {
-        use(refreshToken);
-        compromise(refreshToken);
-    }
-
-    public void compromise(RefreshToken refreshToken) {
-        log.debug("compromising token {}", refreshToken);
-        refreshToken.setCompromised(true);
-        use(refreshToken);
-    }
-
-    public void use(RefreshToken refreshToken) {
-        log.debug("using token {}", refreshToken);
-        refreshToken.setUsed(true);
-        refreshToken.setUsedAt(Instant.now());
-        refreshTokenRepository.save(refreshToken);
-    }
-
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
-    private void clearRefreshTokens() {
-        log.debug("clearing tokens");
-        refreshTokenRepository.deleteUsedLater(Instant.now().minus(30, ChronoUnit.DAYS));
     }
 }
