@@ -28,7 +28,7 @@ public class UserService {
             throw new NotUniqueDataException(Exceptions.USER_EXISTS);
         }
         if (userRepository.existsByEmail(request.email())) {
-            log.debug("email {}  exists", request.username());
+            log.debug("email {} exists", request.email());
             throw new NotUniqueDataException(Exceptions.EMAIL_EXISTS);
         }
     }
