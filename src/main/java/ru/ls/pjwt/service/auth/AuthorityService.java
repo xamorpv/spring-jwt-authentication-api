@@ -21,7 +21,7 @@ public class AuthorityService {
     private final Object lock = new Object[0];
 
     public void addUserAuthority(User user) {
-        log.debug("add user authority for user with id={}, username={}", user.getUsername(), user.getId());
+        log.debug("add user authority for user with id={}, username={}", user.getId(), user.getUsername());
 
         if (authority == null) {
             synchronized (lock) {
