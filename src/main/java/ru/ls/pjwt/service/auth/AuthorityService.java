@@ -26,7 +26,7 @@ public class AuthorityService {
         if (authority == null) {
             synchronized (lock) {
                 if (authority == null) {
-                    authority = authorityRepository.findByName(Authorities.USER).orElseThrow(()->new ServerError("authority USER not found!"));
+                    authority = authorityRepository.findByAuthority(Authorities.USER).orElseThrow(()->new ServerError("authority USER not found!"));
                 }
             }
         }
