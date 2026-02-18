@@ -44,15 +44,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotUniqueDataException.class)
-    public ResponseEntity<StandardResponse<ErrorResponse>> userExists(NotUniqueDataException e) {
+    public ResponseEntity<StandardResponse<ErrorResponse>> notUniqueData(NotUniqueDataException e) {
         log.error(e.getMessage(), e);
         return ApiResponse.error(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<StandardResponse<ErrorResponse>> userExists(NoResourceFoundException e) {
+    public ResponseEntity<StandardResponse<ErrorResponse>> noResourceFound(NoResourceFoundException e) {
         log.error(e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.NOT_FOUND, "url not found");
+        return ApiResponse.error(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler({ServerError.class, Exception.class})
