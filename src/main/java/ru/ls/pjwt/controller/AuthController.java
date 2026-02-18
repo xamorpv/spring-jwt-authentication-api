@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<AuthResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         log.info("handling login request {}", loginRequest.username());
-        return ApiResponse.success(tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.OK);
+        return ApiResponse.success(tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.CREATED);
     }
 
     //пока что для простоты через dto
