@@ -43,6 +43,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(e ->
                         e.authenticationEntryPoint(authenticationEntryPoint())
+                                .accessDeniedHandler(accessDeniedHandler())
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -54,6 +55,14 @@ public class SecurityConfig {
             log.error("authentication entry point: {}", e.getMessage(), e);
             JsonApiResponse.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
                     "; hint: may be your forgot header Authorization: Bearer <token> to become a authenticated");
+        };
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, e) -> {
+            log.error("access denied: {}", e.getMessage(), e);
+            JsonApiResponse.writeError(response, HttpStatus.UNAUTHORIZED, "permission denied (you don't have authorities to use this endpoint)");
         };
     }
 }
