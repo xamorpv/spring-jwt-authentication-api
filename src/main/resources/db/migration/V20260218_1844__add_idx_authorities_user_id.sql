@@ -1,0 +1,1 @@
+create index if not exists idx_users_authorities_user_id on users_authorities (user_id);

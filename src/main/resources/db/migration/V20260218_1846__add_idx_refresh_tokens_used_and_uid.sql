@@ -1,0 +1,1 @@
+create index if not exists idx_refresh_tokens_used_false_and_user_id on refresh_tokens(user_id, used) where used = false;
