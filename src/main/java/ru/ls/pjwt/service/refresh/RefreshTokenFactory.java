@@ -14,7 +14,6 @@ import ru.ls.pjwt.service.jwt.JwtFactory;
 public class RefreshTokenFactory {
     private final JwtFactory jwtFactory;
     private final RefreshTokenService refreshTokenService;
-    private final RefreshTokenSecurity refreshTokenSecurity;
     private final RefreshTokenOperator refreshTokenOperator;
 
     public String createAndSaveToken(String username) {
