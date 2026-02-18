@@ -62,7 +62,7 @@ public class SecurityConfig {
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, e) -> {
             log.error("access denied: {}", e.getMessage(), e);
-            JsonApiResponse.writeError(response, HttpStatus.UNAUTHORIZED, "permission denied (you don't have authorities to use this endpoint)");
+            JsonApiResponse.writeError(response, HttpStatus.FORBIDDEN, "permission denied (you don't have authorities to use this endpoint)");
         };
     }
 }
