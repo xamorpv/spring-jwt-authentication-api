@@ -22,6 +22,7 @@ public class AuthService {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final UserSecurity userSecurity;
     private final UserMapper userMapper;
 
     public UserDetails authenticate(String username, String password) {
@@ -32,7 +33,7 @@ public class AuthService {
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
         }
         log.debug("password exists");
-        userService.checkAccountStatus(userDetails);
+        userSecurity.checkAccountStatus(userDetails);
         log.info("user {} authenticated", username);
         return userDetails;
     }
@@ -41,11 +42,11 @@ public class AuthService {
         log.debug("validating username {}", username);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         log.debug("user loaded {}", LogUtils.safeUserDetails(userDetails));
-        userService.checkAccountStatus(userDetails);
+        userSecurity.checkAccountStatus(userDetails);
     }
 
     public RegisterResponse register(RegisterRequest registerRequest) {
-        userService.checkExists(registerRequest);
+        userSecurity.checkExists(registerRequest);
         log.debug("register: user {}", registerRequest.username());
         return userMapper.userToResponse(userService.saveNewUser(registerRequest.username(), registerRequest.password(), registerRequest.email()));
     }
