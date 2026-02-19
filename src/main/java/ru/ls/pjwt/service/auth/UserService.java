@@ -59,10 +59,9 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
         User saved = userRepository.save(user); // важно сохранить сейчас - user получит id и в него можно добавлять authorities
-        authorityService.addUserAuthority(user);
-        User savedWithAuthorities = userRepository.save(saved); // сохраняем еще раз для ясности (после добавления authorities)
-        log.debug("user {} saved", LogUtils.safeUserDetails(savedWithAuthorities));
-        return savedWithAuthorities;
+        authorityService.addUserAuthority(saved);
+        log.debug("user {} saved", LogUtils.safeUserDetails(saved));
+        return saved;
     }
 
     public User loadUser(String username) {
