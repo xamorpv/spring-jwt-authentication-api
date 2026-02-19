@@ -17,7 +17,7 @@ import ru.ls.pjwt.utils.constants.Authorities;
 @RequiredArgsConstructor
 public class AuthorityService {
     private final AuthorityRepository authorityRepository;
-    private Long userAuthorityId;
+    private volatile Long userAuthorityId;
 
     @PostConstruct
     public void loadUserAuthority() {
