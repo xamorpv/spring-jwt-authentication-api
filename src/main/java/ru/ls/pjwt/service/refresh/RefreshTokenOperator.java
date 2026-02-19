@@ -22,7 +22,7 @@ public class RefreshTokenOperator {
     public void compromise(RefreshToken refreshToken) {
         log.debug("compromising token {}", refreshToken);
         refreshToken.setCompromised(true);
-        use(refreshToken);
+        refreshTokenRepository.save(refreshToken);
     }
 
     public void use(RefreshToken refreshToken) {
