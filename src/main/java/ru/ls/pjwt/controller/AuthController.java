@@ -40,7 +40,7 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<StandardResponse<AuthResponse>> refresh(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("handling refresh request");
-        return ApiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.CREATED);
+        return ApiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.OK);
     }
 
     @PostMapping("/invalidate-refresh-token")
@@ -53,6 +53,6 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<StandardResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) {
         log.info("handling register request {} - {}", registerRequest.username(), registerRequest.email());
-        return ApiResponse.success(authService.register(registerRequest), "registered successfully", HttpStatus.OK);
+        return ApiResponse.success(authService.register(registerRequest), "registered successfully", HttpStatus.CREATED);
     }
 }
