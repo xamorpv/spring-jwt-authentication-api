@@ -1,5 +1,6 @@
 package ru.ls.pjwt.service.refresh;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,6 +14,7 @@ import ru.ls.pjwt.service.auth.UserService;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
+@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor

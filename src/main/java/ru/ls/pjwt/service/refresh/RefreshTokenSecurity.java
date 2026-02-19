@@ -1,5 +1,6 @@
 package ru.ls.pjwt.service.refresh;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 import ru.ls.pjwt.service.TransactionExecutor;
 
+@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor
