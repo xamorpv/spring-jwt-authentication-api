@@ -53,10 +53,11 @@ public class UserSecurity {
         log.debug("status {} success", LogUtils.safeUserDetails(userDetails));
     }
 
-    public void validateUsername(String username) {
+    public UserDetails validateUsername(String username) {
         log.debug("validating username {}", username);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         log.debug("user loaded {}", LogUtils.safeUserDetails(userDetails));
         checkAccountStatus(userDetails);
+        return userDetails;
     }
 }
