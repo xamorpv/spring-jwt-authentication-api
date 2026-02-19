@@ -18,7 +18,6 @@ import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.utils.ApiResponse;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
-import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.List;
 
