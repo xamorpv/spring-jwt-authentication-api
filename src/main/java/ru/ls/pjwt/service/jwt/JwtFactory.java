@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.utils.JwtUtils;
+import ru.ls.pjwt.model.JwtClaims;
 import ru.ls.pjwt.utils.TimeUtils;
 import ru.ls.pjwt.utils.UUIDUtils;
 import ru.ls.pjwt.utils.constants.App;
@@ -38,8 +38,8 @@ public class JwtFactory {
                 Instant.now().plus(Jwt.refreshTokenExpirationDays, ChronoUnit.DAYS), claims);
     }
 
-    public String updateRefreshToken(String token) {
-        Claims oldClaims = JwtUtils.getClaims(token);
+    public String updateRefreshToken(JwtClaims jwtClaims) {
+        Claims oldClaims = jwtClaims.getClaims();
         Instant time = Instant.ofEpochSecond(oldClaims.get("exp", Long.class));
         String username = oldClaims.getSubject();
         HashMap<String, Object> newClaims = new HashMap<>();
@@ -47,8 +47,6 @@ public class JwtFactory {
         newClaims.put("uuid", UUIDUtils.random());
         return buildToken(username, time, newClaims);
     }
-
-
 
     private String buildToken(String username, Instant time, HashMap<String, Object> claims) {
         log.info("creating token: username={}, time={}, claims={}", username, TimeUtils.formatter.format(time), claims);

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
+import ru.ls.pjwt.model.JwtClaims;
 import ru.ls.pjwt.service.jwt.JwtFactory;
 
 @Slf4j
@@ -23,7 +24,7 @@ public class RefreshTokenFactory {
         return token;
     }
 
-    public String updateRefreshToken(String token) {
+    public String updateRefreshToken(JwtClaims token) {
         // todo grace period
         // если прошло меньше 30 секунд, то делаем вид, что этот токен работает (не создавать новый, а вернуть тот, что был выдан меньше 30 секунд назад)
 

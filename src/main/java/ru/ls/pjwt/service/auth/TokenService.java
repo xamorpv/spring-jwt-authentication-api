@@ -10,10 +10,8 @@ import ru.ls.pjwt.dto.auth.request.LoginRequest;
 import ru.ls.pjwt.model.JwtClaims;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.service.jwt.JwtFactory;
-import ru.ls.pjwt.service.jwt.JwtSecurity;
 import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.utils.LogUtils;
-import ru.ls.pjwt.utils.constants.Jwt;
 
 @Slf4j
 @Transactional
@@ -22,19 +20,15 @@ import ru.ls.pjwt.utils.constants.Jwt;
 public class TokenService {
     private final JwtFactory jwtFactory;
     private final AuthService authService;
-    private final UserSecurity userSecurity;
     private final RefreshTokenFactory refreshTokenFactory;
     private final JwtClaimsFactory claimsFactory;
-    private final JwtSecurity jwtSecurity;
+    private final AccessTokenService accessTokenService;
 
     public AuthResponse refreshTokens(String token) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
         log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtClaims.getUserDetails()));
-        jwtSecurity.checkType(Jwt.REFRESH, jwtClaims);
-        String username = jwtClaims.getUsername();
-        UserDetails userDetails = userSecurity.validateUsername(username);
-        String accessToken = jwtFactory.createAccessToken(userDetails);
-        String refreshToken = refreshTokenFactory.updateRefreshToken(token);
+        String accessToken = accessTokenService.createAccessToken(jwtClaims);
+        String refreshToken = refreshTokenFactory.updateRefreshToken(jwtClaims);
         log.debug("successful refresh for {}", jwtClaims.getUsername());
         return new AuthResponse(refreshToken, accessToken);
     }

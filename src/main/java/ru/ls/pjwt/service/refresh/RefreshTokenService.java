@@ -27,20 +27,20 @@ public class RefreshTokenService {
     private final RefreshTokenOperator refreshTokenOperator;
 
     public void deleteToken(String token) {
-        RefreshToken refreshToken = getToken(token);
+        RefreshToken refreshToken = getToken(claimsFactory.createJwtClaims(token));
         log.debug("try delete token {}", refreshToken);
         refreshTokenOperator.use(refreshToken);
     }
 
-    public RefreshToken getToken(String token) {
-        String uuid = claimsFactory.createJwtClaims(token).getUuid();
+    public RefreshToken getToken(JwtClaims jwtClaims) {
+        String uuid = jwtClaims.getUuid();
         if (uuid == null) {
             log.warn("jwt token without uuid, may be deprecated");
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
         }
         RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
                 .orElseThrow(()->new JwtTokenRequestException("token not found"));
-        if (!passwordEncoder.matches(token, refreshToken.getToken())) {
+        if (!passwordEncoder.matches(jwtClaims.getToken(), refreshToken.getToken())) {
             log.warn("user has uuid in jwt token, but token does not matches. token with same uuid: {}", refreshToken);
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
         }
