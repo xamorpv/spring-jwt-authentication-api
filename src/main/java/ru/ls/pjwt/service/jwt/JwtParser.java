@@ -45,6 +45,8 @@ public class JwtParser {
         @SuppressWarnings("unchecked")
         List<String> authorities = claims.get("authorities", List.class);
 
+        log.debug("userDetails extracted successfully: username={}, authorities: {}", username, authorities);
+
         return new UserDetailsImpl(username, authorities);
     }
 
