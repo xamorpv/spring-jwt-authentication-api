@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
-import ru.ls.pjwt.model.JwtClaims;
+import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.service.jwt.JwtFactory;
 
 @Slf4j

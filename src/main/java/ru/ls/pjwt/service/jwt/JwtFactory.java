@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.model.JwtClaims;
+import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.utils.TimeUtils;
 import ru.ls.pjwt.utils.UUIDUtils;
 import ru.ls.pjwt.utils.constants.App;
@@ -39,7 +39,7 @@ public class JwtFactory {
     }
 
     public String updateRefreshToken(JwtClaims jwtClaims) {
-        Claims oldClaims = jwtClaims.getClaims();
+        Claims oldClaims = jwtClaims.claims();
         Instant time = Instant.ofEpochSecond(oldClaims.get("exp", Long.class));
         String username = oldClaims.getSubject();
         HashMap<String, Object> newClaims = new HashMap<>();

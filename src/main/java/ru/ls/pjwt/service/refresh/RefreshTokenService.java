@@ -8,7 +8,7 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.model.JwtClaims;
+import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 import ru.ls.pjwt.service.auth.UserService;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
@@ -33,14 +33,14 @@ public class RefreshTokenService {
     }
 
     public RefreshToken getToken(JwtClaims jwtClaims) {
-        String uuid = jwtClaims.getUuid();
+        String uuid = jwtClaims.uuid();
         if (uuid == null) {
             log.warn("jwt token without uuid, may be deprecated");
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
         }
         RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
                 .orElseThrow(()->new JwtTokenRequestException("token not found"));
-        if (!passwordEncoder.matches(jwtClaims.getToken(), refreshToken.getToken())) {
+        if (!passwordEncoder.matches(jwtClaims.token(), refreshToken.getToken())) {
             log.warn("user has uuid in jwt token, but token does not matches. token with same uuid: {}", refreshToken);
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
         }
@@ -50,6 +50,6 @@ public class RefreshTokenService {
 
     public RefreshToken save(String token) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
-        return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtClaims.getUuid(), userService.loadUser(jwtClaims.getUsername())));
+        return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtClaims.uuid(), userService.loadUser(jwtClaims.username())));
     }
 }

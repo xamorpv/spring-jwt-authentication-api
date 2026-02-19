@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
-import ru.ls.pjwt.model.JwtClaims;
+import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.service.jwt.JwtFactory;
 import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
@@ -26,10 +26,10 @@ public class TokenService {
 
     public AuthResponse refreshTokens(String token) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
-        log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtClaims.getUserDetails()));
+        log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtClaims.userDetails()));
         String accessToken = accessTokenService.createAccessToken(jwtClaims);
         String refreshToken = refreshTokenFactory.updateRefreshToken(jwtClaims);
-        log.debug("successful refresh for {}", jwtClaims.getUsername());
+        log.debug("successful refresh for {}", jwtClaims.username());
         return new AuthResponse(refreshToken, accessToken);
     }
 
