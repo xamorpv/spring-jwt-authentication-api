@@ -33,14 +33,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<AuthResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         log.info("handling login request {}", loginRequest.username());
-        return ApiResponse.success(tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.CREATED);
+        return ApiResponse.success(tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.OK);
     }
 
     //пока что для простоты через dto
     @PostMapping("/refresh")
     public ResponseEntity<StandardResponse<AuthResponse>> refresh(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("handling refresh request");
-        return ApiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.OK);
+        return ApiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.CREATED);
     }
 
     @PostMapping("/invalidate-refresh-token")
