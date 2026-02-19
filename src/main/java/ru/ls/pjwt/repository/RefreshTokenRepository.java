@@ -17,6 +17,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     List<RefreshToken> findActiveByUsername(@Param("username") String username);
 
     @Modifying
-    @Query("delete from RefreshToken rt where rt.used = true and rt.usedAt < :interval")
-    void deleteUsedLater(@Param("interval") Instant interval);
+    @Query("delete from RefreshToken rt where rt.used = true and rt.usedAt < time")
+    void deleteUsedBefore(@Param("time") Instant time);
 }
