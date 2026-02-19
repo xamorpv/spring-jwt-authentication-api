@@ -17,7 +17,7 @@ import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.service.auth.AuthService;
 import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
-import ru.ls.pjwt.service.auth.TokenService;
+import ru.ls.pjwt.service.auth.token.TokenService;
 import ru.ls.pjwt.utils.ApiResponse;
 
 //todo токены в httpOnlyCookies, а не в dto, который может посмотреть js

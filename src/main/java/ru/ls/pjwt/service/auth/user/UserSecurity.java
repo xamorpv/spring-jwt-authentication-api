@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.auth;
+package ru.ls.pjwt.service.auth.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

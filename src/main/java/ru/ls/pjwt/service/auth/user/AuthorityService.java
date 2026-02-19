@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.auth;
+package ru.ls.pjwt.service.auth.user;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;

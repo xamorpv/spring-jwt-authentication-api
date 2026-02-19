@@ -10,7 +10,7 @@ import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
-import ru.ls.pjwt.service.auth.UserService;
+import ru.ls.pjwt.service.auth.user.UserService;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
