@@ -21,9 +21,12 @@ public class JwtClaims {
     private final String uuid;
     @Getter
     private final String username;
+    @Getter
+    private final String token;
 
     public JwtClaims(String token, JwtParser jwtParser) {
         this.jwtParser = jwtParser;
+        this.token = token;
         claims = JwtUtils.getClaims(token);
         uuid = jwtParser.getUuid(claims);
         userDetails = jwtParser.extractUserDetails(claims);
