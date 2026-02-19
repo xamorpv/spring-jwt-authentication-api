@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 public class RefreshTokenScheduler {
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24 * 7)
+    @Scheduled(fixedDelay = 1000L * 60 * 60 * 24 * 7)
     protected void clearRefreshTokens() {
         log.debug("clearing tokens");
         refreshTokenRepository.deleteUsedBefore(Instant.now().minus(30, ChronoUnit.DAYS));
