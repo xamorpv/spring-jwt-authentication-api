@@ -6,7 +6,6 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.ls.pjwt.service.jwt.JwtParser;
-import ru.ls.pjwt.utils.JwtUtils;
 
 @ToString
 @Slf4j
@@ -27,7 +26,7 @@ public class JwtClaims {
     public JwtClaims(String token, JwtParser jwtParser) {
         this.jwtParser = jwtParser;
         this.token = token;
-        claims = JwtUtils.getClaims(token);
+        claims = jwtParser.getClaims(token);
         uuid = jwtParser.getUuid(claims);
         userDetails = jwtParser.extractUserDetails(claims);
         username = userDetails.getUsername();
