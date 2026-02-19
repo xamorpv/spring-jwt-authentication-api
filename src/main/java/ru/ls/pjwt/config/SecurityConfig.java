@@ -38,10 +38,10 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                                .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(Authorities.USER)
                         .requestMatchers(requestMatcher).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(Authorities.USER)
                         .requestMatchers(HttpMethod.GET, "/api/v1/test/protected").authenticated()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(e ->
                         e.authenticationEntryPoint(authenticationEntryPoint())
