@@ -3,6 +3,7 @@ package ru.ls.pjwt.service.auth;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
@@ -31,8 +32,8 @@ public class TokenService {
         log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtClaims.getUserDetails()));
         jwtSecurity.checkType(Jwt.REFRESH, jwtClaims);
         String username = jwtClaims.getUsername();
-        userSecurity.validateUsername(username);
-        String accessToken = jwtFactory.createAccessToken(username);
+        UserDetails userDetails = userSecurity.validateUsername(username);
+        String accessToken = jwtFactory.createAccessToken(userDetails);
         String refreshToken = refreshTokenFactory.updateRefreshToken(token);
         log.debug("successful refresh for {}", jwtClaims.getUsername());
         return new AuthResponse(refreshToken, accessToken);
@@ -40,9 +41,9 @@ public class TokenService {
 
     public AuthResponse createTokens(LoginRequest loginRequest) {
         log.info("creating tokens for login request {}", loginRequest.username());
-        String username = authService.authenticate(loginRequest.username(), loginRequest.password()).getUsername();
-        String accessToken = jwtFactory.createAccessToken(username);
-        String refreshToken = refreshTokenFactory.createAndSaveToken(username);
+        UserDetails userDetails = authService.authenticate(loginRequest.username(), loginRequest.password());
+        String accessToken = jwtFactory.createAccessToken(userDetails);
+        String refreshToken = refreshTokenFactory.createAndSaveToken(userDetails.getUsername());
         return new AuthResponse(refreshToken, accessToken);
     }
 }

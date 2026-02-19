@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.repository.UserRepository;
@@ -22,14 +24,20 @@ import java.util.HashMap;
 @Service
 @RequiredArgsConstructor
 public class JwtFactory {
-    private final UserRepository userRepository;
-
-    public String createAccessToken(String username) {
-        return createToken(username, Jwt.ACCESS);
+    public String createAccessToken(UserDetails userDetails) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("type", Jwt.ACCESS);
+        claims.put("authorities", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+        return buildToken(userDetails.getUsername(),
+                Instant.now().plus(Jwt.accessTokenExpirationMinutes, ChronoUnit.MINUTES), claims);
     }
 
     public String createRefreshToken(String username) {
-        return createToken(username, Jwt.REFRESH);
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("type", Jwt.REFRESH);
+        claims.put("uuid", UUIDUtils.random());
+        return buildToken(username,
+                Instant.now().plus(Jwt.refreshTokenExpirationDays, ChronoUnit.DAYS), claims);
     }
 
     public String updateRefreshToken(String token) {
@@ -42,19 +50,7 @@ public class JwtFactory {
         return buildToken(username, time, newClaims);
     }
 
-    private String createToken(String username, String type) {
-        boolean isAccess = type.equals(Jwt.ACCESS);
-        HashMap<String, Object> claims = new HashMap<>();
-        claims.put("type", type);
-        if (isAccess) {
-            claims.put("authorities", userRepository.findRolesByUsername(username).stream().map(Authority::getAuthority).toList());
-        } else {
-            claims.put("uuid", UUIDUtils.random());
-        }
-        Instant time = isAccess?Instant.now().plus(Jwt.accessTokenExpirationMinutes, ChronoUnit.MINUTES) :
-                Instant.now().plus(Jwt.refreshTokenExpirationDays, ChronoUnit.DAYS);
-        return buildToken(username, time, claims);
-    }
+
 
     private String buildToken(String username, Instant time, HashMap<String, Object> claims) {
         log.info("creating token: username={}, time={}, claims={}", username, TimeUtils.formatter.format(time), claims);
