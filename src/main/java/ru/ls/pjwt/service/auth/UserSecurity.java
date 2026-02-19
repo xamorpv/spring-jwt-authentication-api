@@ -7,6 +7,7 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
@@ -19,6 +20,7 @@ import ru.ls.pjwt.utils.constants.Exceptions;
 @Service
 public class UserSecurity {
     private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
 
     public void checkExists(RegisterRequest request) {
         log.debug("check exists username {}", request.username());
@@ -49,5 +51,12 @@ public class UserSecurity {
         }
 
         log.debug("status {} success", LogUtils.safeUserDetails(userDetails));
+    }
+
+    public void validateUsername(String username) {
+        log.debug("validating username {}", username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        log.debug("user loaded {}", LogUtils.safeUserDetails(userDetails));
+        checkAccountStatus(userDetails);
     }
 }

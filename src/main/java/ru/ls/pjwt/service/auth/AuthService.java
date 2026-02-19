@@ -38,13 +38,6 @@ public class AuthService {
         return userDetails;
     }
 
-    public void validateUsername(String username) {
-        log.debug("validating username {}", username);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        log.debug("user loaded {}", LogUtils.safeUserDetails(userDetails));
-        userSecurity.checkAccountStatus(userDetails);
-    }
-
     public RegisterResponse register(RegisterRequest registerRequest) {
         userSecurity.checkExists(registerRequest);
         log.debug("register: user {}", registerRequest.username());
