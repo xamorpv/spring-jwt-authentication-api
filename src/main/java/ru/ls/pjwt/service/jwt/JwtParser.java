@@ -12,14 +12,6 @@ import java.util.List;
 @Slf4j
 @Service
 public class JwtParser {
-    public void checkType(String type, Claims claims) {
-        String tokenType = claims.get("type", String.class);
-        if (!tokenType.equals(type)) {
-            log.debug("wrong token type {}, expected: {}", tokenType, type);
-            throw new JwtTokenRequestException("for this operation expected type was "+type);
-        }
-    }
-
     public UserDetails extractUserDetails(Claims claims) {
         log.debug("extract userDetails for claims {}", claims);
         String username = claims.getSubject();

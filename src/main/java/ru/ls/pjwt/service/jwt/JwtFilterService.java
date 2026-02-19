@@ -10,11 +10,12 @@ import ru.ls.pjwt.utils.constants.Jwt;
 @RequiredArgsConstructor
 public class JwtFilterService {
     private final JwtClaimsFactory claimsFactory;
+    private final JwtSecurity jwtSecurity;
 
     // todo check fingerprint (add in future)
     public UserDetails getUserDetails(String jwt) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(jwt);
-        jwtClaims.checkType(Jwt.ACCESS);
+        jwtSecurity.checkType(Jwt.ACCESS, jwtClaims);
         return jwtClaims.getUserDetails();
     }
 }
