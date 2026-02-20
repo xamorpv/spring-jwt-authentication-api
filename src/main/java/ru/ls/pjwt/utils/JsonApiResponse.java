@@ -12,7 +12,7 @@ import java.io.IOException;
 public class JsonApiResponse {
     public void writeError(HttpServletResponse response, HttpStatus status, String message) throws IOException {
         JsonUtils.writeValue(response,
-                new StandardResponse<>(new ErrorResponse(status.value(), status.getReasonPhrase(), TimeUtils.timestamp()), message, false),
+                new StandardResponse<>(new ErrorResponse(status.value(), TimeUtils.timestamp()), message, false),
                 status.value());
     }
 }
