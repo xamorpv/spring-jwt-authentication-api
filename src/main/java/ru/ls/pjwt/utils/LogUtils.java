@@ -3,6 +3,7 @@ package ru.ls.pjwt.utils;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.ls.pjwt.entity.User;
 
 @UtilityClass
 public class LogUtils {

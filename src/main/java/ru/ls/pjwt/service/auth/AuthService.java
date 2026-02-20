@@ -27,7 +27,7 @@ public class AuthService {
 
     public UserDetails authenticate(String username, String password) {
         log.debug("auth process started with username: {}", username);
-        User userDetails = userService.loadUser(username);
+        UserDetails userDetails = userService.loadUserDetails(username);
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             log.debug("wrong password; throwing bad credentials");
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.ServerError;
+import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.repository.AuthorityRepository;
 import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Authorities;
@@ -17,6 +18,7 @@ import ru.ls.pjwt.utils.constants.Authorities;
 @RequiredArgsConstructor
 public class AuthorityService {
     private final AuthorityRepository authorityRepository;
+    private final UserMapper userMapper;
     private volatile Long userAuthorityId;
 
     @PostConstruct
@@ -32,6 +34,6 @@ public class AuthorityService {
 
         Authority authority = authorityRepository.getReferenceById(userAuthorityId);
         user.getAuthorities().add(authority);
-        log.debug("authority saved for user: {}", LogUtils.safeUserDetails(user));
+        log.debug("authority saved for user: {}", LogUtils.safeUserDetails(userMapper.userEntityToUserDetails(user)));
     }
 }

@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Set;
 @Setter
 @ToString
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
