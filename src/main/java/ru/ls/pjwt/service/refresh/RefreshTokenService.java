@@ -27,7 +27,7 @@ public class RefreshTokenService {
     private final RefreshTokenOperator refreshTokenOperator;
 
     public void deleteToken(String token) {
-        RefreshToken refreshToken = getToken(claimsFactory.createJwtClaims(token));
+        @SuppressWarnings("CallBeanMethodFromSameClass") RefreshToken refreshToken = getToken(claimsFactory.createJwtClaims(token)); // Not call AOP Spring methods from the same class. Proxy does not work in this case. Use a call through a proxy qualifier.
         log.debug("try delete token {}", refreshToken);
         refreshTokenOperator.use(refreshToken);
     }
