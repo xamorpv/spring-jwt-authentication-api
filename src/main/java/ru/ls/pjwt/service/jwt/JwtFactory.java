@@ -13,9 +13,9 @@ import ru.ls.pjwt.utils.UUIDUtils;
 import ru.ls.pjwt.utils.constants.App;
 import ru.ls.pjwt.utils.constants.Jwt;
 
-import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 
 @Slf4j
