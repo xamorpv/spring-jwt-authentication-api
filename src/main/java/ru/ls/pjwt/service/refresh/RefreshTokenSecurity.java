@@ -38,6 +38,8 @@ public class RefreshTokenSecurity {
                 transactionExecutor.executeInNonRollbackableTransaction(() ->
                 {
                     // вместо выгрузки всех токенов память делаем операцию за один запрос
+                    // todo fix race condition
+                    // одновременно 2 запроса могут попасть сюда, и оба обновить токены. взлом не будет обнаружен
                     refreshTokenRepository.useAndCompromise(refreshToken.getUser().getUsername());
                     refreshTokenOperator.compromise(refreshToken);
                 });
