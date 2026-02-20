@@ -16,11 +16,6 @@ import java.time.Instant;
 public class RefreshTokenOperator {
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public void useAndCompromise(RefreshToken refreshToken) {
-        compromise(refreshToken);
-        use(refreshToken);
-    }
-
     public void compromise(RefreshToken refreshToken) {
         log.debug("compromising token {}", refreshToken);
         refreshToken.setCompromised(true);

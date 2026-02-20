@@ -37,7 +37,8 @@ public class RefreshTokenSecurity {
 
                 transactionExecutor.executeInNonRollbackableTransaction(() ->
                 {
-                    refreshTokenRepository.findActiveByUsername(refreshToken.getUser().getUsername()).forEach(refreshTokenOperator::useAndCompromise);
+                    // вместо выгрузки всех токенов память делаем операцию за один запрос
+                    refreshTokenRepository.useAndCompromise(refreshToken.getUser().getUsername());
                     refreshTokenOperator.compromise(refreshToken);
                 });
             }

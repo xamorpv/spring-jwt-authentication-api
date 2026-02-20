@@ -13,10 +13,12 @@ import java.util.Optional;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
     Optional<RefreshToken> findByUuid(String uuid);
 
-    @Query("select rt from RefreshToken rt where rt.user.username = :username and rt.used = false")
-    List<RefreshToken> findActiveByUsername(@Param("username") String username);
-
     @Modifying
     @Query("delete from RefreshToken rt where rt.used = true and rt.usedAt < :time")
     void deleteUsedBefore(@Param("time") Instant time);
+
+    @Modifying
+    @Query("update RefreshToken rt set rt.compromised = true, rt.used = true, rt.usedAt = CURRENT_TIMESTAMP" +
+            " where rt.user.username = :username and rt.used = false")
+    void useAndCompromise(@Param("username") String username);
 }
