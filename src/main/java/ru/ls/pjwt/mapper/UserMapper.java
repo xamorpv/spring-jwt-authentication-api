@@ -1,5 +1,6 @@
 package ru.ls.pjwt.mapper;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
@@ -19,7 +20,8 @@ public class UserMapper {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password("")
-                .authorities(user.getAuthorities())
+                .authorities(user.getAuthorities().stream().map(authority ->
+                        new SimpleGrantedAuthority(authority.getAuthority())).toList())
                 .accountExpired(!user.isAccountNonExpired())
                 .accountLocked(!user.isAccountNonLocked())
                 .disabled(!user.isEnabled())
