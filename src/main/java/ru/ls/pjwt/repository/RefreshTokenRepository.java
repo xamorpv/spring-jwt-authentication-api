@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import ru.ls.pjwt.entity.RefreshToken;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
