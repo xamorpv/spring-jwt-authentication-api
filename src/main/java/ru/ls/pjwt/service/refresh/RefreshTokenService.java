@@ -1,14 +1,14 @@
 package ru.ls.pjwt.service.refresh;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 import ru.ls.pjwt.service.auth.user.UserService;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
@@ -39,7 +39,7 @@ public class RefreshTokenService {
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
         }
         RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
-                .orElseThrow(()->new JwtTokenRequestException("token not found"));
+                .orElseThrow(() -> new JwtTokenRequestException("token not found"));
         if (!passwordEncoder.matches(jwtClaims.token(), refreshToken.getToken())) {
             log.warn("user has uuid in jwt token, but token does not matches. token with same uuid: {}", refreshToken);
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);

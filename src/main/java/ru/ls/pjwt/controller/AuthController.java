@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ls.pjwt.dto.StandardResponse;
-import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
 import ru.ls.pjwt.dto.auth.request.RefreshTokenRequest;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
+import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.service.auth.AuthService;
-import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.service.auth.token.TokenService;
+import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.utils.ApiResponse;
 
 //todo токены в httpOnlyCookies, а не в dto, который может посмотреть js

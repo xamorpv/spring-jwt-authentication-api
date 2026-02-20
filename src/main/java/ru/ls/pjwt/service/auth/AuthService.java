@@ -1,15 +1,14 @@
 package ru.ls.pjwt.service.auth;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
-import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.service.auth.user.UserSecurity;
 import ru.ls.pjwt.service.auth.user.UserService;

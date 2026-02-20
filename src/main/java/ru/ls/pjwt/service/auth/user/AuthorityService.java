@@ -1,10 +1,10 @@
 package ru.ls.pjwt.service.auth.user;
 
 import jakarta.annotation.PostConstruct;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.ServerError;
@@ -25,7 +25,7 @@ public class AuthorityService {
     public void loadUserAuthority() {
         userAuthorityId = authorityRepository.findByAuthority(Authorities.USER)
                 .map(Authority::getId)
-                .orElseThrow(()->new ServerError("authority USER not found!"));
+                .orElseThrow(() -> new ServerError("authority USER not found!"));
     }
 
     @Transactional

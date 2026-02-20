@@ -2,8 +2,8 @@ package ru.ls.pjwt.service.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.dto.JwtClaims;
+import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 
 @Service
@@ -17,7 +17,7 @@ public class JwtSecurity {
         }
         if (!tokenType.equals(type)) {
             log.debug("wrong token type {}, expected: {}", tokenType, type);
-            throw new JwtTokenRequestException("for this operation expected type was "+type);
+            throw new JwtTokenRequestException("for this operation expected type was " + type);
         }
     }
 }

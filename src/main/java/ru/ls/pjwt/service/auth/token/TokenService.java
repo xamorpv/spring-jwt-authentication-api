@@ -1,13 +1,13 @@
 package ru.ls.pjwt.service.auth.token;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.dto.auth.response.AuthResponse;
-import ru.ls.pjwt.dto.auth.request.LoginRequest;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.JwtClaims;
+import ru.ls.pjwt.dto.auth.request.LoginRequest;
+import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.service.auth.AuthService;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.service.jwt.JwtFactory;
