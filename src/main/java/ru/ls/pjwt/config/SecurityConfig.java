@@ -26,14 +26,12 @@ import ru.ls.pjwt.utils.constants.Authorities;
 @EnableScheduling
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserDetailsService userDetailsService;
     private final RequestMatcher requestMatcher;
     private final JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain httpSecurity(HttpSecurity http) {
         return http
-                .userDetailsService(userDetailsService)
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
