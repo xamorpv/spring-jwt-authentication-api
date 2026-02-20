@@ -5,13 +5,15 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.dto.db.UserDetailsImpl;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.utils.constants.App;
 import ru.ls.pjwt.utils.constants.Jwt;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
@@ -46,8 +48,8 @@ public class JwtParser {
         List<String> authorities = claims.get("authorities", List.class);
 
         log.debug("userDetails extracted successfully: username={}, authorities: {}", username, authorities);
-
-        return new UserDetailsImpl(username, authorities);
+        return new User(username, null, authorities == null ?
+                new HashSet<>() : authorities.stream().map(SimpleGrantedAuthority::new).toList());
     }
 
     public String getUuid(Claims claims) {
