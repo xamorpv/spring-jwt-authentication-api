@@ -18,7 +18,7 @@ public class TransactionExecutor {
         return template;
     }
 
-    public void executeInNonRollbackableTransaction(Runnable runnable) {
+    public void executeInIndependentTransaction(Runnable runnable) {
         getNewTransactionTemplate().execute(status -> {
             runnable.run();
             return null;

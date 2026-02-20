@@ -35,7 +35,7 @@ public class RefreshTokenSecurity {
             } else {
                 log.warn("token was not compromised before; using all tokens for this user");
 
-                transactionExecutor.executeInNonRollbackableTransaction(() ->
+                transactionExecutor.executeInIndependentTransaction(() ->
                 {
                     // вместо выгрузки всех токенов память делаем операцию за один запрос
                     // todo fix race condition
