@@ -28,9 +28,9 @@ public class RefreshTokenSecurity {
      * но чтобы злоумышленник не мог каждый раз отправлять один и тот же просроченный токен, который когда-то получил, и сбрасывать все токены пользователю, был введен параметр compromised
      */
     public void checkUsed(RefreshToken refreshToken) {
-        if (refreshToken.getUsed()) {
+        if (refreshToken.isUsed()) {
             log.warn("token already used: {}", refreshToken);
-            if (refreshToken.getCompromised()) {
+            if (refreshToken.isCompromised()) {
                 log.debug("token already compromised; throw exception and do nothing");
             } else {
                 log.warn("token was not compromised before; using all tokens for this user");

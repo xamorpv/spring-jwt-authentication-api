@@ -31,11 +31,11 @@ public class RefreshToken {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "used")
-    private Boolean used = false;
+    @Column(name = "used", nullable = false)
+    private boolean used = false;
 
-    @Column(name = "compromised")
-    private Boolean compromised = false;
+    @Column(name = "compromised", nullable = false)
+    private boolean compromised = false;
 
     @Column(name = "used_at")
     private Instant usedAt;
