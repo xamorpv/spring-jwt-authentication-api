@@ -52,7 +52,7 @@ public class SecurityConfig {
         return (request, response, e) -> {
             log.error("authentication entry point: {}", e.getMessage(), e);
             JsonApiResponse.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
-                    "; hint: maybe you forgot header Authorization: Bearer <token> to become a authenticated");
+                    "; hint: maybe you forgot header Authorization: Bearer <token> to become authenticated");
         };
     }
 
