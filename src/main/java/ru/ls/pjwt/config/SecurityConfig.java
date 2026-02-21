@@ -22,7 +22,6 @@ import ru.ls.pjwt.utils.constants.Authorities;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableScheduling
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final RequestMatcher requestMatcher;
