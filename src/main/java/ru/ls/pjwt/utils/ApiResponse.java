@@ -4,12 +4,19 @@ import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.ls.pjwt.dto.ErrorResponse;
+import ru.ls.pjwt.dto.FieldErrorDto;
 import ru.ls.pjwt.dto.StandardResponse;
+
+import java.util.List;
 
 @UtilityClass
 public class ApiResponse {
     public ResponseEntity<StandardResponse<ErrorResponse>> error(HttpStatus status, String message) {
-        return ApiResponse.failure(new ErrorResponse(status.value(), TimeUtils.timestamp()), message, status);
+        return errorInFields(status, message, null);
+    }
+
+    public ResponseEntity<StandardResponse<ErrorResponse>> errorInFields(HttpStatus status, String message, List<FieldErrorDto> errors) {
+        return ApiResponse.failure(new ErrorResponse(status.value(), TimeUtils.timestamp(), errors), message, status);
     }
 
     public <T> ResponseEntity<StandardResponse<T>> failure(T data, String message, HttpStatus status) {

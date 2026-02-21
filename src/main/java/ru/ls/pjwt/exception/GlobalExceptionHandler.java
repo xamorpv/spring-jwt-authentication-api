@@ -61,11 +61,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardResponse<List<FieldErrorDto>>> validationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<StandardResponse<ErrorResponse>> validationException(MethodArgumentNotValidException e) {
         List<FieldErrorDto> errors = new ArrayList<>();
         e.getFieldErrors().forEach(fe ->
                 errors.add(new FieldErrorDto(fe.getField(), fe.getRejectedValue(), fe.getDefaultMessage())));
         log.error("validation exception: {}. errors: {}", e.getMessage(), errors, e);
-        return ApiResponse.failure(errors, Exceptions.VALIDATION, HttpStatus.BAD_REQUEST);
+        return ApiResponse.errorInFields(HttpStatus.BAD_REQUEST, Exceptions.VALIDATION, errors);
     }
 }
