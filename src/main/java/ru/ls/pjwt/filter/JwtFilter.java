@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import ru.ls.pjwt.service.jwt.JwtFilterService;
+import ru.ls.pjwt.utils.LogUtils;
 
 import java.io.IOException;
 
@@ -61,7 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             context.setAuthentication(token);
 
-            log.info("user {} authenticated with token", userDetails);
+            log.info("user {} authenticated with token", LogUtils.safeUserDetails(userDetails));
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             SecurityContextHolder.clearContext(); // стандарт безопасности
