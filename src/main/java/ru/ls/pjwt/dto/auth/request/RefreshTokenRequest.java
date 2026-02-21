@@ -5,5 +5,5 @@ import jakarta.validation.constraints.NotNull;
 import ru.ls.pjwt.utils.constants.Validations;
 
 public record RefreshTokenRequest(
-        @NotBlank(message = Validations.blank) @NotNull(message = Validations.nn) String refreshToken) {
+        @NotBlank(message = Validations.blank) String refreshToken) {
 }
