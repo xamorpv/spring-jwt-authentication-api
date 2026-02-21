@@ -1,12 +1,17 @@
 package ru.ls.pjwt.utils;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Slf4j
 @UtilityClass
 public class LogUtils {
     public String safeUserDetails(UserDetails userDetails) {
+        if (!log.isDebugEnabled()) {
+            return null;
+        }
         if (userDetails == null) {
             return "null";
         }
