@@ -2,6 +2,7 @@ package ru.ls.pjwt.service.refresh;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
-    public RefreshToken save(String token, User user) {
+    public RefreshToken save(String token, @Nullable User user) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
         return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtClaims.uuid(),
                 user == null ? userService.loadUser(jwtClaims.username()) : user));
