@@ -17,7 +17,6 @@ import ru.ls.pjwt.dto.auth.response.AuthResponse;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.service.auth.AuthService;
 import ru.ls.pjwt.service.auth.token.TokenService;
-import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.utils.ApiResponse;
 
 //todo токены в httpOnlyCookies, а не в dto, который может посмотреть js
@@ -28,7 +27,6 @@ import ru.ls.pjwt.utils.ApiResponse;
 public class AuthController {
     private final AuthService authService;
     private final TokenService tokenService;
-    private final RefreshTokenFactory refreshTokenFactory;
 
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<AuthResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
@@ -46,7 +44,7 @@ public class AuthController {
     @PostMapping("/invalidate-refresh-token")
     public ResponseEntity<StandardResponse<Void>> invalidateRefreshToken(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("invalidating token");
-        refreshTokenFactory.invalidateRefreshToken(refreshTokenRequest.refreshToken());
+        tokenService.invalidateRefreshToken(refreshTokenRequest.refreshToken());
         return ApiResponse.success("token deleted successfully", HttpStatus.OK);
     }
 

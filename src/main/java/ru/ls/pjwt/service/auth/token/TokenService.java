@@ -46,4 +46,8 @@ public class TokenService {
         String refreshToken = refreshTokenFactory.createAndSaveToken(user);
         return new AuthResponse(refreshToken, accessToken);
     }
+
+    public void invalidateRefreshToken(String refreshToken) {
+        refreshTokenFactory.invalidateRefreshToken(refreshToken);
+    }
 }
