@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
+import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.service.auth.user.UserSecurity;
 import ru.ls.pjwt.service.auth.user.UserService;
@@ -24,17 +25,17 @@ public class AuthService {
     private final UserSecurity userSecurity;
     private final UserMapper userMapper;
 
-    public UserDetails authenticate(String username, String password) {
+    public User authenticate(String username, String password) {
         log.debug("auth process started with username: {}", username);
-        UserDetails userDetails = userService.loadUserDetails(username);
-        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+        User user = userService.loadUser(username);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             log.debug("wrong password; throwing bad credentials");
             throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
         }
         log.debug("password exists");
-        userSecurity.checkAccountStatus(userDetails);
+        userSecurity.checkAccountStatus(user);
         log.info("user {} authenticated", username);
-        return userDetails;
+        return user;
     }
 
     public RegisterResponse register(RegisterRequest registerRequest) {

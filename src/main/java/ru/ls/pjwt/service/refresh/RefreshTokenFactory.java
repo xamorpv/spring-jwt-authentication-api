@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.entity.RefreshToken;
+import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.service.jwt.JwtFactory;
 
 @Slf4j
@@ -17,10 +18,10 @@ public class RefreshTokenFactory {
     private final RefreshTokenService refreshTokenService;
     private final RefreshTokenOperator refreshTokenOperator;
 
-    public String createAndSaveToken(String username) {
-        String token = jwtFactory.createRefreshToken(username);
-        RefreshToken refreshToken = refreshTokenService.save(token);
-        log.debug("refresh token saved for user {}, token: {}", username, refreshToken);
+    public String createAndSaveToken(User user) {
+        String token = jwtFactory.createRefreshToken(user.getUsername());
+        RefreshToken refreshToken = refreshTokenService.save(token, user);
+        log.debug("refresh token saved for username {}, token: {}", user.getUsername(), refreshToken);
         return token;
     }
 
@@ -31,7 +32,7 @@ public class RefreshTokenFactory {
         log.debug("updating token");
         refreshTokenOperator.use(refreshTokenService.getToken(token));
         String newToken = jwtFactory.updateRefreshToken(token);
-        RefreshToken refreshToken = refreshTokenService.save(newToken);
+        RefreshToken refreshToken = refreshTokenService.save(newToken, null);
         log.debug("refresh token updated: {}", refreshToken);
         return newToken;
     }

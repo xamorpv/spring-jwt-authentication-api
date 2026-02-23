@@ -9,7 +9,9 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
+import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
+import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.repository.UserRepository;
 import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Exceptions;
@@ -20,6 +22,7 @@ import ru.ls.pjwt.utils.constants.Exceptions;
 public class UserSecurity {
     private final UserRepository userRepository;
     private final UserService userService;
+    private final UserMapper userMapper;
 
     public void checkExists(RegisterRequest request) {
         log.debug("check exists username {}", request.username());
@@ -33,30 +36,30 @@ public class UserSecurity {
         }
     }
 
-    public void checkAccountStatus(UserDetails userDetails) {
-        log.debug("check status {}", userDetails);
+    public void checkAccountStatus(User user) {
+        log.debug("check status {}", user);
 
-        if (!userDetails.isAccountNonExpired()) {
+        if (!user.isAccountNonExpired()) {
             throw new AccountExpiredException(Exceptions.ACCOUNT_EXPIRED);
         }
-        if (!userDetails.isAccountNonLocked()) {
+        if (!user.isAccountNonLocked()) {
             throw new LockedException(Exceptions.ACCOUNT_LOCKED);
         }
-        if (!userDetails.isCredentialsNonExpired()) {
+        if (!user.isCredentialsNonExpired()) {
             throw new CredentialsExpiredException(Exceptions.CREDENTIALS_EXPIRED);
         }
-        if (!userDetails.isEnabled()) {
+        if (!user.isEnabled()) {
             throw new DisabledException(Exceptions.ACCOUNT_DISABLED);
         }
 
-        log.debug("status {} success", LogUtils.safeUserDetails(userDetails));
+        log.debug("status {} success", LogUtils.safeUserDetails(userMapper.userEntityToUserDetails(user)));
     }
 
-    public UserDetails validateUsername(String username) {
+    public User validateUsername(String username) {
         log.debug("validating username {}", username);
-        UserDetails userDetails = userService.loadUserDetails(username);
-        log.debug("user loaded {}", LogUtils.safeUserDetails(userDetails));
-        checkAccountStatus(userDetails);
-        return userDetails;
+        User user = userService.loadUser(username);
+        log.debug("user loaded {}", LogUtils.safeUserDetails(userMapper.userEntityToUserDetails(user)));
+        checkAccountStatus(user);
+        return user;
     }
 }

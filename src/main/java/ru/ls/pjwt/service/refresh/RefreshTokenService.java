@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.entity.RefreshToken;
+import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 import ru.ls.pjwt.service.auth.user.UserService;
@@ -48,8 +49,9 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
-    public RefreshToken save(String token) {
+    public RefreshToken save(String token, User user) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
-        return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtClaims.uuid(), userService.loadUser(jwtClaims.username())));
+        return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtClaims.uuid(),
+                user == null ? userService.loadUser(jwtClaims.username()) : user));
     }
 }
