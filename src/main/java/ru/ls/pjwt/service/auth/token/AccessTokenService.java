@@ -2,7 +2,6 @@ package ru.ls.pjwt.service.auth.token;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.entity.User;
