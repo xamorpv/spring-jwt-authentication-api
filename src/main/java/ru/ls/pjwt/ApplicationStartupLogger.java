@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AutoRun implements CommandLineRunner {
+public class ApplicationStartupLogger implements CommandLineRunner {
     @Override
     public void run(String... args) {
         log.info("application started");
