@@ -3,7 +3,6 @@ package ru.ls.pjwt.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,7 +10,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import ru.ls.pjwt.utils.pathMatchers.FluentOrRequestMatcher;
 import ru.ls.pjwt.utils.pathMatchers.RequestMatcherUtils;
 
-@EnableScheduling
 @Configuration
 public class SecurityInfrastructureConfig {
 
