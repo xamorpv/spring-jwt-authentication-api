@@ -49,7 +49,7 @@ public class JwtFactory {
     }
 
     private String buildToken(String username, Instant time, HashMap<String, Object> claims) {
-        log.info("creating token: username={}, time={}, claims={}", username, TimeUtils.formatter.format(time), claims);
+        log.debug("creating token: username={}, time={}, claims={}", username, TimeUtils.formatter.format(time), claims);
         return Jwts.builder()
                 .signWith(Jwt.secretKey)
                 .issuer(App.name)
