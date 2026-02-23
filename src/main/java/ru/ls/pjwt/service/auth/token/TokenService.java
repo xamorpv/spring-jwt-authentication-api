@@ -31,7 +31,7 @@ public class TokenService {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
         log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtClaims.userDetails()));
         String accessToken = accessTokenService.createAccessToken(jwtClaims);
-        String refreshToken = refreshTokenFactory.updateRefreshToken(jwtClaims);
+        String refreshToken = refreshTokenFactory.rotateRefreshToken(jwtClaims);
         log.debug("successful refresh for {}", jwtClaims.username());
         return new AuthResponse(refreshToken, accessToken);
     }

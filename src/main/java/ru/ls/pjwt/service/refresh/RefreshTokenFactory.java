@@ -25,7 +25,7 @@ public class RefreshTokenFactory {
         return token;
     }
 
-    public String updateRefreshToken(JwtClaims token) {
+    public String rotateRefreshToken(JwtClaims token) {
         // todo grace period
         // если прошло меньше 30 секунд, то делаем вид, что этот токен работает (не создавать новый, а вернуть тот, что был выдан меньше 30 секунд назад)
 
