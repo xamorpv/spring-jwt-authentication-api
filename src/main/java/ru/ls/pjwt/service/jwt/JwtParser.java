@@ -48,7 +48,7 @@ public class JwtParser {
         List<String> authorities = claims.get("authorities", List.class);
 
         log.debug("userDetails extracted successfully: username={}, authorities: {}", username, authorities);
-        return new User(username, null, authorities == null ?
+        return new User(username, "", authorities == null ?
                 new HashSet<>() : authorities.stream().map(SimpleGrantedAuthority::new).toList());
     }
 
