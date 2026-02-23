@@ -2,17 +2,16 @@ package ru.ls.pjwt.service.refresh;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ls.pjwt.dto.CreatedRefreshToken;
 import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
-import ru.ls.pjwt.service.auth.user.UserService;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
@@ -22,7 +21,6 @@ import ru.ls.pjwt.utils.constants.Exceptions;
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final Argon2PasswordEncoder passwordEncoder;
-    private final UserService userService;
     private final JwtClaimsFactory claimsFactory;
     private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenSecurity refreshTokenSecurity;
@@ -50,9 +48,8 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
-    public RefreshToken save(String token, @Nullable User user) {
-        JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
-        return refreshTokenRepository.save(new RefreshToken(passwordEncoder.encode(token), jwtClaims.uuid(),
-                user == null ? userService.loadUser(jwtClaims.username()) : user));
+    public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
+        return refreshTokenRepository.save(new RefreshToken(
+                passwordEncoder.encode(createdRefreshToken.token()), createdRefreshToken.UUID(), user));
     }
 }

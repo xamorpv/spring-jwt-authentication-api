@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ru.ls.pjwt.dto.CreatedRefreshToken;
 import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.utils.TimeUtils;
 import ru.ls.pjwt.utils.UUIDUtils;
@@ -30,22 +31,24 @@ public class JwtFactory {
                 Instant.now().plus(Jwt.accessTokenExpirationMinutes, ChronoUnit.MINUTES), claims);
     }
 
-    public String createRefreshToken(String username) {
+    public CreatedRefreshToken createRefreshToken(String username) {
+        String uuid = UUIDUtils.random();
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("type", Jwt.REFRESH);
-        claims.put("uuid", UUIDUtils.random());
-        return buildToken(username,
-                Instant.now().plus(Jwt.refreshTokenExpirationDays, ChronoUnit.DAYS), claims);
+        claims.put("uuid", uuid);
+        return new CreatedRefreshToken(uuid, buildToken(username,
+                Instant.now().plus(Jwt.refreshTokenExpirationDays, ChronoUnit.DAYS), claims));
     }
 
-    public String updateRefreshToken(JwtClaims jwtClaims) {
+    public CreatedRefreshToken updateRefreshToken(JwtClaims jwtClaims) {
         Claims oldClaims = jwtClaims.claims();
         Instant time = oldClaims.getExpiration().toInstant();
         String username = oldClaims.getSubject();
         HashMap<String, Object> newClaims = new HashMap<>();
+        String uuid = UUIDUtils.random();
         newClaims.put("type", Jwt.REFRESH);
-        newClaims.put("uuid", UUIDUtils.random());
-        return buildToken(username, time, newClaims);
+        newClaims.put("uuid", uuid);
+        return new CreatedRefreshToken(uuid, buildToken(username, time, newClaims));
     }
 
     private String buildToken(String username, Instant time, HashMap<String, Object> claims) {
