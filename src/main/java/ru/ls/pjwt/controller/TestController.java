@@ -26,7 +26,7 @@ public class TestController {
 
     @GetMapping("/protected")
     public ResponseEntity<StandardResponse<UserDetails>> protectedData(@AuthenticationPrincipal UserDetails userDetails) {
-        log.info("request to protected endpoint {}", LogUtils.safeUserDetails(userDetails));
+        log.info("request to protected endpoint {}", LogUtils.safeUserDetails(userDetails, false));
         return ApiResponse.success(userDetails, "your details", HttpStatus.OK);
     }
 

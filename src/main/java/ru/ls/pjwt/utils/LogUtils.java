@@ -9,8 +9,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 @UtilityClass
 public class LogUtils {
     public String safeUserDetails(UserDetails userDetails) {
-        if (!log.isDebugEnabled()) {
-            return null;
+        return safeUserDetails(userDetails, true);
+    }
+
+    public String safeUserDetails(UserDetails userDetails, boolean isDebug) {
+        if (!log.isDebugEnabled() && isDebug) {
+            return "[debug disabled]";
         }
         if (userDetails == null) {
             return "null";

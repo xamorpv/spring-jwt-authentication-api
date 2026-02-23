@@ -62,7 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             context.setAuthentication(token);
 
-            log.info("user {} authenticated with token", LogUtils.safeUserDetails(userDetails));
+            log.info("user {} authenticated with token", LogUtils.safeUserDetails(userDetails, false));
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             SecurityContextHolder.clearContext(); // стандарт безопасности
