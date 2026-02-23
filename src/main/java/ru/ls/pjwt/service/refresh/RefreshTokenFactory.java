@@ -38,6 +38,6 @@ public class RefreshTokenFactory {
     }
 
     public void invalidateRefreshToken(String token) {
-        refreshTokenService.deleteToken(token);
+        refreshTokenService.markTokenAsUsed(token);
     }
 }
