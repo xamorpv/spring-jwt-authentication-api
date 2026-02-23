@@ -22,7 +22,7 @@ public class AuthorityService {
     private Long userAuthorityId;
 
     @PostConstruct
-    public void loadUserAuthority() {
+    private void loadUserAuthority() {
         userAuthorityId = authorityRepository.findByAuthority(Authorities.USER)
                 .map(Authority::getId)
                 .orElseThrow(() -> new ServerError("authority USER not found!"));
