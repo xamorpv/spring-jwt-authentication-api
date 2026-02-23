@@ -40,7 +40,7 @@ public class JwtFactory {
 
     public String updateRefreshToken(JwtClaims jwtClaims) {
         Claims oldClaims = jwtClaims.claims();
-        Instant time = Instant.ofEpochSecond(oldClaims.get("exp", Long.class));
+        Instant time = oldClaims.getExpiration().toInstant();
         String username = oldClaims.getSubject();
         HashMap<String, Object> newClaims = new HashMap<>();
         newClaims.put("type", Jwt.REFRESH);
