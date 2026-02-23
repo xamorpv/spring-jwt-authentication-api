@@ -13,7 +13,7 @@ import ru.ls.pjwt.utils.pathMatchers.RequestMatcherUtils;
 
 @EnableScheduling
 @Configuration
-public class GeneralConfig {
+public class SecurityInfrastructureConfig {
 
     @Bean
     public RequestMatcher requestMatcher() {
