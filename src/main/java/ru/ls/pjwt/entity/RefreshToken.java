@@ -27,7 +27,7 @@ public class RefreshToken {
     @Column(nullable = false, unique = true, name = "token_uuid", length = 64)
     private String uuid;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
