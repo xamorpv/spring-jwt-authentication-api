@@ -1,4 +1,4 @@
 package ru.ls.pjwt.dto;
 
-public record CreatedRefreshToken(String UUID, String token) {
+public record CreatedRefreshToken(String uuid, String token) {
 }

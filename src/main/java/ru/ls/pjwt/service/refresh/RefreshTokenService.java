@@ -50,6 +50,6 @@ public class RefreshTokenService {
 
     public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
         return refreshTokenRepository.save(new RefreshToken(
-                passwordEncoder.encode(createdRefreshToken.token()), createdRefreshToken.UUID(), user));
+                passwordEncoder.encode(createdRefreshToken.token()), createdRefreshToken.uuid(), user));
     }
 }
