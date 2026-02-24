@@ -10,6 +10,7 @@ import ru.ls.pjwt.exception.exceptions.ServerError;
 @Slf4j
 public class JwtSecurity {
     public void checkType(String type, JwtClaims claims) {
+        log.debug("check token type for user={}, expected type={}", claims.username(), type);
         String tokenType = claims.claims().get("type", String.class);
         if (tokenType == null) {
             // токен не подделать, значит это какая-то ошибка разработчиков, т.е server error
