@@ -3,7 +3,6 @@ package ru.ls.pjwt.service.auth.token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
 import ru.ls.pjwt.dto.auth.response.AuthResponse;
@@ -14,10 +13,10 @@ import ru.ls.pjwt.service.auth.user.UserSecurity;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.service.jwt.JwtFactory;
 import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
+import ru.ls.pjwt.service.refresh.RefreshTokenService;
 import ru.ls.pjwt.utils.LogUtils;
 
 @Slf4j
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class TokenService {
@@ -26,6 +25,7 @@ public class TokenService {
     private final RefreshTokenFactory refreshTokenFactory;
     private final JwtClaimsFactory claimsFactory;
     private final AccessTokenService accessTokenService;
+    private final RefreshTokenService refreshTokenService;
     private final UserSecurity userSecurity;
     private final UserMapper userMapper;
 
@@ -48,6 +48,6 @@ public class TokenService {
     }
 
     public void invalidateRefreshToken(String refreshToken) {
-        refreshTokenFactory.invalidateRefreshToken(refreshToken);
+        refreshTokenService.markTokenAsUsed(refreshToken);
     }
 }

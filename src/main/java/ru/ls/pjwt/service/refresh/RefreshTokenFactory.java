@@ -37,8 +37,4 @@ public class RefreshTokenFactory {
         log.debug("refresh token updated: {}", refreshToken);
         return newToken.token();
     }
-
-    public void invalidateRefreshToken(String token) {
-        refreshTokenService.markTokenAsUsed(token);
-    }
 }
