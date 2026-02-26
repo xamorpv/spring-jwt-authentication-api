@@ -14,7 +14,6 @@ import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.service.jwt.JwtFactory;
 import ru.ls.pjwt.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.service.refresh.RefreshTokenService;
-import ru.ls.pjwt.utils.LogUtils;
 
 @Slf4j
 @Service
@@ -31,7 +30,7 @@ public class TokenService {
 
     public AuthResponse refreshTokens(String token) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
-        log.debug("refreshing tokens for {}", LogUtils.safeUserDetails(jwtClaims.userDetails()));
+        log.debug("refreshing tokens for username={}", jwtClaims.username());
         User user = userSecurity.validateUsername(jwtClaims.username());
         String accessToken = accessTokenService.createAccessToken(jwtClaims, user);
         String refreshToken = refreshTokenFactory.rotateRefreshToken(jwtClaims, user);

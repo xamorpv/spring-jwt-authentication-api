@@ -12,7 +12,6 @@ import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
 import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.repository.UserRepository;
-import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
 @RequiredArgsConstructor
@@ -51,13 +50,13 @@ public class UserSecurity {
             throw new DisabledException(Exceptions.ACCOUNT_DISABLED);
         }
 
-        log.debug("status {} success", LogUtils.safeUserDetails(userMapper.userEntityToUserDetails(user)));
+        log.debug("status {} success", user.getUsername());
     }
 
     public User validateUsername(String username) {
         log.debug("validating username {}", username);
         User user = userService.loadUser(username);
-        log.debug("user loaded {}", LogUtils.safeUserDetails(userMapper.userEntityToUserDetails(user)));
+        log.debug("user loaded {}", user.getUsername());
         checkAccountStatus(user);
         return user;
     }

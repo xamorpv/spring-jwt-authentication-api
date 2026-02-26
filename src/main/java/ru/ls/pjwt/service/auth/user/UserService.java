@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.repository.UserRepository;
-import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Transactional
@@ -29,7 +28,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
         authorityService.addUserAuthority(user);
-        log.debug("user {} saved", LogUtils.safeUserDetails(userMapper.userEntityToUserDetails(user)));
+        log.debug("user {} saved", user.getUsername());
         return userRepository.save(user);
     }
 

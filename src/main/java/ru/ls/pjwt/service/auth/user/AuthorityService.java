@@ -10,7 +10,6 @@ import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.repository.AuthorityRepository;
-import ru.ls.pjwt.utils.LogUtils;
 import ru.ls.pjwt.utils.constants.Authorities;
 
 @Slf4j
@@ -34,6 +33,6 @@ public class AuthorityService {
 
         Authority authority = authorityRepository.getReferenceById(userAuthorityId);
         user.getAuthorities().add(authority);
-        log.debug("authority saved for user: {}", LogUtils.safeUserDetails(userMapper.userEntityToUserDetails(user)));
+        log.debug("authority saved for username: {}", user.getUsername());
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ls.pjwt.dto.StandardResponse;
 import ru.ls.pjwt.utils.ApiResponse;
-import ru.ls.pjwt.utils.LogUtils;
 
 @Slf4j
 @RestController
@@ -26,7 +25,7 @@ public class TestController {
 
     @GetMapping("/protected")
     public ResponseEntity<StandardResponse<UserDetails>> protectedData(@AuthenticationPrincipal UserDetails userDetails) {
-        log.info("request to protected endpoint {}", LogUtils.safeUserDetails(userDetails, false));
+        log.info("request to protected endpoint {}", userDetails.getUsername());
         return ApiResponse.success(userDetails, "your details", HttpStatus.OK);
     }
 
