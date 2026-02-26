@@ -15,8 +15,8 @@ public @interface ValidSize {
     Class<? extends Payload>[] payload() default {};
 
     @OverridesAttribute(constraint = Size.class, name = "min")
-    int min() default 3;
+    int min() default Validations.min;
 
     @OverridesAttribute(constraint = Size.class, name = "max")
-    int max() default 48;
+    int max() default Validations.max;
 }
