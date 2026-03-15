@@ -6,8 +6,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.entity.User;
-import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.repository.UserRepository;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
@@ -19,14 +19,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
 
-    public User saveNewUser(String username, String password, String email) {
-        log.debug("saving user {}", username);
+    public User saveNewUser(RegisterRequest registerRequest) {
+        log.debug("saving user {}", registerRequest.username());
         User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setEmail(email);
+        user.setUsername(registerRequest.username());
+        user.setPassword(passwordEncoder.encode(registerRequest.password()));
+        user.setEmail(registerRequest.email());
         authorityService.addUserAuthority(user);
         log.debug("user {} saved", user.getUsername());
         return userRepository.save(user);

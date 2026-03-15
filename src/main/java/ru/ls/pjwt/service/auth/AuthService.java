@@ -40,6 +40,6 @@ public class AuthService {
     public RegisterResponse register(RegisterRequest registerRequest) {
         userSecurity.checkExists(registerRequest);
         log.debug("register: user {}", registerRequest.username());
-        return userMapper.userToResponse(userService.saveNewUser(registerRequest.username(), registerRequest.password(), registerRequest.email()));
+        return userMapper.userToResponse(userService.saveNewUser(registerRequest));
     }
 }
