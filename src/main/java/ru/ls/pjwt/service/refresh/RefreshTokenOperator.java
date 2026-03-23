@@ -9,23 +9,23 @@ import ru.ls.pjwt.repository.RefreshTokenRepository;
 
 import java.time.Instant;
 
-@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenOperator {
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public void compromise(RefreshToken refreshToken) {
         log.debug("compromising token {}", refreshToken);
         refreshToken.setCompromised(true);
         refreshTokenRepository.save(refreshToken);
     }
 
+    @Transactional
     public void use(RefreshToken refreshToken) {
         log.debug("using token {}", refreshToken);
         refreshToken.setUsed(true);
         refreshToken.setUsedAt(Instant.now());
-        refreshTokenRepository.save(refreshToken);
     }
 }

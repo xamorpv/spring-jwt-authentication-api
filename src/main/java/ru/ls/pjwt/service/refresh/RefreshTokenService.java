@@ -15,7 +15,6 @@ import ru.ls.pjwt.repository.RefreshTokenRepository;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
-@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,12 +25,14 @@ public class RefreshTokenService {
     private final RefreshTokenSecurity refreshTokenSecurity;
     private final RefreshTokenOperator refreshTokenOperator;
 
+    @Transactional
     public void markTokenAsUsed(String token) {
-        @SuppressWarnings("CallBeanMethodFromSameClass") RefreshToken refreshToken = getToken(claimsFactory.createJwtClaims(token)); // Not call AOP Spring methods from the same class. Proxy does not work in this case. Use a call through a proxy qualifier.
+        RefreshToken refreshToken = getToken(claimsFactory.createJwtClaims(token));
         log.debug("try delete token {}", refreshToken);
         refreshTokenOperator.use(refreshToken);
     }
 
+    @Transactional
     public RefreshToken getToken(JwtClaims jwtClaims) {
         String uuid = jwtClaims.uuid();
         if (uuid == null) {
@@ -48,6 +49,7 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
+    @Transactional
     public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
         return refreshTokenRepository.save(new RefreshToken(
                 passwordEncoder.encode(createdRefreshToken.token()), createdRefreshToken.uuid(), user));

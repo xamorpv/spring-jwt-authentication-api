@@ -11,7 +11,6 @@ import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.service.jwt.JwtFactory;
 
 @Slf4j
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenFactory {
@@ -22,10 +21,11 @@ public class RefreshTokenFactory {
     public String createAndSaveToken(User user) {
         CreatedRefreshToken createdRefreshToken = jwtFactory.createRefreshToken(user.getUsername());
         RefreshToken refreshToken = refreshTokenService.save(createdRefreshToken, user);
-        log.debug("refresh token saved for username {}, token: {}", user.getUsername(), refreshToken);
+        log.debug("refresh token saved for username {}, token: {}", user.getUsername(), refreshToken.getUuid());
         return createdRefreshToken.token();
     }
 
+    @Transactional
     public String rotateRefreshToken(JwtClaims token, User user) {
         // todo grace period
         // если прошло меньше 30 секунд, то делаем вид, что этот токен работает (не создавать новый, а вернуть тот, что был выдан меньше 30 секунд назад)

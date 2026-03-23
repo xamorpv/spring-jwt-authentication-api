@@ -19,5 +19,5 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     @Modifying(clearAutomatically = true)
     @Query("update RefreshToken rt set rt.compromised = true, rt.used = true, rt.usedAt = CURRENT_TIMESTAMP" +
             " where rt.user.username = :username and rt.used = false")
-    void useAndCompromise(@Param("username") String username);
+    void useAndCompromiseTokensForUser(@Param("username") String username);
 }

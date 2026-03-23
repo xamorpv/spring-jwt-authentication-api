@@ -8,10 +8,6 @@ import ru.ls.pjwt.entity.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByUsername(String username);
-
-    boolean existsByEmail(String email);
-
     @Query("select u from User u left join fetch u.authorities where u.username = :username")
     Optional<User> findByUsername(@Param("username") String username);
 }

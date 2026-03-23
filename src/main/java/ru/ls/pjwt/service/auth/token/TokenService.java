@@ -3,6 +3,7 @@ package ru.ls.pjwt.service.auth.token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
 import ru.ls.pjwt.dto.auth.response.AuthResponse;
@@ -28,6 +29,7 @@ public class TokenService {
     private final UserSecurity userSecurity;
     private final UserMapper userMapper;
 
+    @Transactional
     public AuthResponse refreshTokens(String token) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
         log.debug("refreshing tokens for username={}", jwtClaims.username());
@@ -38,6 +40,7 @@ public class TokenService {
         return new AuthResponse(refreshToken, accessToken);
     }
 
+    @Transactional
     public AuthResponse createTokens(LoginRequest loginRequest) {
         log.info("creating tokens for login request {}", loginRequest.username());
         User user = authService.authenticate(loginRequest.username(), loginRequest.password());

@@ -11,7 +11,6 @@ import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.repository.UserRepository;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
-@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,6 +19,7 @@ public class UserService {
     private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public User saveNewUser(RegisterRequest registerRequest) {
         log.debug("saving user {}", registerRequest.username());
         User user = new User();
@@ -31,6 +31,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public User loadUser(String username) {
         log.debug("loading user {}...", username);
         return userRepository.findByUsername(username).orElseThrow(() -> new BadCredentialsException(Exceptions.BAD_CREDENTIALS));

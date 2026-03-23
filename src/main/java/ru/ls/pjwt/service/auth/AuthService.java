@@ -2,20 +2,21 @@ package ru.ls.pjwt.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.entity.User;
+import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
+import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.service.auth.user.UserSecurity;
 import ru.ls.pjwt.service.auth.user.UserService;
 import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -38,8 +39,19 @@ public class AuthService {
     }
 
     public RegisterResponse register(RegisterRequest registerRequest) {
-        userSecurity.checkExists(registerRequest);
-        log.debug("register: user {}", registerRequest.username());
-        return userMapper.userToResponse(userService.saveNewUser(registerRequest));
+        try {
+            log.debug("register: user {}", registerRequest.username());
+            return userMapper.userToResponse(userService.saveNewUser(registerRequest));
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("users_username_key")) {
+                log.debug("username {} exists", registerRequest.username());
+                throw new NotUniqueDataException(Exceptions.USER_EXISTS);
+            } else if (e.getMessage().contains("users_email_key")) {
+                log.debug("email {} exists", registerRequest.email());
+                throw new NotUniqueDataException(Exceptions.EMAIL_EXISTS);
+            } else {
+                throw new ServerError("DataIntegrityViolationException while saving user: "+e.getMessage());
+            }
+        }
     }
 }
