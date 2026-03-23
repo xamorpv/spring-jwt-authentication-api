@@ -13,7 +13,7 @@ import ru.ls.pjwt.dto.StandardResponse;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;
 import ru.ls.pjwt.dto.auth.request.RefreshTokenRequest;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
-import ru.ls.pjwt.dto.auth.response.AuthResponse;
+import ru.ls.pjwt.dto.auth.response.LoginResponse;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.service.auth.AuthService;
 import ru.ls.pjwt.service.auth.token.TokenService;
@@ -29,14 +29,14 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<StandardResponse<AuthResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<StandardResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         log.info("handling login request {}", loginRequest.username());
         return ApiResponse.success(tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.OK);
     }
 
     //пока что для простоты через dto
     @PostMapping("/refresh")
-    public ResponseEntity<StandardResponse<AuthResponse>> refresh(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
+    public ResponseEntity<StandardResponse<LoginResponse>> refresh(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("handling refresh request");
         return ApiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.OK);
     }
