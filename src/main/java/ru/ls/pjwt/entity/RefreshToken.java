@@ -8,13 +8,13 @@ import lombok.ToString;
 
 import java.time.Instant;
 
-@ToString
 @Entity
 @Table(name = "refresh_tokens")
 @NoArgsConstructor
 @Getter
 @Setter
 public class RefreshToken {
+    @ToString.Exclude
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -27,6 +27,7 @@ public class RefreshToken {
     @Column(nullable = false, unique = true, name = "token_uuid", length = 64)
     private String uuid;
 
+    @ToString.Exclude
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
