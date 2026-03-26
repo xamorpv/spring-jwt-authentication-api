@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: pjwt
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  datasource:
+    username: postgres
+    password: 12345
+    url: jdbc:postgresql://localhost:5433/jwt_pg_test
+
+logging:
+  level:
+    org.springframework.security.*: debug
+    ru.ls.pjwt.*: debug
