@@ -41,6 +41,10 @@ public class RefreshToken {
     @Column(name = "used_at")
     private Instant usedAt;
 
+    @Version
+    @Column(name = "version")
+    private Integer version;
+
     public RefreshToken(String token, String uuid, User user) {
         this.token = token;
         this.user = user;

@@ -1,5 +1,6 @@
 package ru.ls.pjwt.exception;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import ru.ls.pjwt.dto.FieldErrorDto;
 import ru.ls.pjwt.dto.StandardResponse;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
+import ru.ls.pjwt.exception.exceptions.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.utils.ApiResponse;
 import ru.ls.pjwt.utils.constants.Exceptions;
@@ -23,7 +25,10 @@ import java.util.List;
 
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+    private final RefreshTokenRaceConditionExceptionHandler refreshTokenRaceConditionExceptionHandler;
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> badCredentials(BadCredentialsException e) {
         log.error("bad credentials: {}", e.getMessage(), e);
@@ -67,5 +72,11 @@ public class GlobalExceptionHandler {
                 errors.add(new FieldErrorDto(fe.getField(), fe.getRejectedValue(), fe.getDefaultMessage())));
         log.error("validation exception: {}. errors: {}", e.getMessage(), errors, e);
         return ApiResponse.errorInFields(HttpStatus.BAD_REQUEST, Exceptions.VALIDATION, errors);
+    }
+
+    @ExceptionHandler(RefreshTokenRaceConditionException.class)
+    public ResponseEntity<StandardResponse<ErrorResponse>> onTokenRaceCondition(RefreshTokenRaceConditionException e) {
+        refreshTokenRaceConditionExceptionHandler.handleException(e);
+        return ApiResponse.error(HttpStatus.UNAUTHORIZED, Exceptions.REFRESH_TOKEN_COMPROMISED);
     }
 }

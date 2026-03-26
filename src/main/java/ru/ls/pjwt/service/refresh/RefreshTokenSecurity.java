@@ -7,13 +7,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.repository.RefreshTokenRepository;
+import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenSecurity {
-    private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenOperator refreshTokenOperator;
 
     /*
@@ -27,17 +26,8 @@ public class RefreshTokenSecurity {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = JwtTokenRequestException.class)
     public void checkUsed(RefreshToken refreshToken) {
-        if (refreshToken.isUsed()) {
-            log.warn("token already used: {}", refreshToken);
-            if (refreshToken.isCompromised()) {
-                log.debug("token already compromised; throw exception and do nothing");
-            } else {
-                log.warn("token was not compromised before; using all tokens for this user");
-                // одновременно 2 запроса могут попасть сюда, и оба обновить токены. взлом не будет обнаружен
-                refreshTokenRepository.useAndCompromiseTokensForUser(refreshToken.getUser().getUsername());
-                refreshTokenOperator.compromise(refreshToken);
-            }
-            throw new JwtTokenRequestException("refresh token was compromised. you may be get hacked. please re-login");
+        if (refreshTokenOperator.compromiseIfUsed(refreshToken)) {
+            throw new JwtTokenRequestException(Exceptions.REFRESH_TOKEN_COMPROMISED);
         }
     }
 }
