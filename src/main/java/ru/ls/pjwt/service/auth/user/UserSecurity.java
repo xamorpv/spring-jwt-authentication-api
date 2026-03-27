@@ -8,28 +8,29 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.entity.User;
-import ru.ls.pjwt.utils.constants.Exceptions;
+import ru.ls.pjwt.properties.ExceptionsProperties;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class UserSecurity {
+    private final ExceptionsProperties exceptionsProperties;
     private final UserService userService;
 
     public void checkAccountStatus(User user) {
         log.debug("check status {}", user);
 
         if (!user.isAccountNonExpired()) {
-            throw new AccountExpiredException(Exceptions.ACCOUNT_EXPIRED);
+            throw new AccountExpiredException(exceptionsProperties.accountExpired());
         }
         if (!user.isAccountNonLocked()) {
-            throw new LockedException(Exceptions.ACCOUNT_LOCKED);
+            throw new LockedException(exceptionsProperties.accountLocked());
         }
         if (!user.isCredentialsNonExpired()) {
-            throw new CredentialsExpiredException(Exceptions.CREDENTIALS_EXPIRED);
+            throw new CredentialsExpiredException(exceptionsProperties.credentialsExpired());
         }
         if (!user.isEnabled()) {
-            throw new DisabledException(Exceptions.ACCOUNT_DISABLED);
+            throw new DisabledException(exceptionsProperties.accountDisabled());
         }
 
         log.debug("status {} success", user.getUsername());

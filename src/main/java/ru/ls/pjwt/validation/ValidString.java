@@ -3,7 +3,6 @@ package ru.ls.pjwt.validation;
 import jakarta.validation.Constraint;
 import jakarta.validation.OverridesAttribute;
 import jakarta.validation.Payload;
-import ru.ls.pjwt.utils.constants.Validations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,8 +20,8 @@ public @interface ValidString {
     Class<? extends Payload>[] payload() default {};
 
     @OverridesAttribute(constraint = ValidSize.class, name = "min")
-    int min() default Validations.min;
+    int min() default ValidationConstants.DEFAULT_MIN_STRING_LENGTH;
 
     @OverridesAttribute(constraint = ValidSize.class, name = "max")
-    int max() default Validations.max;
+    int max() default ValidationConstants.DEFAULT_MAX_STRING_LENGTH;
 }

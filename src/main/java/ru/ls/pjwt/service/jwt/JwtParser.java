@@ -4,26 +4,31 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.utils.constants.App;
-import ru.ls.pjwt.utils.constants.Jwt;
+import ru.ls.pjwt.properties.ApplicationProperties;
+import ru.ls.pjwt.properties.JwtProperties;
 
 import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class JwtParser {
+    private final JwtProperties jwtProperties;
+    private final ApplicationProperties applicationProperties;
+
     public Claims getClaims(String token) {
         try {
             return Jwts.parser()
-                    .verifyWith(Jwt.secretKey) // подпись и expiration time уже проверены. username нужно проверить на null, а его наличие уже проверено
-                    .requireIssuer(App.name)
+                    .verifyWith(jwtProperties.getSecretKey()) // подпись и expiration time уже проверены. username нужно проверить на null, а его наличие уже проверено
+                    .requireIssuer(applicationProperties.name())
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();

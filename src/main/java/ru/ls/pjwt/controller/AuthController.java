@@ -27,30 +27,31 @@ import ru.ls.pjwt.utils.ApiResponse;
 public class AuthController {
     private final AuthService authService;
     private final TokenService tokenService;
+    private final ApiResponse apiResponse;
 
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         log.info("handling login request {}", loginRequest.username());
-        return ApiResponse.success(tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.OK);
+        return apiResponse.success(tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.OK);
     }
 
     //пока что для простоты через dto
     @PostMapping("/refresh")
     public ResponseEntity<StandardResponse<LoginResponse>> refresh(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("handling refresh request");
-        return ApiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.OK);
+        return apiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.OK);
     }
 
     @PostMapping("/invalidate-refresh-token")
     public ResponseEntity<StandardResponse<Void>> invalidateRefreshToken(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("invalidating token");
         tokenService.invalidateRefreshToken(refreshTokenRequest.refreshToken());
-        return ApiResponse.success("token deleted successfully", HttpStatus.OK);
+        return apiResponse.success("token deleted successfully", HttpStatus.OK);
     }
 
     @PostMapping("/register")
     public ResponseEntity<StandardResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) {
         log.info("handling register request {} - {}", registerRequest.username(), registerRequest.email());
-        return ApiResponse.success(authService.register(registerRequest), "registered successfully", HttpStatus.CREATED);
+        return apiResponse.success(authService.register(registerRequest), "registered successfully", HttpStatus.CREATED);
     }
 }

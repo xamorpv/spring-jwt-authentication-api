@@ -8,19 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.ServerError;
+import ru.ls.pjwt.properties.AuthoritiesProperties;
 import ru.ls.pjwt.repository.AuthorityRepository;
-import ru.ls.pjwt.utils.constants.Authorities;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthorityService {
+    private final AuthoritiesProperties authoritiesProperties;
     private final AuthorityRepository authorityRepository;
     private Long userAuthorityId;
 
     @PostConstruct
     private void loadUserAuthority() {
-        userAuthorityId = authorityRepository.findByAuthority(Authorities.USER)
+        userAuthorityId = authorityRepository.findByAuthority(authoritiesProperties.user())
                 .map(Authority::getId)
                 .orElseThrow(() -> new ServerError("authority USER not found!"));
     }

@@ -12,14 +12,15 @@ import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.mapper.UserMapper;
+import ru.ls.pjwt.properties.ExceptionsProperties;
 import ru.ls.pjwt.service.auth.user.UserSecurity;
 import ru.ls.pjwt.service.auth.user.UserService;
-import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    private final ExceptionsProperties exceptionsProperties;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final UserSecurity userSecurity;
@@ -30,7 +31,7 @@ public class AuthService {
         User user = userService.loadUser(username);
         if (!passwordEncoder.matches(password, user.getPassword())) {
             log.debug("wrong password; throwing bad credentials");
-            throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
+            throw new BadCredentialsException(exceptionsProperties.badCredentials());
         }
         log.debug("password exists");
         userSecurity.checkAccountStatus(user);
@@ -45,10 +46,10 @@ public class AuthService {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("users_username_key")) {
                 log.debug("username {} exists", registerRequest.username());
-                throw new NotUniqueDataException(Exceptions.USER_EXISTS);
+                throw new NotUniqueDataException(exceptionsProperties.userExists());
             } else if (e.getMessage().contains("users_email_key")) {
                 log.debug("email {} exists", registerRequest.email());
-                throw new NotUniqueDataException(Exceptions.EMAIL_EXISTS);
+                throw new NotUniqueDataException(exceptionsProperties.emailExists());
             } else {
                 throw new ServerError("DataIntegrityViolationException while saving user: "+e.getMessage());
             }

@@ -13,7 +13,7 @@ import ru.ls.pjwt.dto.auth.request.RefreshTokenRequest;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.dto.auth.response.LoginResponse;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
-import ru.ls.pjwt.utils.constants.Authorities;
+import ru.ls.pjwt.properties.AuthoritiesProperties;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -28,6 +28,9 @@ public class IntegrationRequestHelper {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private AuthoritiesProperties authoritiesProperties;
 
     public LoginResponse login() throws Exception {
         return login(StandardUser.loginRequest());
@@ -88,7 +91,7 @@ public class IntegrationRequestHelper {
                 ()->{
                     // зависимые утверждения
                     assertEquals(1, registerResponse.data().authorities().size());
-                    assertEquals(Authorities.USER, registerResponse.data().authorities().stream().findFirst().orElseThrow());
+                    assertEquals(authoritiesProperties.user(), registerResponse.data().authorities().stream().findFirst().orElseThrow());
                 }
         );
     }

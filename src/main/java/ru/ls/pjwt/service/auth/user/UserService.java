@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.entity.User;
+import ru.ls.pjwt.properties.ExceptionsProperties;
 import ru.ls.pjwt.repository.UserRepository;
-import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final ExceptionsProperties exceptionsProperties;
     private final UserRepository userRepository;
     private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder;
@@ -34,6 +35,6 @@ public class UserService {
     @Transactional(readOnly = true)
     public User loadUser(String username) {
         log.debug("loading user {}...", username);
-        return userRepository.findByUsername(username).orElseThrow(() -> new BadCredentialsException(Exceptions.BAD_CREDENTIALS));
+        return userRepository.findByUsername(username).orElseThrow(() -> new BadCredentialsException(exceptionsProperties.badCredentials()));
     }
 }

@@ -14,3 +14,29 @@ logging:
   level:
     org.springframework.security.*: debug
     ru.ls.pjwt.*: debug
+
+pjwt:
+  application:
+    name: jwt-authorization-api-1445
+  format:
+    date-format: yyyy-MM-dd__HH:mm:ss
+  authorities:
+    user: USER
+    mod: MODERATOR
+    admin: ADMIN
+  jwt:
+    secret-key-string: "1688i4r7ufoljAD1758IU4YOL;JKFRYUGT764Q7AHLIFUDJSGSKYIGLUkjFHAHFgaj"
+    access-token: access
+    refresh-token: refresh
+    access-token-expiration-minutes: 10
+    refresh-token-expiration-days: 14
+  exceptions:
+    bad-credentials: BAD_CREDENTIALS
+    account-expired: ACCOUNT_EXPIRED
+    account-locked: ACCOUNT_LOCKED
+    credentials-expired: CREDENTIALS_EXPIRED
+    account-disabled: ACCOUNT_DISABLED
+    user-exists: USER_ALREADY_EXISTS
+    email-exists: EMAIL_ALREADY_EXISTS
+    validation-failed: VALIDATION_FAILED
+    refresh-token-compromised: "refresh token was compromised. you may be get hacked. please re-login"

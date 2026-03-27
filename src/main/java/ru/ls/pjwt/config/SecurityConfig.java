@@ -15,16 +15,18 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import ru.ls.pjwt.filter.JwtFilter;
+import ru.ls.pjwt.properties.AuthoritiesProperties;
 import ru.ls.pjwt.utils.JsonApiResponse;
-import ru.ls.pjwt.utils.constants.Authorities;
 
 @Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final AuthoritiesProperties authoritiesProperties;
     private final RequestMatcher requestMatcher;
     private final JwtFilter jwtFilter;
+    private final JsonApiResponse jsonApiResponse;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -34,7 +36,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(requestMatcher).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(Authorities.USER)
+                        .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(authoritiesProperties.user())
                         .requestMatchers(HttpMethod.GET, "/api/v1/test/protected").authenticated()
                         .anyRequest().authenticated()
                 )
@@ -50,7 +52,7 @@ public class SecurityConfig {
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, e) -> {
             log.error("authentication entry point: {}", e.getMessage(), e);
-            JsonApiResponse.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
+            jsonApiResponse.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
                     "; hint: maybe you forgot header Authorization: Bearer <token> to become authenticated");
         };
     }
@@ -59,7 +61,7 @@ public class SecurityConfig {
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, e) -> {
             log.error("access denied: {}", e.getMessage(), e);
-            JsonApiResponse.writeError(response, HttpStatus.FORBIDDEN, "permission denied (you don't have authorities to use this endpoint)");
+            jsonApiResponse.writeError(response, HttpStatus.FORBIDDEN, "permission denied (you don't have authorities to use this endpoint)");
         };
     }
 }

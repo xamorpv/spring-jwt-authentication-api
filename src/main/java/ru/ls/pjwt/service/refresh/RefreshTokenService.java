@@ -11,14 +11,15 @@ import ru.ls.pjwt.dto.JwtClaims;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
+import ru.ls.pjwt.properties.ExceptionsProperties;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
-import ru.ls.pjwt.utils.constants.Exceptions;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
+    private final ExceptionsProperties exceptionsProperties;
     private final Argon2PasswordEncoder passwordEncoder;
     private final JwtClaimsFactory claimsFactory;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -37,13 +38,13 @@ public class RefreshTokenService {
         String uuid = jwtClaims.uuid();
         if (uuid == null) {
             log.warn("jwt token without uuid, may be deprecated");
-            throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
+            throw new BadCredentialsException(exceptionsProperties.badCredentials());
         }
         RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
                 .orElseThrow(() -> new JwtTokenRequestException("token not found"));
         if (!passwordEncoder.matches(jwtClaims.token(), refreshToken.getToken())) {
             log.warn("user has uuid in jwt token, but token does not matches. token with same uuid: {}", refreshToken);
-            throw new BadCredentialsException(Exceptions.BAD_CREDENTIALS);
+            throw new BadCredentialsException(exceptionsProperties.badCredentials());
         }
         refreshTokenSecurity.checkUsed(refreshToken);
         return refreshToken;

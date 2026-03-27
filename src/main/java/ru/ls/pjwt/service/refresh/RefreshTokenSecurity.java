@@ -7,12 +7,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
-import ru.ls.pjwt.utils.constants.Exceptions;
+import ru.ls.pjwt.properties.ExceptionsProperties;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenSecurity {
+    private final ExceptionsProperties exceptionsProperties;
     private final RefreshTokenOperator refreshTokenOperator;
 
     /*
@@ -27,7 +28,7 @@ public class RefreshTokenSecurity {
     @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = JwtTokenRequestException.class)
     public void checkUsed(RefreshToken refreshToken) {
         if (refreshTokenOperator.compromiseIfUsed(refreshToken)) {
-            throw new JwtTokenRequestException(Exceptions.REFRESH_TOKEN_COMPROMISED);
+            throw new JwtTokenRequestException(exceptionsProperties.refreshTokenCompromised());
         }
     }
 }

@@ -1,22 +1,26 @@
 package ru.ls.pjwt.utils;
 
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import ru.ls.pjwt.dto.ErrorResponse;
 import ru.ls.pjwt.dto.FieldErrorDto;
 import ru.ls.pjwt.dto.StandardResponse;
 
 import java.util.List;
 
-@UtilityClass
+@Component
+@RequiredArgsConstructor
 public class ApiResponse {
+    private final TimeUtils timeUtils;
+
     public ResponseEntity<StandardResponse<ErrorResponse>> error(HttpStatus status, String message) {
         return errorInFields(status, message, null);
     }
 
     public ResponseEntity<StandardResponse<ErrorResponse>> errorInFields(HttpStatus status, String message, List<FieldErrorDto> errors) {
-        return ApiResponse.failure(new ErrorResponse(status.value(), TimeUtils.timestamp(), errors), message, status);
+        return failure(new ErrorResponse(status.value(), timeUtils.timestamp(), errors), message, status);
     }
 
     public <T> ResponseEntity<StandardResponse<T>> failure(T data, String message, HttpStatus status) {

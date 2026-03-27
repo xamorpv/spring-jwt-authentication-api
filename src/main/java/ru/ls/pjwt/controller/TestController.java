@@ -17,22 +17,24 @@ import ru.ls.pjwt.utils.ApiResponse;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/test")
 public class TestController {
+    private final ApiResponse apiResponse;
+
     @GetMapping("/public")
     public ResponseEntity<StandardResponse<Void>> publicData() {
         log.debug("someone get public data");
-        return ApiResponse.success("public data", HttpStatus.OK);
+        return apiResponse.success("public data", HttpStatus.OK);
     }
 
     @GetMapping("/protected")
     public ResponseEntity<StandardResponse<UserDetails>> protectedData(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("request to protected endpoint {}", userDetails.getUsername());
-        return ApiResponse.success(userDetails, "your details", HttpStatus.OK);
+        return apiResponse.success(userDetails, "your details", HttpStatus.OK);
     }
 
     @GetMapping("/user-only")
     public ResponseEntity<StandardResponse<Void>> userOnly() {
         log.debug("request to user only endpoint");
-        return ApiResponse.success("userOnly data", HttpStatus.OK);
+        return apiResponse.success("userOnly data", HttpStatus.OK);
     }
 
 //    @GetMapping("/critical")

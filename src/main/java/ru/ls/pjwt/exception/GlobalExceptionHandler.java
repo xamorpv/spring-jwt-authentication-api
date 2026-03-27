@@ -17,8 +17,8 @@ import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
 import ru.ls.pjwt.exception.exceptions.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.exception.exceptions.ServerError;
+import ru.ls.pjwt.properties.ExceptionsProperties;
 import ru.ls.pjwt.utils.ApiResponse;
-import ru.ls.pjwt.utils.constants.Exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,42 +27,44 @@ import java.util.List;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
+    private final ApiResponse apiResponse;
+    private final ExceptionsProperties exceptionsProperties;
     private final RefreshTokenRaceConditionExceptionHandler refreshTokenRaceConditionExceptionHandler;
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> badCredentials(BadCredentialsException e) {
         log.error("bad credentials: {}", e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
+        return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(JwtTokenRequestException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> jwtException(JwtTokenRequestException e) {
         log.error("jwt token exception: {}", e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
+        return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(AccountStatusException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> accountStatus(AccountStatusException e) {
         log.error("account status exception: {}", e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
+        return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(NotUniqueDataException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> notUniqueData(NotUniqueDataException e) {
         log.error(e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.CONFLICT, e.getMessage());
+        return apiResponse.error(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> noResourceFound(NoResourceFoundException e) {
         log.error(e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.NOT_FOUND, e.getMessage());
+        return apiResponse.error(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler({ServerError.class, Exception.class})
     public ResponseEntity<StandardResponse<ErrorResponse>> serverError(Exception e) {
         log.error("internal server error: {}", e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "something went wrong... contact with a support to fix it");
+        return apiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "something went wrong... contact with a support to fix it");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -71,12 +73,12 @@ public class GlobalExceptionHandler {
         e.getFieldErrors().forEach(fe ->
                 errors.add(new FieldErrorDto(fe.getField(), fe.getRejectedValue(), fe.getDefaultMessage())));
         log.error("validation exception: {}. errors: {}", e.getMessage(), errors, e);
-        return ApiResponse.errorInFields(HttpStatus.BAD_REQUEST, Exceptions.VALIDATION, errors);
+        return apiResponse.errorInFields(HttpStatus.BAD_REQUEST, exceptionsProperties.validationFailed(), errors);
     }
 
     @ExceptionHandler(RefreshTokenRaceConditionException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> onTokenRaceCondition(RefreshTokenRaceConditionException e) {
         refreshTokenRaceConditionExceptionHandler.handleException(e);
-        return ApiResponse.error(HttpStatus.UNAUTHORIZED, Exceptions.REFRESH_TOKEN_COMPROMISED);
+        return apiResponse.error(HttpStatus.UNAUTHORIZED, exceptionsProperties.refreshTokenCompromised());
     }
 }
