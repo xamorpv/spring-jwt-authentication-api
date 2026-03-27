@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: file:.env[.properties]
   application:
     name: pjwt
   jpa:
@@ -25,7 +27,7 @@ pjwt:
     mod: MODERATOR
     admin: ADMIN
   jwt:
-    secret-key-string: "1688i4r7ufoljAD1758IU4YOL;JKFRYUGT764Q7AHLIFUDJSGSKYIGLUkjFHAHFgaj"
+    secret-key-string: ${JWT_SECRET_KEY}
     access-token: access
     refresh-token: refresh
     access-token-expiration-minutes: 10

@@ -1,5 +1,6 @@
 HELP.md
 .psdata
+.env
 .gradle
 gradlew
 gradlew.bat
