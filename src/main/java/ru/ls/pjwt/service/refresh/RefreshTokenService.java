@@ -12,8 +12,10 @@ import ru.ls.pjwt.entity.RefreshToken;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.properties.ExceptionsProperties;
+import ru.ls.pjwt.properties.JwtProperties;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
+import ru.ls.pjwt.service.jwt.JwtSecurity;
 
 @Slf4j
 @Service
@@ -22,6 +24,8 @@ public class RefreshTokenService {
     private final ExceptionsProperties exceptionsProperties;
     private final Argon2PasswordEncoder passwordEncoder;
     private final JwtClaimsFactory claimsFactory;
+    private final JwtSecurity jwtSecurity;
+    private final JwtProperties jwtProperties;
     private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenSecurity refreshTokenSecurity;
     private final RefreshTokenOperator refreshTokenOperator;
@@ -35,6 +39,8 @@ public class RefreshTokenService {
 
     @Transactional
     public RefreshToken getToken(JwtClaims jwtClaims) {
+        jwtSecurity.checkType(jwtProperties.getRefreshToken(), jwtClaims);
+
         String uuid = jwtClaims.uuid();
         if (uuid == null) {
             log.warn("jwt token without uuid, may be deprecated");
