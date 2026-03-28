@@ -15,4 +15,4 @@ ENV JAVA_ARGS='-XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:MaxMe
 VOLUME /tmp
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java ${JAVA_ARGS} -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "exec java ${JAVA_ARGS} -jar app.jar"]
