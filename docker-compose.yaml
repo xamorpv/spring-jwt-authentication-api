@@ -1,0 +1,60 @@
+services:
+  postgres:
+    restart: unless-stopped
+    image: postgres:18-alpine
+    networks:
+      - pjwtnw
+    ports:
+      - $DB_EXTERNAL_PORT:5432 # для подключения через psql
+    volumes:
+      - pjwt_pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: $PG_PASSWORD
+      POSTGRES_USER: $PG_USER
+      POSTGRES_DB: $PG_DB
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U postgres -p 5432']
+      start_period: 5s
+      retries: 3
+      timeout: 5s
+      interval: 30s
+    mem_limit: 512m
+    cpus: 0.5
+
+  app:
+    build:
+      context: .
+
+    image: pjwt:latest
+
+    networks:
+      - pjwtnw
+    tmpfs:
+      - /tmp
+    ports:
+      - 8080:8080
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      JAVA_ARGS: -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:MaxMetaspaceSize=256m -Djava.security.egd=file:/dev/./urandom
+      DOCKER_DB_URL: $DB_URL
+      DOCKER_DB_PASSWORD: $PG_PASSWORD
+      DOCKER_DB_USERNAME: $PG_USER
+      DOCKER_DB_NAME: $PG_DB
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/healthcheck"]
+      timeout: 5s
+      interval: 30s
+      retries: 3
+      start_period: 15s
+    mem_limit: 1g
+    cpus: 1
+
+networks:
+  pjwtnw:
+
+volumes:
+  pjwt_pg_data:
