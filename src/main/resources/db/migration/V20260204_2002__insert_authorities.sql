@@ -1,1 +1,1 @@
-insert into authorities(authority) values ('ADMIN'), ('MODERATOR'), ('USER') on conflict(authority) do nothing;
+insert into authorities(authority) values ('${authorities.admin}'), ('${authorities.moderator}'), ('${authorities.user}') on conflict(authority) do nothing;

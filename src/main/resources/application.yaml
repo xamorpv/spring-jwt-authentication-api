@@ -11,6 +11,14 @@ spring:
     username: ${DOCKER_DB_USERNAME:postgres}
     password: ${DOCKER_DB_PASSWORD:12345}
     url: jdbc:postgresql://${DOCKER_DB_URL:localhost:5433}/${DOCKER_DB_NAME:jwt_pg_test}
+  flyway:
+    placeholders:
+      admin.name: ${DB_ADMIN_NAME}
+      admin.email: ${DB_ADMIN_EMAIL}
+      admin.password: ${DB_ADMIN_PASSWORD}
+      authorities.user: USER
+      authorities.moderator: MODERATOR
+      authorities.admin: ADMIN
 
 logging:
   level:
