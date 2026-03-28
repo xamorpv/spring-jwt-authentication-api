@@ -45,7 +45,6 @@ public class RefreshTokenOperator {
                 log.debug("token already compromised; throw exception and do nothing");
             } else {
                 log.warn("token was not compromised before; using all tokens for this user");
-                // одновременно 2 запроса могут попасть сюда, и оба обновить токены. взлом не будет обнаружен
                 refreshTokenRepository.useAndCompromiseTokensForUser(refreshToken.getUser().getUsername());
                 refreshToken.setCompromised(true);
                 refreshTokenRepository.save(refreshToken);
