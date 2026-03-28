@@ -29,14 +29,12 @@ public class JwtFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // пропускаем эндпоинты, которые не требуют аутентификации
-        if (requestMatcher.matches(request)) {
-            log.debug("skip: {}", request.getRequestURI());
-            filterChain.doFilter(request, response);
-            return;
-        }
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return !requestMatcher.matches(request);
+    }
 
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         SecurityContext context = SecurityContextHolder.getContext();
         // если по какой-то причине пользователь уже аутентифицирован
         if (context.getAuthentication() != null) {
