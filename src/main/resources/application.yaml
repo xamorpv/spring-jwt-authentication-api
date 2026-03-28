@@ -9,7 +9,7 @@ spring:
     show-sql: true
   datasource:
     username: ${DOCKER_DB_USERNAME:postgres}
-    password: ${DOCKER_BD_PASSWORD:12345}
+    password: ${DOCKER_DB_PASSWORD:12345}
     url: jdbc:postgresql://${DOCKER_DB_URL:localhost:5433}/${DOCKER_DB_NAME:jwt_pg_test}
 
 logging:
