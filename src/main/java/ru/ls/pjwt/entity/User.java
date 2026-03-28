@@ -40,7 +40,7 @@ public class User {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user")
-    private List<RefreshToken> refreshToken;
+    private List<RefreshToken> refreshTokens;
 
     @ToString.Exclude
     @ManyToMany
