@@ -45,7 +45,7 @@ services:
       DOCKER_DB_NAME: $PG_DB
 
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/healthcheck"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health"]
       timeout: 5s
       interval: 30s
       retries: 3
