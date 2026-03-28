@@ -13,7 +13,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import ru.ls.pjwt.filter.JwtFilter;
 import ru.ls.pjwt.properties.AuthoritiesProperties;
 import ru.ls.pjwt.utils.JsonApiResponse;
@@ -24,7 +23,6 @@ import ru.ls.pjwt.utils.JsonApiResponse;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthoritiesProperties authoritiesProperties;
-    private final RequestMatcher requestMatcher;
     private final JwtFilter jwtFilter;
     private final JsonApiResponse jsonApiResponse;
 
@@ -35,7 +33,9 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(requestMatcher).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/refresh",
+                                "/api/v1/auth/invalidate-refresh-token", "/api/v1/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/test/public", "/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(authoritiesProperties.user())
                         .requestMatchers(HttpMethod.GET, "/api/v1/test/protected").authenticated()
                         .anyRequest().authenticated()
