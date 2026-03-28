@@ -20,6 +20,7 @@ public class SecurityInfrastructureConfig {
                         .or(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/refresh",
                                 "/api/v1/auth/invalidate-refresh-token", "/api/v1/auth/register")
                         .or(HttpMethod.GET, "/api/v1/test/public")
+                        .or(HttpMethod.GET, "/actuator/health")
         );
     }
 
