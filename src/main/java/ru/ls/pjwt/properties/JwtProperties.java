@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 
 @ConfigurationProperties("pjwt.jwt")
 @Getter
@@ -23,6 +24,6 @@ public class JwtProperties {
         this.accessTokenExpirationMinutes = accessTokenExpirationMinutes;
         this.refreshTokenExpirationDays = refreshTokenExpirationDays;
 
-        secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
+        secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
     }
 }
