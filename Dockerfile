@@ -1,6 +1,6 @@
 FROM gradle:9.3.0-jdk21-alpine AS build
 WORKDIR /project
-COPY build.gradle.kts settings.gradle.kts .env .
+COPY build.gradle.kts settings.gradle.kts .
 RUN gradle dependencies --no-daemon
 COPY src ./src
 RUN gradle build --no-daemon -x test
@@ -8,7 +8,6 @@ RUN gradle build --no-daemon -x test
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /project/build/libs/*.jar app.jar
-COPY --from=build /project/.env .env
 RUN addgroup -S developers && adduser -S runner -G developers && chown runner:developers .
 USER runner:developers 
 ENV JAVA_ARGS='-XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:MaxMetaspaceSize=256m -Djava.security.egd=file:/dev/./urandom'

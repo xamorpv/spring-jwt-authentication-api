@@ -1,6 +1,9 @@
 spring:
   config:
-    import: file:.env[.properties]
+    import:
+      - "optional:file:.env/prod/main.properties"
+      - "optional:file:.env/prod/postgres.properties"
+      - "optional:file:.env/prod/admin-password-idea.properties"
   application:
     name: pjwt
   jpa:
@@ -8,9 +11,9 @@ spring:
       ddl-auto: validate
     show-sql: true
   datasource:
-    username: ${DOCKER_DB_USERNAME:postgres}
-    password: ${DOCKER_DB_PASSWORD:12345}
-    url: jdbc:postgresql://${DOCKER_DB_URL:localhost:5433}/${DOCKER_DB_NAME:jwt_pg_test}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB}
   flyway:
     placeholders:
       admin.name: ${DB_ADMIN_NAME}
