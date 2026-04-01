@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<StandardResponse<ErrorResponse>> validationException(MethodArgumentNotValidException e) {
         List<FieldErrorDto> errors = new ArrayList<>();
         e.getFieldErrors().forEach(fe ->
-                errors.add(new FieldErrorDto(fe.getField(), fe.getRejectedValue(), fe.getDefaultMessage())));
+                errors.add(new FieldErrorDto(fe.getField(), fe.getDefaultMessage())));
         log.error("validation exception: {}. errors: {}", e.getMessage(), errors, e);
         return apiResponse.errorInFields(HttpStatus.BAD_REQUEST, exceptionsProperties.validationFailed(), errors);
     }
