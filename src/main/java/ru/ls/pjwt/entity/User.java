@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -37,10 +36,6 @@ public class User {
     private boolean credentialsNonExpired = true;
     @Column(name = "enabled")
     private boolean enabled = true;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "user")
-    private List<RefreshToken> refreshTokens;
 
     @ToString.Exclude
     @ManyToMany
