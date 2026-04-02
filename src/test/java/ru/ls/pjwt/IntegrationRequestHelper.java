@@ -1,5 +1,6 @@
 package ru.ls.pjwt;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,12 +15,14 @@ import ru.ls.pjwt.dto.auth.request.RegisterRequest;
 import ru.ls.pjwt.dto.auth.response.LoginResponse;
 import ru.ls.pjwt.dto.auth.response.RegisterResponse;
 import ru.ls.pjwt.properties.AuthoritiesProperties;
+import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+@Slf4j
 @Component
 public class IntegrationRequestHelper {
 
@@ -59,7 +62,13 @@ public class IntegrationRequestHelper {
     }
 
     private void assertRefreshFailure(String response) {
-        StandardResponse<ErrorResponse> errorResponse = objectMapper.readValue(response, new TypeReference<>() {});
+        StandardResponse<ErrorResponse> errorResponse;
+        try {
+            errorResponse = objectMapper.readValue(response, new TypeReference<>() {});
+        } catch (JacksonException e) {
+            fail("response not error, refresh not failed: "+response);
+            return;
+        }
         assertTrue(errorResponse.message().contains("compromise"));
         assertFalse(errorResponse.success());
         assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.data().statusCode());
