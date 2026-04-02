@@ -40,7 +40,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      JAVA_ARGS: -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:MaxMetaspaceSize=256m -Djava.security.egd=file:/dev/./urandom\
+      JAVA_ARGS: -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:MaxMetaspaceSize=256m -Djava.security.egd=file:/dev/./urandom
       DB_PORT: 5432
       DB_HOST: postgres
 
