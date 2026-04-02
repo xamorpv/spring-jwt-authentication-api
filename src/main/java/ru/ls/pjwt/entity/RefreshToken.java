@@ -13,7 +13,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RefreshToken {
+public class RefreshToken extends CreatedAtTable {
     @ToString.Exclude
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
