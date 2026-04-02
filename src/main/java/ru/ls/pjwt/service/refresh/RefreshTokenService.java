@@ -3,7 +3,6 @@ package ru.ls.pjwt.service.refresh;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.dto.CreatedRefreshToken;
@@ -22,7 +21,6 @@ import ru.ls.pjwt.service.jwt.JwtSecurity;
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final ExceptionsProperties exceptionsProperties;
-    private final Argon2PasswordEncoder passwordEncoder;
     private final JwtClaimsFactory claimsFactory;
     private final JwtSecurity jwtSecurity;
     private final JwtProperties jwtProperties;
@@ -48,17 +46,13 @@ public class RefreshTokenService {
         }
         RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
                 .orElseThrow(() -> new JwtTokenRequestException("token not found"));
-        if (!passwordEncoder.matches(jwtClaims.token(), refreshToken.getToken())) {
-            log.warn("user has uuid in jwt token, but token does not matches. token with same uuid: {}", refreshToken);
-            throw new BadCredentialsException(exceptionsProperties.badCredentials());
-        }
+
         refreshTokenSecurity.checkUsed(refreshToken);
         return refreshToken;
     }
 
     @Transactional
     public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
-        return refreshTokenRepository.save(new RefreshToken(
-                passwordEncoder.encode(createdRefreshToken.token()), createdRefreshToken.uuid(), user));
+        return refreshTokenRepository.save(new RefreshToken(createdRefreshToken.uuid(), user));
     }
 }
