@@ -13,7 +13,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     Optional<RefreshToken> findByUuid(String uuid);
 
     @Modifying
-    @Query("delete from RefreshToken rt where rt.usedAt < :time")
+    @Query("delete from RefreshToken rt where (rt.usedAt is null and rt.createdAt < :time) or (rt.used = true and rt.usedAt < :time)")
     void deleteUsedBefore(@Param("time") Instant time);
 
     @Modifying(clearAutomatically = true)
