@@ -46,5 +46,6 @@ pjwt:
     account-disabled: ACCOUNT_DISABLED
     user-exists: USER_ALREADY_EXISTS
     email-exists: EMAIL_ALREADY_EXISTS
+    email-or-user-exists: EMAIL_OR_USER_ALREADY_EXISTS
     validation-failed: VALIDATION_FAILED
     refresh-token-compromised: "refresh token was compromised. you may be get hacked. please re-login"
