@@ -13,7 +13,7 @@ import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
 import ru.ls.pjwt.domain.user.mapper.UserMapper;
 import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.domain.user.repository.UserRepository;
-import ru.ls.pjwt.domain.user.service.UserSecurity;
+import ru.ls.pjwt.domain.user.service.UserValidator;
 import ru.ls.pjwt.domain.user.service.UserService;
 
 @Slf4j
@@ -23,7 +23,7 @@ public class AuthService {
     private final ExceptionsProperties exceptionsProperties;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
-    private final UserSecurity userSecurity;
+    private final UserValidator userValidator;
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
@@ -35,7 +35,7 @@ public class AuthService {
             throw new BadCredentialsException(exceptionsProperties.badCredentials());
         }
         log.debug("password exists");
-        userSecurity.checkAccountStatus(user);
+        userValidator.checkAccountStatus(user);
         log.info("user {} authenticated", username);
         return user;
     }

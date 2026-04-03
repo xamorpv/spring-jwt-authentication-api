@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.ls.pjwt.common.database.entity.CreatedAtTable;
+import ru.ls.pjwt.common.database.entity.TimestampedEntity;
 import ru.ls.pjwt.domain.user.entity.User;
 
 import java.time.Instant;
@@ -15,7 +15,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RefreshToken extends CreatedAtTable {
+public class RefreshToken extends TimestampedEntity {
     @ToString.Exclude
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

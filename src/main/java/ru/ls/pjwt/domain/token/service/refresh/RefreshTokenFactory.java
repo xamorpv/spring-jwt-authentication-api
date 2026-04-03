@@ -16,7 +16,7 @@ import ru.ls.pjwt.domain.token.service.jwt.JwtFactory;
 public class RefreshTokenFactory {
     private final JwtFactory jwtFactory;
     private final RefreshTokenService refreshTokenService;
-    private final RefreshTokenOperator refreshTokenOperator;
+    private final RefreshTokenManager refreshTokenManager;
 
     public String createAndSaveToken(User user) {
         CreatedRefreshToken createdRefreshToken = jwtFactory.createRefreshToken(user.getUsername());
@@ -31,7 +31,7 @@ public class RefreshTokenFactory {
         // если прошло меньше 30 секунд, то делаем вид, что этот токен работает (не создавать новый, а вернуть тот, что был выдан меньше 30 секунд назад)
 
         log.debug("updating token");
-        refreshTokenOperator.use(refreshTokenService.getToken(token));
+        refreshTokenManager.use(refreshTokenService.getToken(token));
         CreatedRefreshToken newToken = jwtFactory.updateRefreshToken(token);
         RefreshToken refreshToken = refreshTokenService.save(newToken, user);
         log.debug("refresh token updated: {}", refreshToken);

@@ -13,8 +13,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import ru.ls.pjwt.helper.ThreadHelper;
-import ru.ls.pjwt.domain.token.service.jwt.JwtClaimsFactory;
-import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenSecurity;
+import ru.ls.pjwt.domain.token.service.jwt.JwtClaimsParser;
+import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenValidator;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
@@ -47,10 +47,10 @@ public class CompromisedTokenCoveringIntegrationTest {
     // 6. итог: токен Б остался compromised = false, хотя должен быть compromised = true. из-за этого, если злоумышленник его получил, он сможет один раз сбросить все активные токены пользователя
 
     @MockitoSpyBean
-    private RefreshTokenSecurity refreshTokenSecurity;
+    private RefreshTokenValidator refreshTokenValidator;
 
     @Autowired
-    private JwtClaimsFactory claimsFactory;
+    private JwtClaimsParser claimsFactory;
 
     @Autowired
     private ThreadHelper threadHelper;
@@ -65,7 +65,7 @@ public class CompromisedTokenCoveringIntegrationTest {
             // токен B уже загружен из бд, компроментируем токены
             threadHelper.runInIndependentThread(() -> integrationRequestHelper.assertFailureRefresh(refreshTokenA));
             return invocation.callRealMethod();
-        }).when(refreshTokenSecurity).checkUsed(argThat(r ->
+        }).when(refreshTokenValidator).checkUsed(argThat(r ->
                 r.getUuid().equals(claimsFactory.createJwtClaims(refreshTokenB.refreshToken()).uuid())));
 
         integrationRequestHelper.assertFailureRefresh(refreshTokenB); // затирание токена в doAnswer должно быть обнаружено через версию

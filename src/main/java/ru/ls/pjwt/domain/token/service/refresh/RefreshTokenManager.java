@@ -14,7 +14,7 @@ import java.time.Instant;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenOperator {
+public class RefreshTokenManager {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional

@@ -13,7 +13,7 @@ import ru.ls.pjwt.common.property.ExceptionsProperties;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class UserSecurity {
+public class UserValidator {
     private final ExceptionsProperties exceptionsProperties;
     private final UserService userService;
 

@@ -13,31 +13,31 @@ import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.common.property.JwtProperties;
 import ru.ls.pjwt.domain.token.repository.RefreshTokenRepository;
-import ru.ls.pjwt.domain.token.service.jwt.JwtClaimsFactory;
-import ru.ls.pjwt.domain.token.service.jwt.JwtSecurity;
+import ru.ls.pjwt.domain.token.service.jwt.JwtClaimsParser;
+import ru.ls.pjwt.domain.token.service.jwt.JwtValidator;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final ExceptionsProperties exceptionsProperties;
-    private final JwtClaimsFactory claimsFactory;
-    private final JwtSecurity jwtSecurity;
+    private final JwtClaimsParser claimsFactory;
+    private final JwtValidator jwtValidator;
     private final JwtProperties jwtProperties;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final RefreshTokenSecurity refreshTokenSecurity;
-    private final RefreshTokenOperator refreshTokenOperator;
+    private final RefreshTokenValidator refreshTokenValidator;
+    private final RefreshTokenManager refreshTokenManager;
 
     @Transactional
     public void markTokenAsUsed(String token) {
         RefreshToken refreshToken = getToken(claimsFactory.createJwtClaims(token));
         log.debug("try delete token {}", refreshToken);
-        refreshTokenOperator.use(refreshToken);
+        refreshTokenManager.use(refreshToken);
     }
 
     @Transactional
     public RefreshToken getToken(JwtClaims jwtClaims) {
-        jwtSecurity.checkType(jwtProperties.getRefreshToken(), jwtClaims);
+        jwtValidator.checkType(jwtProperties.getRefreshToken(), jwtClaims);
 
         String uuid = jwtClaims.uuid();
         if (uuid == null) {
@@ -47,7 +47,7 @@ public class RefreshTokenService {
         RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
                 .orElseThrow(() -> new JwtTokenRequestException("token not found"));
 
-        refreshTokenSecurity.checkUsed(refreshToken);
+        refreshTokenValidator.checkUsed(refreshToken);
         return refreshToken;
     }
 

@@ -10,13 +10,13 @@ import ru.ls.pjwt.common.property.JwtProperties;
 @RequiredArgsConstructor
 public class JwtFilterService {
     private final JwtProperties jwtProperties;
-    private final JwtClaimsFactory claimsFactory;
-    private final JwtSecurity jwtSecurity;
+    private final JwtClaimsParser claimsFactory;
+    private final JwtValidator jwtValidator;
 
     // todo check fingerprint (add in future)
     public UserDetails getUserDetails(String jwt) {
         JwtClaims jwtClaims = claimsFactory.createJwtClaims(jwt);
-        jwtSecurity.checkType(jwtProperties.getAccessToken(), jwtClaims);
+        jwtValidator.checkType(jwtProperties.getAccessToken(), jwtClaims);
         return jwtClaims.userDetails();
     }
 }

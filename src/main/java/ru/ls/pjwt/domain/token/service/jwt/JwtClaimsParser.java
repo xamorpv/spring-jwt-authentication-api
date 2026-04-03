@@ -8,7 +8,7 @@ import ru.ls.pjwt.domain.token.dto.JwtClaims;
 
 @RequiredArgsConstructor
 @Service
-public class JwtClaimsFactory {
+public class JwtClaimsParser {
     private final JwtParser jwtParser;
 
     public JwtClaims createJwtClaims(String token) {

@@ -13,7 +13,7 @@ import java.time.Instant;
 
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-public abstract class CreatedAtTable {
+public abstract class TimestampedEntity {
     @CreatedDate
     @Setter(AccessLevel.NONE)
     @Getter

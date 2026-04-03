@@ -12,9 +12,9 @@ import ru.ls.pjwt.common.property.ExceptionsProperties;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenSecurity {
+public class RefreshTokenValidator {
     private final ExceptionsProperties exceptionsProperties;
-    private final RefreshTokenOperator refreshTokenOperator;
+    private final RefreshTokenManager refreshTokenManager;
 
     /*
      проверяет - был ли использован токен
@@ -27,7 +27,7 @@ public class RefreshTokenSecurity {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = JwtTokenRequestException.class)
     public void checkUsed(RefreshToken refreshToken) {
-        if (refreshTokenOperator.compromiseIfUsed(refreshToken)) {
+        if (refreshTokenManager.compromiseIfUsed(refreshToken)) {
             throw new JwtTokenRequestException(exceptionsProperties.refreshTokenCompromised());
         }
     }
