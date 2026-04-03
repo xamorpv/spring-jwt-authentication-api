@@ -1,4 +1,4 @@
-package ru.ls.pjwt;
+package ru.ls.pjwt.util;
 
 @FunctionalInterface
 public interface ThrowingRunnable {

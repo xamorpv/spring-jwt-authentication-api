@@ -1,4 +1,4 @@
-package ru.ls.pjwt;
+package ru.ls.pjwt.refresh.integration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.ls.pjwt.dto.auth.response.LoginResponse;
+import ru.ls.pjwt.helper.IntegrationRequestHelper;
+import ru.ls.pjwt.helper.ThreadHelper;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
 import ru.ls.pjwt.service.refresh.RefreshTokenSecurity;
 

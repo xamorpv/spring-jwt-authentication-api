@@ -1,4 +1,4 @@
-package ru.ls.pjwt;
+package ru.ls.pjwt.helper;
 
 import lombok.experimental.UtilityClass;
 import ru.ls.pjwt.dto.auth.request.LoginRequest;

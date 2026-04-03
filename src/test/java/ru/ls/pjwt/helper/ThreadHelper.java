@@ -1,6 +1,7 @@
-package ru.ls.pjwt;
+package ru.ls.pjwt.helper;
 
 import org.springframework.stereotype.Component;
+import ru.ls.pjwt.util.ThrowingRunnable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

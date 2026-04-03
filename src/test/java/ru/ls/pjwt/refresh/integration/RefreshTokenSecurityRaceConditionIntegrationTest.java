@@ -1,4 +1,4 @@
-package ru.ls.pjwt;
+package ru.ls.pjwt.refresh.integration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.ls.pjwt.dto.StandardResponse;
 import ru.ls.pjwt.dto.auth.response.LoginResponse;
+import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
