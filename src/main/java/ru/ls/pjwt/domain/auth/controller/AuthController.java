@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.ls.pjwt.common.web.api.ApiResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
@@ -17,7 +18,7 @@ import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
 import ru.ls.pjwt.domain.auth.service.AuthService;
 import ru.ls.pjwt.domain.token.service.TokenService;
-import ru.ls.pjwt.common.web.api.ApiResponse;
+import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenService;
 
 //todo токены в httpOnlyCookies, а не в dto, который может посмотреть js
 @Slf4j
@@ -27,6 +28,7 @@ import ru.ls.pjwt.common.web.api.ApiResponse;
 public class AuthController {
     private final AuthService authService;
     private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
     private final ApiResponse apiResponse;
 
     @PostMapping("/login")
@@ -45,7 +47,7 @@ public class AuthController {
     @PostMapping("/invalidate-refresh-token")
     public ResponseEntity<StandardResponse<Void>> invalidateRefreshToken(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("invalidating token");
-        tokenService.invalidateRefreshToken(refreshTokenRequest.refreshToken());
+        refreshTokenService.markTokenAsUsed(refreshTokenRequest.refreshToken());
         return apiResponse.success("token deleted successfully", HttpStatus.OK);
     }
 
