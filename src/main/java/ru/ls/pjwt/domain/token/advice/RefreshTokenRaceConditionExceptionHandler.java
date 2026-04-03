@@ -1,4 +1,4 @@
-package ru.ls.pjwt.domain.token.handlers;
+package ru.ls.pjwt.domain.token.advice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

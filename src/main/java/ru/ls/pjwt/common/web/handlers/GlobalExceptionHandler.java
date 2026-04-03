@@ -10,16 +10,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-import ru.ls.pjwt.common.web.api.dto.ErrorResponse;
-import ru.ls.pjwt.common.web.exception.dto.FieldErrorDto;
-import ru.ls.pjwt.common.web.api.dto.StandardResponse;
-import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
-import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
-import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
-import ru.ls.pjwt.common.web.exception.ServerError;
 import ru.ls.pjwt.common.properties.ExceptionsProperties;
 import ru.ls.pjwt.common.web.api.ApiResponse;
-import ru.ls.pjwt.domain.token.handlers.RefreshTokenRaceConditionExceptionHandler;
+import ru.ls.pjwt.common.web.api.dto.ErrorResponse;
+import ru.ls.pjwt.common.web.api.dto.StandardResponse;
+import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
+import ru.ls.pjwt.common.web.exception.ServerError;
+import ru.ls.pjwt.common.web.exception.dto.FieldErrorDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +27,10 @@ import java.util.List;
 public class GlobalExceptionHandler {
     private final ApiResponse apiResponse;
     private final ExceptionsProperties exceptionsProperties;
-    private final RefreshTokenRaceConditionExceptionHandler refreshTokenRaceConditionExceptionHandler;
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> badCredentials(BadCredentialsException e) {
         log.error("bad credentials: {}", e.getMessage(), e);
-        return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
-    }
-
-    @ExceptionHandler(JwtTokenRequestException.class)
-    public ResponseEntity<StandardResponse<ErrorResponse>> jwtException(JwtTokenRequestException e) {
-        log.error("jwt token exception: {}", e.getMessage(), e);
         return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
@@ -75,11 +65,5 @@ public class GlobalExceptionHandler {
                 errors.add(new FieldErrorDto(fe.getField(), fe.getDefaultMessage())));
         log.error("validation exception: {}. errors: {}", e.getMessage(), errors, e);
         return apiResponse.errorInFields(HttpStatus.BAD_REQUEST, exceptionsProperties.validationFailed(), errors);
-    }
-
-    @ExceptionHandler(RefreshTokenRaceConditionException.class)
-    public ResponseEntity<StandardResponse<ErrorResponse>> onTokenRaceCondition(RefreshTokenRaceConditionException e) {
-        refreshTokenRaceConditionExceptionHandler.handleException(e);
-        return apiResponse.error(HttpStatus.UNAUTHORIZED, exceptionsProperties.refreshTokenCompromised());
     }
 }
