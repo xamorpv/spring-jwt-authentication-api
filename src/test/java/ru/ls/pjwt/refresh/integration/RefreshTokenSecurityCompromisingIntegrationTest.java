@@ -9,10 +9,10 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.ls.pjwt.dto.api.response.StandardResponse;
-import ru.ls.pjwt.dto.api.request.LoginRequest;
-import ru.ls.pjwt.dto.api.request.RegisterRequest;
-import ru.ls.pjwt.dto.api.response.LoginResponse;
+import ru.ls.pjwt.common.web.api.dto.StandardResponse;
+import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
+import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
+import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import tools.jackson.databind.ObjectMapper;
 

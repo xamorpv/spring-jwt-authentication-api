@@ -10,11 +10,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.ls.pjwt.dto.api.response.LoginResponse;
+import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import ru.ls.pjwt.helper.ThreadHelper;
-import ru.ls.pjwt.service.token.jwt.JwtClaimsFactory;
-import ru.ls.pjwt.service.token.refresh.RefreshTokenSecurity;
+import ru.ls.pjwt.domain.token.service.jwt.JwtClaimsFactory;
+import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenSecurity;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;

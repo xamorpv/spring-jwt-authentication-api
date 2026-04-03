@@ -1,8 +1,8 @@
 package ru.ls.pjwt.helper;
 
 import lombok.experimental.UtilityClass;
-import ru.ls.pjwt.dto.api.request.LoginRequest;
-import ru.ls.pjwt.dto.api.request.RegisterRequest;
+import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
+import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 
 @UtilityClass
 public class StandardUser {
