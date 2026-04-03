@@ -11,6 +11,8 @@ import ru.ls.pjwt.domain.token.dto.JwtClaims;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFactory;
 import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenFactory;
+import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenManager;
+import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenService;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.mapper.UserMapper;
 import ru.ls.pjwt.domain.user.service.UserService;
@@ -23,7 +25,9 @@ public class TokenService {
     private final JwtFactory jwtFactory;
     private final AuthService authService;
     private final RefreshTokenFactory refreshTokenFactory;
-    private final JwtParser claimsFactory;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtParser jwtParser;
+    private final RefreshTokenManager refreshTokenManager;
     private final AccessTokenService accessTokenService;
     private final UserValidator userValidator;
     private final UserService userService;
@@ -31,7 +35,7 @@ public class TokenService {
 
     @Transactional
     public LoginResponse refreshTokens(String token) {
-        JwtClaims jwtClaims = claimsFactory.parseToken(token);
+        JwtClaims jwtClaims = jwtParser.parseToken(token);
         log.debug("refreshing tokens for username={}", jwtClaims.username());
         User user = userService.findUserByUsername(jwtClaims.username());
         userValidator.validateAccountStatus(user);
@@ -48,5 +52,10 @@ public class TokenService {
         String accessToken = jwtFactory.createAccessToken(userMapper.userEntityToUserDetails(user));
         String refreshToken = refreshTokenFactory.createAndSaveToken(user);
         return new LoginResponse(refreshToken, accessToken);
+    }
+
+    @Transactional
+    public void invalidateRefreshToken(String token) {
+        refreshTokenService.markTokenAsUsed(jwtParser.parseToken(token));
     }
 }

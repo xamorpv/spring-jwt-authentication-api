@@ -12,7 +12,6 @@ import ru.ls.pjwt.domain.token.dto.JwtClaims;
 import ru.ls.pjwt.domain.token.entity.RefreshToken;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.domain.token.repository.RefreshTokenRepository;
-import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.jwt.JwtValidator;
 import ru.ls.pjwt.domain.user.entity.User;
 
@@ -21,7 +20,6 @@ import ru.ls.pjwt.domain.user.entity.User;
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final ExceptionsProperties exceptionsProperties;
-    private final JwtParser jwtParser;
     private final JwtValidator jwtValidator;
     private final JwtProperties jwtProperties;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -29,8 +27,8 @@ public class RefreshTokenService {
     private final RefreshTokenManager refreshTokenManager;
 
     @Transactional
-    public void markTokenAsUsed(String token) {
-        RefreshToken refreshToken = getToken(jwtParser.parseToken(token));
+    public void markTokenAsUsed(JwtClaims claims) {
+        RefreshToken refreshToken = getToken(claims);
         log.debug("try delete token {}", refreshToken);
         refreshTokenManager.use(refreshToken);
     }

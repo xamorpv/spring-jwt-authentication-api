@@ -18,7 +18,6 @@ import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
 import ru.ls.pjwt.domain.auth.service.AuthService;
 import ru.ls.pjwt.domain.token.service.TokenService;
-import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenService;
 
 //todo токены в httpOnlyCookies, а не в dto, который может посмотреть js
 @Slf4j
@@ -28,7 +27,6 @@ import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenService;
 public class AuthController {
     private final AuthService authService;
     private final TokenService tokenService;
-    private final RefreshTokenService refreshTokenService;
     private final ApiResponse apiResponse;
 
     @PostMapping("/login")
@@ -47,7 +45,7 @@ public class AuthController {
     @PostMapping("/invalidate-refresh-token")
     public ResponseEntity<StandardResponse<Void>> invalidateRefreshToken(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
         log.info("invalidating token");
-        refreshTokenService.markTokenAsUsed(refreshTokenRequest.refreshToken());
+        tokenService.invalidateRefreshToken(refreshTokenRequest.refreshToken());
         return apiResponse.success("token deleted successfully", HttpStatus.OK);
     }
 
