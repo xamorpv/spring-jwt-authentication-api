@@ -1,4 +1,4 @@
-package ru.ls.pjwt.dto;
+package ru.ls.pjwt.dto.api.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

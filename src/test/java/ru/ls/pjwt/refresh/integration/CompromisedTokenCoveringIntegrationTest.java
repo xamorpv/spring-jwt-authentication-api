@@ -10,7 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.ls.pjwt.dto.auth.response.LoginResponse;
+import ru.ls.pjwt.dto.api.response.LoginResponse;
 import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import ru.ls.pjwt.helper.ThreadHelper;
 import ru.ls.pjwt.service.jwt.JwtClaimsFactory;

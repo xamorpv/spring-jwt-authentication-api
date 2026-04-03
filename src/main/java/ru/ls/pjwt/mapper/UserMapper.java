@@ -3,7 +3,7 @@ package ru.ls.pjwt.mapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ru.ls.pjwt.dto.auth.response.RegisterResponse;
+import ru.ls.pjwt.dto.api.response.RegisterResponse;
 import ru.ls.pjwt.entity.Authority;
 import ru.ls.pjwt.entity.User;
 

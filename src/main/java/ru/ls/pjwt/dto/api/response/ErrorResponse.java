@@ -1,4 +1,6 @@
-package ru.ls.pjwt.dto;
+package ru.ls.pjwt.dto.api.response;
+
+import ru.ls.pjwt.dto.FieldErrorDto;
 
 import java.util.List;
 

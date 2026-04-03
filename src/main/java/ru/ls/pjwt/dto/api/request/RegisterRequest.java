@@ -1,4 +1,4 @@
-package ru.ls.pjwt.dto.auth.request;
+package ru.ls.pjwt.dto.api.request;
 
 import jakarta.validation.constraints.Email;
 import ru.ls.pjwt.validation.ValidString;

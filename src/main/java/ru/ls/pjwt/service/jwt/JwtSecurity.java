@@ -2,7 +2,7 @@ package ru.ls.pjwt.service.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.dto.JwtClaims;
+import ru.ls.pjwt.dto.tokens.JwtClaims;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 

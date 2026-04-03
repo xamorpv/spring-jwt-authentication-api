@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.dto.JwtClaims;
+import ru.ls.pjwt.dto.tokens.JwtClaims;
 
 @RequiredArgsConstructor
 @Service

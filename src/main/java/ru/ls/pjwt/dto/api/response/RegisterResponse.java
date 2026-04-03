@@ -1,4 +1,4 @@
-package ru.ls.pjwt.dto.auth.response;
+package ru.ls.pjwt.dto.api.response;
 
 
 import java.util.Set;

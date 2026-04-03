@@ -1,4 +1,4 @@
-package ru.ls.pjwt.dto;
+package ru.ls.pjwt.dto.tokens;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;

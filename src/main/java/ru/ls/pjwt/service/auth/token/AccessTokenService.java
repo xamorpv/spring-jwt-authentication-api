@@ -3,7 +3,7 @@ package ru.ls.pjwt.service.auth.token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.dto.JwtClaims;
+import ru.ls.pjwt.dto.tokens.JwtClaims;
 import ru.ls.pjwt.entity.User;
 import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.service.jwt.JwtFactory;

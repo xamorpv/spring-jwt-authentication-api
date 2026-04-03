@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import ru.ls.pjwt.dto.ErrorResponse;
+import ru.ls.pjwt.dto.api.response.ErrorResponse;
 import ru.ls.pjwt.dto.FieldErrorDto;
-import ru.ls.pjwt.dto.StandardResponse;
+import ru.ls.pjwt.dto.api.response.StandardResponse;
 
 import java.util.List;
 
