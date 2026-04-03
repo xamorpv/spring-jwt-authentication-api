@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.exception.exceptions.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
-import ru.ls.pjwt.service.refresh.RefreshTokenOperator;
+import ru.ls.pjwt.service.token.refresh.RefreshTokenOperator;
 
 @Slf4j
 @Component

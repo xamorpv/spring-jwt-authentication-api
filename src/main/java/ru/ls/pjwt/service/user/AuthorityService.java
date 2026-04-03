@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.auth.user;
+package ru.ls.pjwt.service.user;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

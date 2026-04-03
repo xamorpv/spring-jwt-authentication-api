@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.jwt;
+package ru.ls.pjwt.service.token.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

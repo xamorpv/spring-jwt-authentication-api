@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.jwt;
+package ru.ls.pjwt.service.token.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.jwt;
+package ru.ls.pjwt.service.token.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

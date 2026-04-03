@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.refresh;
+package ru.ls.pjwt.service.token.refresh;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

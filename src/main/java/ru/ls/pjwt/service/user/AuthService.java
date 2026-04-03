@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.auth;
+package ru.ls.pjwt.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,6 @@ import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
 import ru.ls.pjwt.mapper.UserMapper;
 import ru.ls.pjwt.properties.ExceptionsProperties;
 import ru.ls.pjwt.repository.UserRepository;
-import ru.ls.pjwt.service.auth.user.UserSecurity;
-import ru.ls.pjwt.service.auth.user.UserService;
 
 @Slf4j
 @Service

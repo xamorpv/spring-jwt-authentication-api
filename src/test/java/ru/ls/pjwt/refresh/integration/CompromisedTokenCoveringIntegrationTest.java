@@ -13,8 +13,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.ls.pjwt.dto.api.response.LoginResponse;
 import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import ru.ls.pjwt.helper.ThreadHelper;
-import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
-import ru.ls.pjwt.service.refresh.RefreshTokenSecurity;
+import ru.ls.pjwt.service.token.jwt.JwtClaimsFactory;
+import ru.ls.pjwt.service.token.refresh.RefreshTokenSecurity;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;

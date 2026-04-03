@@ -1,4 +1,4 @@
-package ru.ls.pjwt.service.refresh;
+package ru.ls.pjwt.service.token.refresh;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,8 @@ import ru.ls.pjwt.exception.exceptions.JwtTokenRequestException;
 import ru.ls.pjwt.properties.ExceptionsProperties;
 import ru.ls.pjwt.properties.JwtProperties;
 import ru.ls.pjwt.repository.RefreshTokenRepository;
-import ru.ls.pjwt.service.jwt.JwtClaimsFactory;
-import ru.ls.pjwt.service.jwt.JwtSecurity;
+import ru.ls.pjwt.service.token.jwt.JwtClaimsFactory;
+import ru.ls.pjwt.service.token.jwt.JwtSecurity;
 
 @Slf4j
 @Service
