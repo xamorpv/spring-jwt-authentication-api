@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ru.ls.pjwt.common.database.entity.CreatedAtTable;
 import ru.ls.pjwt.domain.user.entity.User;
 
 import java.time.Instant;

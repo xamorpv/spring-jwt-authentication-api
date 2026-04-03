@@ -1,4 +1,4 @@
-package ru.ls.pjwt.domain.token.entity;
+package ru.ls.pjwt.common.database.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
