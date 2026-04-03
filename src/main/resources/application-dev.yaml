@@ -1,0 +1,12 @@
+logging:
+  level:
+    org.springframework.security.*: debug
+    ru.ls.pjwt.*: debug
+
+spring:
+  jpa:
+    show-sql: true
+  flyway:
+    locations:
+      - classpath:db/migration/common
+      - classpath:db/migration/dev

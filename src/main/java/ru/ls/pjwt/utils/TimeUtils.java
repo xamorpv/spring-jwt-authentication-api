@@ -1,16 +1,28 @@
 package ru.ls.pjwt.utils;
 
-import lombok.experimental.UtilityClass;
-import ru.ls.pjwt.utils.constants.Format;
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import ru.ls.pjwt.properties.FormatProperties;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-@UtilityClass
+@RequiredArgsConstructor
+@Component
 public class TimeUtils {
-    public final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Format.dateFormat);
+    private final FormatProperties formatProperties;
+    @Getter
+    private DateTimeFormatter formatter;
+
+    @PostConstruct
+    private void initFormatter() {
+        formatter = DateTimeFormatter.ofPattern(formatProperties.dateFormat()).withZone(ZoneOffset.UTC);
+    }
 
     public String timestamp() {
-        return LocalDateTime.now().format(formatter);
+        return Instant.now().atZone(ZoneOffset.UTC).format(formatter);
     }
 }

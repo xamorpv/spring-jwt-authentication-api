@@ -5,10 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,7 +15,7 @@ import java.util.Set;
 @Setter
 @ToString
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -31,17 +29,13 @@ public class User implements UserDetails {
     private String password;
 
     @Column(name = "account_non_expired")
-    private boolean accountNonExpired = false;
+    private boolean accountNonExpired = true;
     @Column(name = "account_non_locked")
-    private boolean accountNonLocked = false;
+    private boolean accountNonLocked = true;
     @Column(name = "credentials_non_expired")
-    private boolean credentialsNonExpired = false;
+    private boolean credentialsNonExpired = true;
     @Column(name = "enabled")
-    private boolean enabled = false;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "user")
-    private List<RefreshToken> refreshToken;
+    private boolean enabled = true;
 
     @ToString.Exclude
     @ManyToMany

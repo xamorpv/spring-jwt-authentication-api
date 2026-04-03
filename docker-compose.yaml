@@ -1,0 +1,60 @@
+services:
+  postgres:
+    restart: unless-stopped
+    image: postgres:18-alpine
+    env_file:
+      - .env/prod/postgres.properties
+    networks:
+      - pjwtnw
+    ports:
+      - 127.0.0.1:5434:5432
+    volumes:
+      - pjwt_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U $$POSTGRES_USER -p 5432']
+      start_period: 5s
+      retries: 3
+      timeout: 5s
+      interval: 30s
+    mem_limit: 512m
+    cpus: 0.5
+
+  app:
+    build:
+      context: .
+
+    env_file:
+      - .env/prod/postgres.properties
+      - .env/prod/main.properties
+      - .env/prod/admin-password-docker.properties
+    image: pjwt:latest
+
+    networks:
+      - pjwtnw
+    tmpfs:
+      - /tmp
+    ports:
+      - 127.0.0.1:8080:8080
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      JAVA_ARGS: -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:MaxMetaspaceSize=256m -Djava.security.egd=file:/dev/./urandom
+      DB_PORT: 5432
+      DB_HOST: postgres
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider --quiet http://localhost:8080/actuator/health || exit 1"]
+      timeout: 5s
+      interval: 30s
+      retries: 3
+      start_period: 15s
+    mem_limit: 1g
+    cpus: 1
+
+networks:
+  pjwtnw:
+
+volumes:
+  pjwt_pg_data:

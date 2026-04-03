@@ -1,5 +1,7 @@
 package ru.ls.pjwt.dto;
 
-public record ErrorResponse (String message, int statusCode, String errorMessage, String timestamp) {
+import java.util.List;
+
+public record ErrorResponse(int statusCode, String timestamp, List<FieldErrorDto> errors) {
 
 }

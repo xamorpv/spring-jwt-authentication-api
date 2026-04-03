@@ -1,1 +1,0 @@
-insert into authorities(authority) values ('ADMIN'), ('MODERATOR'), ('USER') on conflict(authority) do nothing;

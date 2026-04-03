@@ -1,0 +1,51 @@
+spring:
+  profiles:
+    active: dev
+  config:
+    import:
+      - "optional:file:.env/prod/main.properties"
+      - "optional:file:.env/prod/postgres.properties"
+      - "optional:file:.env/prod/admin-password-idea.properties"
+  application:
+    name: pjwt
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB}
+  flyway:
+    placeholders:
+      admin.name: ${DB_ADMIN_NAME}
+      admin.email: ${DB_ADMIN_EMAIL}
+      admin.password: ${DB_ADMIN_PASSWORD}
+      authorities.user: USER
+      authorities.moderator: MODERATOR
+      authorities.admin: ADMIN
+pjwt:
+  application:
+    name: jwt-authorization-api-1445
+  format:
+    date-format: yyyy-MM-dd__HH:mm:ss
+  authorities:
+    user: USER
+    mod: MODERATOR
+    admin: ADMIN
+  jwt:
+    secret-key-string: ${JWT_SECRET_KEY}
+    access-token: access
+    refresh-token: refresh
+    access-token-expiration-minutes: 10
+    refresh-token-expiration-days: 14
+  exceptions:
+    bad-credentials: BAD_CREDENTIALS
+    account-expired: ACCOUNT_EXPIRED
+    account-locked: ACCOUNT_LOCKED
+    credentials-expired: CREDENTIALS_EXPIRED
+    account-disabled: ACCOUNT_DISABLED
+    user-exists: USER_ALREADY_EXISTS
+    email-exists: EMAIL_ALREADY_EXISTS
+    email-or-user-exists: EMAIL_OR_USER_ALREADY_EXISTS
+    validation-failed: VALIDATION_FAILED
+    refresh-token-compromised: "refresh token was compromised. you may be get hacked. please re-login"
