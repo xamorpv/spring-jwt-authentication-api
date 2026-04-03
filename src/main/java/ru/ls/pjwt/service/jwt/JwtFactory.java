@@ -25,6 +25,7 @@ import java.util.HashMap;
 public class JwtFactory {
     private final JwtProperties jwtProperties;
     private final TimeUtils timeUtils;
+    private final UUIDUtils uuidUtils;
     private final ApplicationProperties applicationProperties;
 
     public String createAccessToken(UserDetails userDetails) {
@@ -36,7 +37,7 @@ public class JwtFactory {
     }
 
     public CreatedRefreshToken createRefreshToken(String username) {
-        String uuid = UUIDUtils.random();
+        String uuid = uuidUtils.random();
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("type", jwtProperties.getRefreshToken());
         claims.put("uuid", uuid);
@@ -49,7 +50,7 @@ public class JwtFactory {
         Instant time = oldClaims.getExpiration().toInstant();
         String username = oldClaims.getSubject();
         HashMap<String, Object> newClaims = new HashMap<>();
-        String uuid = UUIDUtils.random();
+        String uuid = uuidUtils.random();
         newClaims.put("type", jwtProperties.getRefreshToken());
         newClaims.put("uuid", uuid);
         return new CreatedRefreshToken(uuid, buildToken(username, time, newClaims));

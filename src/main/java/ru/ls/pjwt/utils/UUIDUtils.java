@@ -1,10 +1,10 @@
 package ru.ls.pjwt.utils;
 
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@UtilityClass
+@Component
 public class UUIDUtils {
     public String random() {
         return UUID.randomUUID().toString();
