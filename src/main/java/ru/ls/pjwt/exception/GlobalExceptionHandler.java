@@ -18,7 +18,7 @@ import ru.ls.pjwt.exception.exceptions.NotUniqueDataException;
 import ru.ls.pjwt.exception.exceptions.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.exception.exceptions.ServerError;
 import ru.ls.pjwt.properties.ExceptionsProperties;
-import ru.ls.pjwt.utils.ApiResponse;
+import ru.ls.pjwt.utils.api.ApiResponse;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,7 +17,7 @@ import ru.ls.pjwt.dto.api.response.LoginResponse;
 import ru.ls.pjwt.dto.api.response.RegisterResponse;
 import ru.ls.pjwt.service.auth.AuthService;
 import ru.ls.pjwt.service.auth.token.TokenService;
-import ru.ls.pjwt.utils.ApiResponse;
+import ru.ls.pjwt.utils.api.ApiResponse;
 
 //todo токены в httpOnlyCookies, а не в dto, который может посмотреть js
 @Slf4j
