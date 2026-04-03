@@ -29,13 +29,13 @@ public class AuthService {
 
     public User authenticate(String username, String password) {
         log.debug("auth process started with username: {}", username);
-        User user = userService.loadUser(username);
+        User user = userService.findUserByUsername(username);
         if (!passwordEncoder.matches(password, user.getPassword())) {
             log.debug("wrong password; throwing bad credentials");
             throw new BadCredentialsException(exceptionsProperties.badCredentials());
         }
         log.debug("password exists");
-        userValidator.checkAccountStatus(user);
+        userValidator.validateAccountStatus(user);
         log.info("user {} authenticated", username);
         return user;
     }

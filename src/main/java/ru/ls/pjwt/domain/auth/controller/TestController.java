@@ -20,19 +20,19 @@ public class TestController {
     private final ApiResponse apiResponse;
 
     @GetMapping("/public")
-    public ResponseEntity<StandardResponse<Void>> publicData() {
+    public ResponseEntity<StandardResponse<Void>> getPublicData() {
         log.debug("someone get public data");
         return apiResponse.success("public data", HttpStatus.OK);
     }
 
     @GetMapping("/protected")
-    public ResponseEntity<StandardResponse<UserDetails>> protectedData(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<StandardResponse<UserDetails>> getProtectedData(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("request to protected endpoint {}", userDetails.getUsername());
         return apiResponse.success(userDetails, "your details", HttpStatus.OK);
     }
 
     @GetMapping("/user-only")
-    public ResponseEntity<StandardResponse<Void>> userOnly() {
+    public ResponseEntity<StandardResponse<Void>> getUserOnlyData() {
         log.debug("request to user only endpoint");
         return apiResponse.success("userOnly data", HttpStatus.OK);
     }

@@ -20,7 +20,7 @@ public class AccessTokenService {
     private final UserMapper userMapper;
 
     public String createAccessToken(JwtClaims refreshTokenClaims, User user) {
-        jwtValidator.checkType(jwtProperties.getRefreshToken(), refreshTokenClaims);
+        jwtValidator.validateType(jwtProperties.getRefreshToken(), refreshTokenClaims);
         return jwtFactory.createAccessToken(userMapper.userEntityToUserDetails(user));
     }
 }

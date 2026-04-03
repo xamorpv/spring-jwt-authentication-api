@@ -15,7 +15,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.ls.pjwt.security.filter.JwtFilter;
 import ru.ls.pjwt.common.property.AuthoritiesProperties;
-import ru.ls.pjwt.common.web.api.JsonApiResponse;
+import ru.ls.pjwt.common.web.api.HttpResponseWriter;
 
 @Slf4j
 @Configuration
@@ -24,7 +24,7 @@ import ru.ls.pjwt.common.web.api.JsonApiResponse;
 public class SecurityConfig {
     private final AuthoritiesProperties authoritiesProperties;
     private final JwtFilter jwtFilter;
-    private final JsonApiResponse jsonApiResponse;
+    private final HttpResponseWriter httpResponseWriter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -52,7 +52,7 @@ public class SecurityConfig {
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, e) -> {
             log.error("authentication entry point: {}", e.getMessage(), e);
-            jsonApiResponse.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
+            httpResponseWriter.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
                     "; hint: maybe you forgot header Authorization: Bearer <token> to become authenticated");
         };
     }
@@ -61,7 +61,7 @@ public class SecurityConfig {
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, e) -> {
             log.error("access denied: {}", e.getMessage(), e);
-            jsonApiResponse.writeError(response, HttpStatus.FORBIDDEN, "permission denied (you don't have authorities to use this endpoint)");
+            httpResponseWriter.writeError(response, HttpStatus.FORBIDDEN, "permission denied (you don't have authorities to use this endpoint)");
         };
     }
 }

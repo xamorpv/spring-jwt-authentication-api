@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JsonApiResponse {
+public class HttpResponseWriter {
     private final TimeUtils timeUtils;
     private final JsonUtils jsonUtils;
 

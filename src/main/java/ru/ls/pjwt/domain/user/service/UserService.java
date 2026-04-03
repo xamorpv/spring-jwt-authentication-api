@@ -27,13 +27,13 @@ public class UserService {
         user.setUsername(registerRequest.username());
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
         user.setEmail(registerRequest.email());
-        authorityService.addUserAuthority(user);
+        authorityService.assignDefaultRole(user);
         log.debug("user {} saved", user.getUsername());
         return userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
-    public User loadUser(String username) {
+    public User findUserByUsername(String username) {
         log.debug("loading user {}...", username);
         return userRepository.findByUsername(username).orElseThrow(() -> new BadCredentialsException(exceptionsProperties.badCredentials()));
     }

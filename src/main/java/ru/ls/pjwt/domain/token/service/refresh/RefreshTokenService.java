@@ -37,7 +37,7 @@ public class RefreshTokenService {
 
     @Transactional
     public RefreshToken getToken(JwtClaims jwtClaims) {
-        jwtValidator.checkType(jwtProperties.getRefreshToken(), jwtClaims);
+        jwtValidator.validateType(jwtProperties.getRefreshToken(), jwtClaims);
 
         String uuid = jwtClaims.uuid();
         if (uuid == null) {
