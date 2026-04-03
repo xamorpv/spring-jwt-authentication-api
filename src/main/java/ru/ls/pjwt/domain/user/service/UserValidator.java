@@ -15,10 +15,9 @@ import ru.ls.pjwt.common.property.ExceptionsProperties;
 @Service
 public class UserValidator {
     private final ExceptionsProperties exceptionsProperties;
-    private final UserService userService;
 
-    public void checkAccountStatus(User user) {
-        log.debug("check status {}", user);
+    public void validateAccountStatus(User user) {
+        log.debug("validating status {}", user);
 
         if (!user.isAccountNonExpired()) {
             throw new AccountExpiredException(exceptionsProperties.accountExpired());
@@ -34,13 +33,5 @@ public class UserValidator {
         }
 
         log.debug("status {} success", user.getUsername());
-    }
-
-    public User validateUsername(String username) {
-        log.debug("validating username {}", username);
-        User user = userService.loadUser(username);
-        log.debug("user loaded {}", user.getUsername());
-        checkAccountStatus(user);
-        return user;
     }
 }

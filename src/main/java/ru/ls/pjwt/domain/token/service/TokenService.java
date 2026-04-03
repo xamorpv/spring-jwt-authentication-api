@@ -13,6 +13,7 @@ import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.mapper.UserMapper;
+import ru.ls.pjwt.domain.user.service.UserService;
 import ru.ls.pjwt.domain.user.service.UserValidator;
 
 @Slf4j
@@ -25,13 +26,15 @@ public class TokenService {
     private final JwtParser claimsFactory;
     private final AccessTokenService accessTokenService;
     private final UserValidator userValidator;
+    private final UserService userService;
     private final UserMapper userMapper;
 
     @Transactional
     public LoginResponse refreshTokens(String token) {
         JwtClaims jwtClaims = claimsFactory.parseToken(token);
         log.debug("refreshing tokens for username={}", jwtClaims.username());
-        User user = userValidator.validateUsername(jwtClaims.username());
+        User user = userService.findUserByUsername(jwtClaims.username());
+        userValidator.validateAccountStatus(user);
         String accessToken = accessTokenService.createAccessToken(jwtClaims, user);
         String refreshToken = refreshTokenFactory.rotateRefreshToken(jwtClaims, user);
         log.debug("successful refresh for {}", jwtClaims.username());
