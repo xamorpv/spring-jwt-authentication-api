@@ -1,4 +1,4 @@
-package ru.ls.pjwt.common.web.advice.handler;
+package ru.ls.pjwt.common.web.handler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
