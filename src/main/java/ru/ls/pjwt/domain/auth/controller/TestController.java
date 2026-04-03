@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ls.pjwt.common.web.api.dto.StandardResponse;
+import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.common.web.api.ApiResponse;
 
 @Slf4j

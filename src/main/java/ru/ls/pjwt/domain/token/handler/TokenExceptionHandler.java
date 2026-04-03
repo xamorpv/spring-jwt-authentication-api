@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.common.web.api.ApiResponse;
-import ru.ls.pjwt.common.web.api.dto.ErrorResponse;
-import ru.ls.pjwt.common.web.api.dto.StandardResponse;
+import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
+import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 

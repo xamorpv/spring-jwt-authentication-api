@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.ls.pjwt.common.web.api.dto.StandardResponse;
+import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import tools.jackson.core.type.TypeReference;

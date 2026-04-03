@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.common.web.api.ApiResponse;
-import ru.ls.pjwt.common.web.api.dto.ErrorResponse;
-import ru.ls.pjwt.common.web.api.dto.StandardResponse;
+import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
+import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
 import ru.ls.pjwt.common.web.exception.ServerError;
-import ru.ls.pjwt.common.web.exception.dto.FieldErrorDto;
+import ru.ls.pjwt.common.web.dto.exception.FieldErrorDto;
 
 import java.util.ArrayList;
 import java.util.List;
