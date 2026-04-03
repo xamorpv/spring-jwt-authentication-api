@@ -18,13 +18,6 @@ public class RefreshTokenManager {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public void compromise(RefreshToken refreshToken) {
-        log.debug("compromising token {}", refreshToken);
-        refreshToken.setCompromised(true);
-        refreshTokenRepository.save(refreshToken);
-    }
-
-    @Transactional
     public void use(RefreshToken refreshToken) {
         try {
             log.debug("using token {}", refreshToken);
