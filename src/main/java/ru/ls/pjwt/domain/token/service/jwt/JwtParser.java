@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ru.ls.pjwt.domain.token.dto.JwtClaims;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.common.property.ApplicationProperties;
 import ru.ls.pjwt.common.property.JwtProperties;
@@ -24,7 +25,13 @@ public class JwtParser {
     private final JwtProperties jwtProperties;
     private final ApplicationProperties applicationProperties;
 
-    public Claims getClaims(String token) {
+    public JwtClaims parseToken(String token) {
+        Claims claims = getClaims(token);
+        UserDetails userDetails = extractUserDetails(claims);
+        return new JwtClaims(claims, userDetails, getUuid(claims), userDetails.getUsername(), token);
+    }
+
+    private Claims getClaims(String token) {
         try {
             return Jwts.parser()
                     .verifyWith(jwtProperties.getSecretKey()) // подпись и expiration time уже проверены. username нужно проверить на null, а его наличие уже проверено
@@ -41,7 +48,7 @@ public class JwtParser {
         }
     }
 
-    public UserDetails extractUserDetails(Claims claims) {
+    private UserDetails extractUserDetails(Claims claims) {
         log.debug("extract userDetails for claims {}", claims);
         String username = claims.getSubject();
         if (username == null) {
@@ -57,7 +64,7 @@ public class JwtParser {
                 new HashSet<>() : authorities.stream().map(SimpleGrantedAuthority::new).toList());
     }
 
-    public String getUuid(Claims claims) {
+    private String getUuid(Claims claims) {
         return claims.get("uuid", String.class);
     }
 }

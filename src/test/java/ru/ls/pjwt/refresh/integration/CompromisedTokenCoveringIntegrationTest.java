@@ -11,10 +11,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
+import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
+import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenValidator;
 import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import ru.ls.pjwt.helper.ThreadHelper;
-import ru.ls.pjwt.domain.token.service.jwt.JwtClaimsParser;
-import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenValidator;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
@@ -50,7 +50,7 @@ public class CompromisedTokenCoveringIntegrationTest {
     private RefreshTokenValidator refreshTokenValidator;
 
     @Autowired
-    private JwtClaimsParser claimsFactory;
+    private JwtParser jwtParser;
 
     @Autowired
     private ThreadHelper threadHelper;
@@ -66,7 +66,7 @@ public class CompromisedTokenCoveringIntegrationTest {
             threadHelper.runInIndependentThread(() -> integrationRequestHelper.assertFailureRefresh(refreshTokenA));
             return invocation.callRealMethod();
         }).when(refreshTokenValidator).checkUsed(argThat(r ->
-                r.getUuid().equals(claimsFactory.createJwtClaims(refreshTokenB.refreshToken()).uuid())));
+                r.getUuid().equals(jwtParser.parseToken(refreshTokenB.refreshToken()).uuid())));
 
         integrationRequestHelper.assertFailureRefresh(refreshTokenB); // затирание токена в doAnswer должно быть обнаружено через версию
     }

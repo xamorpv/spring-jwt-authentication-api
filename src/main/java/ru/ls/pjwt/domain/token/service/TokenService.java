@@ -8,8 +8,8 @@ import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.service.AuthService;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
-import ru.ls.pjwt.domain.token.service.jwt.JwtClaimsParser;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFactory;
+import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.mapper.UserMapper;
@@ -22,14 +22,14 @@ public class TokenService {
     private final JwtFactory jwtFactory;
     private final AuthService authService;
     private final RefreshTokenFactory refreshTokenFactory;
-    private final JwtClaimsParser claimsFactory;
+    private final JwtParser claimsFactory;
     private final AccessTokenService accessTokenService;
     private final UserValidator userValidator;
     private final UserMapper userMapper;
 
     @Transactional
     public LoginResponse refreshTokens(String token) {
-        JwtClaims jwtClaims = claimsFactory.createJwtClaims(token);
+        JwtClaims jwtClaims = claimsFactory.parseToken(token);
         log.debug("refreshing tokens for username={}", jwtClaims.username());
         User user = userValidator.validateUsername(jwtClaims.username());
         String accessToken = accessTokenService.createAccessToken(jwtClaims, user);
