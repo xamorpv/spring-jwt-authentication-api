@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.domain.user.entity.Authority;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.common.web.exception.ServerError;
-import ru.ls.pjwt.common.properties.AuthoritiesProperties;
+import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import ru.ls.pjwt.domain.user.repository.AuthorityRepository;
 
 @Slf4j

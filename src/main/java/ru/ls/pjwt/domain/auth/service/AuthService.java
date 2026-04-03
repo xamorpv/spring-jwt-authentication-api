@@ -11,7 +11,7 @@ import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
 import ru.ls.pjwt.domain.user.mapper.UserMapper;
-import ru.ls.pjwt.common.properties.ExceptionsProperties;
+import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.domain.user.repository.UserRepository;
 import ru.ls.pjwt.domain.user.service.UserSecurity;
 import ru.ls.pjwt.domain.user.service.UserService;

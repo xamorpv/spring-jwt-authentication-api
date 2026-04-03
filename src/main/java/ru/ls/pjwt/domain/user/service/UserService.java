@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.user.entity.User;
-import ru.ls.pjwt.common.properties.ExceptionsProperties;
+import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.domain.user.repository.UserRepository;
 
 @Slf4j

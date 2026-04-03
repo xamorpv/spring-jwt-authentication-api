@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.ls.pjwt.common.properties.ExceptionsProperties;
+import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.common.web.api.ApiResponse;
 import ru.ls.pjwt.common.web.api.dto.ErrorResponse;
 import ru.ls.pjwt.common.web.api.dto.StandardResponse;

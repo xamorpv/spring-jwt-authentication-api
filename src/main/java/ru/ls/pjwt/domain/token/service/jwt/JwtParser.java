@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
-import ru.ls.pjwt.common.properties.ApplicationProperties;
-import ru.ls.pjwt.common.properties.JwtProperties;
+import ru.ls.pjwt.common.property.ApplicationProperties;
+import ru.ls.pjwt.common.property.JwtProperties;
 
 import java.util.HashSet;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ru.ls.pjwt.common.properties;
+package ru.ls.pjwt.common.property;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

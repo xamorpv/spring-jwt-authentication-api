@@ -8,7 +8,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.domain.user.entity.User;
-import ru.ls.pjwt.common.properties.ExceptionsProperties;
+import ru.ls.pjwt.common.property.ExceptionsProperties;
 
 @RequiredArgsConstructor
 @Slf4j

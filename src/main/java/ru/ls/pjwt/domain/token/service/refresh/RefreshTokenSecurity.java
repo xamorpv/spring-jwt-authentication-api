@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.domain.token.entity.RefreshToken;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
-import ru.ls.pjwt.common.properties.ExceptionsProperties;
+import ru.ls.pjwt.common.property.ExceptionsProperties;
 
 @Slf4j
 @Service

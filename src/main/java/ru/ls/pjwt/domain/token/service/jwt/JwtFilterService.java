@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
-import ru.ls.pjwt.common.properties.JwtProperties;
+import ru.ls.pjwt.common.property.JwtProperties;
 
 @Service
 @RequiredArgsConstructor

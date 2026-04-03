@@ -1,4 +1,4 @@
-package ru.ls.pjwt.common.web.handlers;
+package ru.ls.pjwt.common.web.advice.handler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-import ru.ls.pjwt.common.properties.ExceptionsProperties;
+import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.common.web.api.ApiResponse;
 import ru.ls.pjwt.common.web.api.dto.ErrorResponse;
 import ru.ls.pjwt.common.web.api.dto.StandardResponse;

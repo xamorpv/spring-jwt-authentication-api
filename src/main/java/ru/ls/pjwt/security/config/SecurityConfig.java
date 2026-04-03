@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.ls.pjwt.security.filter.JwtFilter;
-import ru.ls.pjwt.common.properties.AuthoritiesProperties;
+import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import ru.ls.pjwt.common.web.api.JsonApiResponse;
 
 @Slf4j

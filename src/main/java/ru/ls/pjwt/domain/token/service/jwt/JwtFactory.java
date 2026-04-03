@@ -9,10 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.domain.token.dto.CreatedRefreshToken;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
-import ru.ls.pjwt.common.properties.ApplicationProperties;
-import ru.ls.pjwt.common.utils.TimeUtils;
-import ru.ls.pjwt.common.utils.UUIDUtils;
-import ru.ls.pjwt.common.properties.JwtProperties;
+import ru.ls.pjwt.common.property.ApplicationProperties;
+import ru.ls.pjwt.common.util.TimeUtils;
+import ru.ls.pjwt.common.util.UUIDUtils;
+import ru.ls.pjwt.common.property.JwtProperties;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

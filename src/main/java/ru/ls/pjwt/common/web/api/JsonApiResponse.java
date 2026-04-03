@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.ls.pjwt.common.web.api.dto.ErrorResponse;
 import ru.ls.pjwt.common.web.api.dto.StandardResponse;
-import ru.ls.pjwt.common.utils.JsonUtils;
-import ru.ls.pjwt.common.utils.TimeUtils;
+import ru.ls.pjwt.common.util.JsonUtils;
+import ru.ls.pjwt.common.util.TimeUtils;
 
 import java.io.IOException;
 

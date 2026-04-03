@@ -14,7 +14,7 @@ import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
-import ru.ls.pjwt.common.properties.AuthoritiesProperties;
+import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;

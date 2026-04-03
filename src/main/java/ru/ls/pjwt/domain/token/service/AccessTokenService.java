@@ -8,7 +8,7 @@ import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.mapper.UserMapper;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFactory;
 import ru.ls.pjwt.domain.token.service.jwt.JwtSecurity;
-import ru.ls.pjwt.common.properties.JwtProperties;
+import ru.ls.pjwt.common.property.JwtProperties;
 
 @Slf4j
 @Service

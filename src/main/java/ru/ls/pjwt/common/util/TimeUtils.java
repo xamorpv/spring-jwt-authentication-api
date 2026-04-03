@@ -1,10 +1,10 @@
-package ru.ls.pjwt.common.utils;
+package ru.ls.pjwt.common.util;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.ls.pjwt.common.properties.FormatProperties;
+import ru.ls.pjwt.common.property.FormatProperties;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
