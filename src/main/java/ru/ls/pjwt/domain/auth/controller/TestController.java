@@ -21,7 +21,7 @@ public class TestController {
 
     @GetMapping("/public")
     public ResponseEntity<StandardResponse<Void>> getPublicData() {
-        log.debug("someone get public data");
+        log.debug("public data requested");
         return apiResponse.success("public data", HttpStatus.OK);
     }
 
