@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import ru.ls.pjwt.common.database.entity.TimestampedEntity;
 import ru.ls.pjwt.domain.user.entity.User;
 
@@ -16,7 +15,6 @@ import java.time.Instant;
 @Getter
 @Setter
 public class RefreshToken extends TimestampedEntity {
-    @ToString.Exclude
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,7 +23,6 @@ public class RefreshToken extends TimestampedEntity {
     @Column(nullable = false, unique = true, name = "token_uuid", length = 64)
     private String uuid;
 
-    @ToString.Exclude
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;

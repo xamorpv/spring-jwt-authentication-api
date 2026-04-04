@@ -20,7 +20,7 @@ public class RefreshTokenManager {
     @Transactional
     public void use(RefreshToken refreshToken) {
         try {
-            log.debug("using token {}", refreshToken);
+            log.debug("using token {}", refreshToken.getUuid());
             refreshToken.setUsed(true);
             refreshToken.setUsedAt(Instant.now());
             refreshTokenRepository.saveAndFlush(refreshToken);
@@ -33,7 +33,7 @@ public class RefreshTokenManager {
     @Transactional
     public boolean compromiseIfUsed(RefreshToken refreshToken) {
         if (refreshToken.isUsed()) {
-            log.warn("token already used: {}", refreshToken);
+            log.warn("token already used: {}", refreshToken.getUuid());
             if (refreshToken.isCompromised()) {
                 log.warn("token already compromised; throw exception and do nothing");
             } else {

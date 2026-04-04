@@ -35,7 +35,7 @@ public class RefreshTokenFactory {
         refreshTokenManager.use(refreshTokenService.getToken(token));
         CreatedRefreshToken newToken = jwtFactory.updateRefreshToken(token);
         RefreshToken refreshToken = refreshTokenService.save(newToken, user);
-        log.debug("refresh token updated: {}", refreshToken);
+        log.debug("refresh token updated: {}", refreshToken.getUuid());
         return newToken.token();
     }
 }

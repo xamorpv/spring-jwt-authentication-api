@@ -58,6 +58,8 @@ public class TokenService {
 
     @Transactional
     public void invalidateRefreshToken(String token) {
-        refreshTokenService.markTokenAsUsed(jwtParser.parseToken(token));
+        JwtClaims jwtClaims = jwtParser.parseToken(token);
+        log.info("invalidating refresh token: {}", jwtClaims.uuid());
+        refreshTokenService.markTokenAsUsed(jwtClaims);
     }
 }

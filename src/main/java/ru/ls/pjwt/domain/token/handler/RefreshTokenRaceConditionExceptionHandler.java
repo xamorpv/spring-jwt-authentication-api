@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ls.pjwt.domain.token.entity.RefreshToken;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.domain.token.repository.RefreshTokenRepository;
@@ -18,7 +19,9 @@ public class RefreshTokenRaceConditionExceptionHandler {
 
     @Transactional
     public void handleException(RefreshTokenRaceConditionException e) {
-        refreshTokenManager.compromiseIfUsed(refreshTokenRepository.findById(e.getTokenId()).orElseThrow(
-                () -> new JwtTokenRequestException("token not found")));
+        RefreshToken compromisedRefreshToken = refreshTokenRepository.findById(e.getTokenId()).orElseThrow(
+                () -> new JwtTokenRequestException("token not found"));
+        log.warn("RefreshToken race condition with {}", compromisedRefreshToken.getUuid());
+        refreshTokenManager.compromiseIfUsed(compromisedRefreshToken);
     }
 }

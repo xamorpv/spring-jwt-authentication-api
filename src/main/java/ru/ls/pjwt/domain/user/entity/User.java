@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +12,6 @@ import java.util.Set;
 @Table(name = "users")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class User {
     @Id
@@ -37,7 +35,6 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled = true;
 
-    @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "users_authorities",
             joinColumns = @JoinColumn(name = "user_id"),
