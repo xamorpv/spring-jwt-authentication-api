@@ -17,8 +17,6 @@ public class UserValidator {
     private final ExceptionsProperties exceptionsProperties;
 
     public void validateAccountStatus(User user) {
-        log.debug("validating status {}", user);
-
         if (!user.isAccountNonExpired()) {
             throw new AccountExpiredException(exceptionsProperties.accountExpired());
         }
@@ -31,7 +29,5 @@ public class UserValidator {
         if (!user.isEnabled()) {
             throw new DisabledException(exceptionsProperties.accountDisabled());
         }
-
-        log.debug("status {} success", user.getUsername());
     }
 }

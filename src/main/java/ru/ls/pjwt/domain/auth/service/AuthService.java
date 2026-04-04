@@ -24,19 +24,18 @@ public class AuthService {
     private final UserMapper userMapper;
 
     public User authenticate(String username, String password) {
-        log.debug("auth process started with username: {}", username);
         User user = userService.findUserByUsername(username);
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            log.debug("wrong password; throwing bad credentials");
             throw new BadCredentialsException(exceptionsProperties.badCredentials());
         }
-        log.debug("password exists");
         userValidator.validateAccountStatus(user);
         log.info("user {} authenticated", username);
         return user;
     }
 
     public RegisterResponse register(RegisterRequest registerRequest) {
-        return userMapper.userToResponse(userService.registerNewUser(registerRequest));
+        RegisterResponse registerResponse = userMapper.userToResponse(userService.registerNewUser(registerRequest));
+        log.info("user registered successfully: {}", registerResponse);
+        return registerResponse;
     }
 }

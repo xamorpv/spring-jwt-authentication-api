@@ -51,7 +51,8 @@ public class SecurityConfig {
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, e) -> {
-            log.error("authentication entry point: {}", e.getMessage(), e);
+            log.warn("authentication entry point: {}", e.getMessage());
+            log.trace("entry point exception: ", e);
             httpResponseWriter.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
                     "; hint: maybe you forgot header Authorization: Bearer <token> to become authenticated");
         };
@@ -60,7 +61,8 @@ public class SecurityConfig {
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, e) -> {
-            log.error("access denied: {}", e.getMessage(), e);
+            log.warn("access denied: {}", e.getMessage());
+            log.trace("access denied exception: ", e);
             httpResponseWriter.writeError(response, HttpStatus.FORBIDDEN, "permission denied (you don't have authorities to use this endpoint)");
         };
     }

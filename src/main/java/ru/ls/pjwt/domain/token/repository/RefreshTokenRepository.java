@@ -14,7 +14,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     @Modifying
     @Query("delete from RefreshToken rt where (rt.usedAt is null and rt.createdAt < :time) or (rt.used = true and rt.usedAt < :time)")
-    void deleteUsedBefore(@Param("time") Instant time);
+    int deleteUsedBefore(@Param("time") Instant time);
 
     @Modifying(clearAutomatically = true)
     @Query("update RefreshToken rt set rt.compromised = true, rt.used = true, rt.usedAt = CURRENT_TIMESTAMP, rt.version = rt.version + 1" +

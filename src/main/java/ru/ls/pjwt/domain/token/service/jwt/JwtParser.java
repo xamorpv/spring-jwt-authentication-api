@@ -28,7 +28,9 @@ public class JwtParser {
     public JwtClaims parseToken(String token) {
         Claims claims = getClaims(token);
         UserDetails userDetails = extractUserDetails(claims);
-        return new JwtClaims(claims, userDetails, getUuid(claims), userDetails.getUsername(), token);
+        String uuid = getUuid(claims);
+        log.debug("token parsed successfully with uuid: {}", uuid);
+        return new JwtClaims(claims, userDetails, uuid, userDetails.getUsername(), token);
     }
 
     private Claims getClaims(String token) {
@@ -49,7 +51,6 @@ public class JwtParser {
     }
 
     private UserDetails extractUserDetails(Claims claims) {
-        log.debug("extract userDetails for claims {}", claims);
         String username = claims.getSubject();
         if (username == null) {
             log.warn("username not found");
@@ -59,7 +60,6 @@ public class JwtParser {
         @SuppressWarnings("unchecked")
         List<String> authorities = claims.get("authorities", List.class);
 
-        log.debug("userDetails extracted successfully: username={}, authorities: {}", username, authorities);
         return new User(username, "", authorities == null ?
                 new HashSet<>() : authorities.stream().map(SimpleGrantedAuthority::new).toList());
     }
