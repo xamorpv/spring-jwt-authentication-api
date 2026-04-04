@@ -42,8 +42,8 @@ public class RefreshTokenValidatorCompromisingIntegrationTest {
         RegisterRequest user1 = new RegisterRequest("test1", "test1@example.com", "12345677890");
         RegisterRequest user2 = new RegisterRequest("test2", "test2@example.com", "12345677890");
 
-        LoginRequest user1LoginRequest = new LoginRequest(user1.username(), user1.password());
-        LoginRequest user2LoginRequest = new LoginRequest(user2.username(), user2.password());
+        LoginRequest user1LoginRequest = new LoginRequest(user1.username(), user1.rawPassword());
+        LoginRequest user2LoginRequest = new LoginRequest(user2.username(), user2.rawPassword());
 
         integrationRequestHelper.assertSuccessRegistration(user1);
         integrationRequestHelper.assertSuccessRegistration(user2);

@@ -9,6 +9,6 @@ public record RegisterRequest(
         @ValidString(max = 255) @Email(message = "{validation.email}")
         String email,
         @ValidString(min = 8, max = 128)
-        String password
+        String rawPassword
 ) {
 }

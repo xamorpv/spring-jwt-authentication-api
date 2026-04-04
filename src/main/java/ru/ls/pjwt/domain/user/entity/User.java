@@ -23,8 +23,8 @@ public class User {
     private String username;
     @Column(nullable = false, unique = true, name = "email")
     private String email;
-    @Column(name = "password", length = 128, nullable = false) // len 128 для расширяемости
-    private String password;
+    @Column(name = "rawPassword", length = 128, nullable = false) // len 128 для расширяемости
+    private String passwordHash;
 
     @Column(name = "account_non_expired")
     private boolean accountNonExpired = true;

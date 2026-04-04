@@ -7,11 +7,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
-import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
-import ru.ls.pjwt.domain.auth.mapper.UserMapper;
-import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.common.property.ExceptionsProperties;
+import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
+import ru.ls.pjwt.domain.auth.mapper.UserMapper;
+import ru.ls.pjwt.domain.user.dto.CreateUserCommand;
+import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.repository.UserRepository;
 
 @Slf4j
@@ -25,9 +25,10 @@ public class UserService {
     private final UserMapper userMapper;
 
     @Transactional
-    public User saveNewUser(RegisterRequest registerRequest) {
-        log.debug("saving user {}", registerRequest.username());
-        User user = userMapper.requestToUser(registerRequest, passwordEncoder.encode(registerRequest.password()));
+    public User saveNewUser(CreateUserCommand createUserCommand) {
+        log.debug("saving user {}", createUserCommand.username());
+        User user = userMapper.requestToUser(createUserCommand,
+                passwordEncoder.encode(createUserCommand.rawPassword()));
         authorityService.assignDefaultRole(user);
         log.debug("user {} saved", user.getUsername());
         return userRepository.save(user);
@@ -40,20 +41,20 @@ public class UserService {
     }
 
     @Transactional
-    public User registerNewUser(RegisterRequest registerRequest) {
-        if (userRepository.existsByEmail(registerRequest.email())) {
+    public User registerNewUser(CreateUserCommand createUserCommand) {
+        if (userRepository.existsByEmail(createUserCommand.email())) {
             throw new NotUniqueDataException(exceptionsProperties.emailExists());
         }
-        if (userRepository.existsByUsername(registerRequest.username())) {
+        if (userRepository.existsByUsername(createUserCommand.username())) {
             throw new NotUniqueDataException(exceptionsProperties.userExists());
         }
 
         try {
-            log.debug("register: user {}", registerRequest.username());
-            return saveNewUser(registerRequest);
+            log.debug("register: user {}", createUserCommand.username());
+            return saveNewUser(createUserCommand);
         } catch (DataIntegrityViolationException e) {
             log.warn("race condition during registration for user {} or email {}. error: {}",
-                    registerRequest.username(), registerRequest.email(), e.getMessage(), e); // на всякий случай логируем - вдруг это непредвиденная ошибка бд (если добавится какой-то функционал)
+                    createUserCommand.username(), createUserCommand.email(), e.getMessage(), e); // на всякий случай логируем - вдруг это непредвиденная ошибка бд (если добавится какой-то функционал)
             throw new NotUniqueDataException(exceptionsProperties.emailOrUserExists());
         }
     }

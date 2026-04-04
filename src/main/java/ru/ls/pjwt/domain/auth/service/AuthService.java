@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
+import ru.ls.pjwt.domain.auth.mapper.CommandMapper;
 import ru.ls.pjwt.domain.auth.mapper.UserMapper;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.service.UserService;
@@ -22,10 +23,11 @@ public class AuthService {
     private final UserService userService;
     private final UserValidator userValidator;
     private final UserMapper userMapper;
+    private final CommandMapper commandMapper;
 
     public User authenticate(String username, String password) {
         User user = userService.findUserByUsername(username);
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
             throw new BadCredentialsException(exceptionsProperties.badCredentials());
         }
         userValidator.validateAccountStatus(user);
@@ -34,7 +36,9 @@ public class AuthService {
     }
 
     public RegisterResponse register(RegisterRequest registerRequest) {
-        RegisterResponse registerResponse = userMapper.userToResponse(userService.registerNewUser(registerRequest));
+        RegisterResponse registerResponse = userMapper.userToResponse(
+                userService.registerNewUser(commandMapper.registerRequestToCommand(registerRequest))
+        );
         log.info("user registered successfully: {}", registerResponse);
         return registerResponse;
     }

@@ -1,8 +1,8 @@
 package ru.ls.pjwt.domain.auth.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
+import ru.ls.pjwt.domain.user.dto.CreateUserCommand;
 import ru.ls.pjwt.domain.user.entity.Authority;
 import ru.ls.pjwt.domain.user.entity.User;
 
@@ -15,11 +15,11 @@ public class UserMapper {
                 user.getAuthorities().stream().map(Authority::getAuthority).collect(Collectors.toSet()));
     }
 
-    public User requestToUser(RegisterRequest registerRequest, String rawPassword) {
+    public User requestToUser(CreateUserCommand createUserCommand, String passwordHash) {
         User user = new User();
-        user.setUsername(registerRequest.username());
-        user.setPassword(rawPassword);
-        user.setEmail(registerRequest.email());
+        user.setUsername(createUserCommand.username());
+        user.setEmail(createUserCommand.email());
+        user.setPasswordHash(passwordHash);
         return user;
     }
 }
