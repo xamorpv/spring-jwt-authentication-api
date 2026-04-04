@@ -22,11 +22,15 @@ import ru.ls.pjwt.domain.user.service.UserValidator;
 @RequiredArgsConstructor
 public class TokenService {
     private final JwtFactory jwtFactory;
-    private final AuthService authService;
+    private final JwtParser jwtParser;
+
+    private final AccessTokenService accessTokenService;
+
     private final RefreshTokenFactory refreshTokenFactory;
     private final RefreshTokenService refreshTokenService;
-    private final JwtParser jwtParser;
-    private final AccessTokenService accessTokenService;
+
+    private final AuthService authService;
+
     private final UserValidator userValidator;
     private final UserService userService;
     private final UserMapper userMapper;
