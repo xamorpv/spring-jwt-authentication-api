@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
-import ru.ls.pjwt.domain.auth.mapper.UserMapper;
+import ru.ls.pjwt.domain.auth.mapper.AuthUserMapper;
 import ru.ls.pjwt.domain.user.dto.CreateUserCommand;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.repository.UserRepository;
@@ -22,12 +22,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
+    private final AuthUserMapper authUserMapper;
 
     @Transactional
     public User saveNewUser(CreateUserCommand createUserCommand) {
         log.debug("saving user {}", createUserCommand.username());
-        User user = userMapper.requestToUser(createUserCommand,
+        User user = authUserMapper.requestToUser(createUserCommand,
                 passwordEncoder.encode(createUserCommand.rawPassword()));
         authorityService.assignDefaultRole(user);
         log.debug("user {} saved", user.getUsername());

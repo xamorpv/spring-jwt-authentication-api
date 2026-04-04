@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.ls.pjwt.domain.user.entity.User;
 
 @Component
-public class UserMapper {
+public class UserToDetailsMapper {
     public UserDetails userEntityToUserDetails(User user) {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())

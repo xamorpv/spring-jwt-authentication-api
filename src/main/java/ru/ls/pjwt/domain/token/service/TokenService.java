@@ -13,7 +13,7 @@ import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenFactory;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenService;
 import ru.ls.pjwt.domain.user.entity.User;
-import ru.ls.pjwt.domain.user.mapper.UserMapper;
+import ru.ls.pjwt.domain.user.mapper.UserToDetailsMapper;
 import ru.ls.pjwt.domain.user.service.UserService;
 import ru.ls.pjwt.domain.user.service.UserValidator;
 
@@ -33,7 +33,7 @@ public class TokenService {
 
     private final UserValidator userValidator;
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserToDetailsMapper userToDetailsMapper;
 
     @Transactional
     public LoginResponse refreshTokens(String token) {
@@ -51,7 +51,7 @@ public class TokenService {
     public LoginResponse createTokens(LoginRequest loginRequest) {
         log.info("creating tokens for login request {}", loginRequest.username());
         User user = authService.authenticate(loginRequest.username(), loginRequest.password());
-        String accessToken = jwtFactory.createAccessToken(userMapper.userEntityToUserDetails(user));
+        String accessToken = jwtFactory.createAccessToken(userToDetailsMapper.userEntityToUserDetails(user));
         String refreshToken = refreshTokenFactory.createAndSaveToken(user);
         return new LoginResponse(refreshToken, accessToken);
     }
