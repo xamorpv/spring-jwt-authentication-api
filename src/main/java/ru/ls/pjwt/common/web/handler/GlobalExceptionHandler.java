@@ -30,25 +30,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> badCredentials(BadCredentialsException e) {
-        log.error("bad credentials: {}", e.getMessage(), e);
+        log.warn("bad credentials: {}", e.getMessage());
         return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(AccountStatusException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> accountStatus(AccountStatusException e) {
-        log.error("account status exception: {}", e.getMessage(), e);
+        log.warn("account status exception: {}", e.getMessage());
         return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(NotUniqueDataException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> notUniqueData(NotUniqueDataException e) {
-        log.error(e.getMessage(), e);
+        log.warn(e.getMessage());
         return apiResponse.error(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> noResourceFound(NoResourceFoundException e) {
-        log.error(e.getMessage(), e);
+        log.warn(e.getMessage());
         return apiResponse.error(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
         List<FieldErrorDto> errors = new ArrayList<>();
         e.getFieldErrors().forEach(fe ->
                 errors.add(new FieldErrorDto(fe.getField(), fe.getDefaultMessage())));
-        log.error("validation exception: {}. errors: {}", e.getMessage(), errors, e);
+        log.warn("validation exception: {}. errors: {}", e.getMessage(), errors);
         return apiResponse.errorInFields(HttpStatus.BAD_REQUEST, exceptionsProperties.validationFailed(), errors);
     }
 }
