@@ -11,7 +11,6 @@ import ru.ls.pjwt.domain.token.dto.JwtClaims;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFactory;
 import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenFactory;
-import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenManager;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenService;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.mapper.UserMapper;
@@ -27,7 +26,6 @@ public class TokenService {
     private final RefreshTokenFactory refreshTokenFactory;
     private final RefreshTokenService refreshTokenService;
     private final JwtParser jwtParser;
-    private final RefreshTokenManager refreshTokenManager;
     private final AccessTokenService accessTokenService;
     private final UserValidator userValidator;
     private final UserService userService;
