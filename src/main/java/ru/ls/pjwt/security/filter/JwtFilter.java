@@ -56,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             SecurityContextHolder.clearContext(); // стандарт безопасности
-            log.error("exception in filter: {}", e.getMessage(), e);
+            log.warn("exception in filter: {}", e.getMessage());
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
     }

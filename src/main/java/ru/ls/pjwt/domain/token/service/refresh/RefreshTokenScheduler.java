@@ -22,6 +22,6 @@ public class RefreshTokenScheduler {
     @Transactional
     public void clearRefreshTokens() {
         int count = refreshTokenRepository.deleteUsedBefore(Instant.now().minus(jwtProperties.getRefreshTokenExpirationDays()+30, ChronoUnit.DAYS));
-        log.debug("cleared {} tokens", count);
+        log.info("cleared {} tokens", count);
     }
 }
