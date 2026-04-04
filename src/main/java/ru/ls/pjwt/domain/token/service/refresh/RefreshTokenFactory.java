@@ -19,7 +19,7 @@ public class RefreshTokenFactory {
     private final RefreshTokenManager refreshTokenManager;
 
     public String createAndSaveToken(User user) {
-        log.debug("trying save token for user: {}", user.getUsername());
+        log.debug("saving token for user: {}", user.getUsername());
         CreatedRefreshToken createdRefreshToken = jwtFactory.createRefreshToken(user.getUsername());
         RefreshToken refreshToken = refreshTokenService.save(createdRefreshToken, user);
         log.debug("refresh token saved for username {}, token: {}", user.getUsername(), refreshToken.getUuid());

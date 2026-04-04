@@ -39,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             String header = request.getHeader("Authorization");
             if (header == null || !header.startsWith("Bearer ")) {
-                log.debug("jwt token exception in filter: wrong header");
+                log.debug("no Bearer token in request, skipping authentication");
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -52,7 +52,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             context.setAuthentication(token);
 
-            log.info("user {} authenticated with token", userDetails.getUsername());
+            log.info("user with username={} authenticated with token", userDetails.getUsername());
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             SecurityContextHolder.clearContext(); // стандарт безопасности

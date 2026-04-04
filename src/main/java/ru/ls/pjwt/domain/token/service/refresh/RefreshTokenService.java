@@ -29,7 +29,7 @@ public class RefreshTokenService {
     @Transactional
     public void markTokenAsUsed(JwtClaims claims) {
         RefreshToken refreshToken = getToken(claims);
-        log.debug("try delete token {}", refreshToken.getUuid());
+        log.debug("marking token as used: {}", refreshToken.getUuid());
         refreshTokenManager.use(refreshToken);
     }
 

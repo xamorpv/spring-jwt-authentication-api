@@ -35,9 +35,9 @@ public class RefreshTokenManager {
         if (refreshToken.isUsed()) {
             log.warn("token already used: {}", refreshToken.getUuid());
             if (refreshToken.isCompromised()) {
-                log.warn("token already compromised; throw exception and do nothing");
+                log.warn("token replay detected, already compromised, ignoring");
             } else {
-                log.warn("token was not compromised before; using all tokens for this user");
+                log.warn("token replay not detected before; using all tokens for this user");
                 refreshTokenRepository.useAndCompromiseTokensForUser(refreshToken.getUser().getUsername());
                 refreshToken.setCompromised(true);
                 refreshTokenRepository.save(refreshToken);

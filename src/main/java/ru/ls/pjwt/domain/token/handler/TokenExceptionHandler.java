@@ -23,7 +23,7 @@ public class TokenExceptionHandler {
 
     @ExceptionHandler(JwtTokenRequestException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> jwtException(JwtTokenRequestException e) {
-        log.warn("jwt token exception: {}", e.getMessage());
+        log.warn("jwt token failure: {}", e.getMessage());
         return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
