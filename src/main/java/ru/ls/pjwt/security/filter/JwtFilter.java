@@ -39,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             String header = request.getHeader("Authorization");
             if (header == null || !header.startsWith("Bearer ")) {
-                log.debug("jwt token exception in filter: wrong header ({})", header);
+                log.debug("jwt token exception in filter: wrong header");
                 filterChain.doFilter(request, response);
                 return;
             }
