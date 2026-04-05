@@ -14,13 +14,18 @@ import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.common.web.api.ApiResponse;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
+import ru.ls.pjwt.common.web.dto.exception.FieldErrorDto;
 import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
 import ru.ls.pjwt.common.web.exception.ServerError;
-import ru.ls.pjwt.common.web.dto.exception.FieldErrorDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Глобальный обработчик ошибок (Fallback).
+ * Имеет самый низкий приоритет по умолчанию.
+ * Для специфичных доменных ошибок используйте локальные @ControllerAdvice с @Order(Ordered.HIGHEST_PRECEDENCE).
+ */
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
