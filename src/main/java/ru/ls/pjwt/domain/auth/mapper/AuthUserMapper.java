@@ -1,6 +1,7 @@
 package ru.ls.pjwt.domain.auth.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
 import ru.ls.pjwt.domain.user.dto.CreateUserCommand;
 import ru.ls.pjwt.domain.user.entity.Authority;
@@ -8,18 +9,19 @@ import ru.ls.pjwt.domain.user.entity.User;
 
 import java.util.stream.Collectors;
 
-@Component
-public class AuthUserMapper {
-    public RegisterResponse userToResponse(User user) {
-        return new RegisterResponse(user.getUsername(), user.getEmail(),
-                user.getAuthorities().stream().map(Authority::getAuthority).collect(Collectors.toSet()));
-    }
+@Mapper(componentModel = "spring", imports = {Collectors.class, Authority.class})
+public interface AuthUserMapper {
 
-    public User requestToUser(CreateUserCommand createUserCommand, String passwordHash) {
-        User user = new User();
-        user.setUsername(createUserCommand.username());
-        user.setEmail(createUserCommand.email());
-        user.setPasswordHash(passwordHash);
-        return user;
-    }
+
+    @Mapping(target = "authorities", expression = "java(user.getAuthorities().stream().map(Authority::getAuthority).collect(Collectors.toSet()))")
+    RegisterResponse userToResponse(User user);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
+    @Mapping(target = "accountNonExpired", constant = "true")
+    @Mapping(target = "accountNonLocked", constant = "true")
+    @Mapping(target = "credentialsNonExpired", constant = "true")
+    @Mapping(target = "enabled", constant = "true")
+    @Mapping(target = "passwordHash", source = "passwordHash")
+    User requestToUser(CreateUserCommand command, String passwordHash);
 }
