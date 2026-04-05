@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 "spring.datasource.hikari.connection-timeout=3000"
         }
 )
-public class RefreshTokenValidatorRaceConditionIntegrationTest {
+public class RefreshTokenRaceConditionIntegrationTest {
 
     @ServiceConnection
     @SuppressWarnings("resource")

@@ -20,7 +20,7 @@ import tools.jackson.databind.ObjectMapper;
 @Testcontainers
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class RefreshTokenValidatorCompromisingIntegrationTest {
+public class RefreshTokenCompromisingIntegrationTest {
 
     @ServiceConnection
     @SuppressWarnings("resource")
