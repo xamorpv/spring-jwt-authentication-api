@@ -24,16 +24,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CreateUserCommandToUserMapper createUserCommandToUserMapper;
 
-    @Transactional
-    public User saveNewUser(CreateUserCommand createUserCommand) {
-        log.debug("saving user {}", createUserCommand.username());
-        User user = createUserCommandToUserMapper.commandToUser(createUserCommand,
-                passwordEncoder.encode(createUserCommand.rawPassword()));
-        authorityService.assignDefaultRole(user);
-        log.debug("user {} saved", user.getUsername());
-        return userRepository.save(user);
-    }
-
     @Transactional(readOnly = true)
     public User findUserByUsername(String username) {
         log.debug("loading user {}...", username);
@@ -57,5 +47,14 @@ public class UserService {
                     createUserCommand.username(), createUserCommand.email(), e.getMessage(), e); // на всякий случай логируем - вдруг это непредвиденная ошибка бд (если добавится какой-то функционал)
             throw new NotUniqueDataException(exceptionsProperties.emailOrUserExists());
         }
+    }
+
+    private User saveNewUser(CreateUserCommand createUserCommand) {
+        log.debug("saving user {}", createUserCommand.username());
+        User user = createUserCommandToUserMapper.commandToUser(createUserCommand,
+                passwordEncoder.encode(createUserCommand.rawPassword()));
+        authorityService.assignDefaultRole(user);
+        log.debug("user {} saved", user.getUsername());
+        return userRepository.save(user);
     }
 }
