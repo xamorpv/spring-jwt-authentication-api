@@ -1,29 +1,23 @@
-package ru.ls.pjwt.refresh.integration;
+package ru.ls.pjwt.tests.refresh.integration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.HttpStatus;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import ru.ls.pjwt.base.WebSecurityTest;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
-import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.concurrent.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j
-@Testcontainers
-@AutoConfigureMockMvc
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {
@@ -32,19 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 "spring.datasource.hikari.connection-timeout=3000"
         }
 )
-public class RefreshTokenRaceConditionIntegrationTest {
-
-    @ServiceConnection
-    @SuppressWarnings("resource")
-    @Container
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:18-alpine")
-            .withDatabaseName("testdb")
-            .withUsername("test")
-            .withPassword("test");
-
-    @Autowired
-    private IntegrationRequestHelper integrationRequestHelper;
-
+public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
     @Autowired
     private ObjectMapper objectMapper;
 

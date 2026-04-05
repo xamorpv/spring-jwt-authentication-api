@@ -1,41 +1,20 @@
-package ru.ls.pjwt.refresh.integration;
+package ru.ls.pjwt.tests.refresh.integration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import ru.ls.pjwt.base.WebSecurityTest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenValidator;
-import ru.ls.pjwt.helper.IntegrationRequestHelper;
 import ru.ls.pjwt.helper.ThreadHelper;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 
 @Slf4j
-@Testcontainers
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class CompromisedTokenCoveringIntegrationTest {
-    @Autowired
-    private IntegrationRequestHelper integrationRequestHelper;
-
-    @ServiceConnection
-    @SuppressWarnings("resource")
-    @Container
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:18-alpine")
-            .withDatabaseName("testdb")
-            .withUsername("test")
-            .withPassword("test");
-
-
+public class CompromisedTokenCoveringIntegrationTest extends WebSecurityTest {
     // кейс:
     // 1. пользователь получает токен А
     // 2. пользователь обновляет токен А, получает токен Б
