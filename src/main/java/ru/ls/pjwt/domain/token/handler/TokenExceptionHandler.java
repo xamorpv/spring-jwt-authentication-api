@@ -2,6 +2,8 @@ package ru.ls.pjwt.domain.token.handler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,6 +15,7 @@ import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
