@@ -14,7 +14,6 @@ import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.helper.IntegrationRequestHelper;
-import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Testcontainers
@@ -32,9 +31,6 @@ public class RefreshTokenCompromisingIntegrationTest {
 
     @Autowired
     private IntegrationRequestHelper integrationRequestHelper;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     void test() throws Exception {
