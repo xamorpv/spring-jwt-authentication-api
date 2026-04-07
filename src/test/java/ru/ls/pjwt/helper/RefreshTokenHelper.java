@@ -110,6 +110,6 @@ public class RefreshTokenHelper {
         mockMvc.perform(post("/api/v1/auth/invalidate-refresh-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new RefreshTokenRequest(loginResponse.refreshToken()))))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
     }
 }
