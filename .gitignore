@@ -1,6 +1,6 @@
 HELP.md
 .psdata
-.env/prod
+.env/local
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
