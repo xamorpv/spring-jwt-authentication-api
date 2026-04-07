@@ -41,6 +41,12 @@ public class TestController {
         return apiResponse.success(controllerDevProperties.userOnlyResponse(), HttpStatus.OK);
     }
 
+    @GetMapping("/admin-only")
+    public ResponseEntity<StandardResponse<Void>> getAdminOnlyData() {
+        log.debug("request to admin only endpoint");
+        return apiResponse.success(controllerDevProperties.adminOnlyResponse(), HttpStatus.OK);
+    }
+
 //    @GetMapping("/critical")
 //    public ResponseEntity<StandardResponse<Void>> criticalData() {
 //        return ApiResponse.success("public data", HttpStatus.OK);
