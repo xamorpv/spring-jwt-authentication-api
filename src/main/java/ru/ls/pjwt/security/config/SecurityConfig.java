@@ -37,6 +37,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/invalidate-refresh-token", "/api/v1/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/test/public", "/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/test/user-only").hasAuthority(authoritiesProperties.user())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/test/admin-only").hasAuthority(authoritiesProperties.admin())
                         .requestMatchers(HttpMethod.GET, "/api/v1/test/protected").authenticated()
                         .anyRequest().authenticated()
                 )
