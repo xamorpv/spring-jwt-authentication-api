@@ -32,14 +32,14 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
 
     @Test
     void test() throws Exception {
-        integrationRequestHelper.assertSuccessRegistration();
-        LoginResponse loginResponse = integrationRequestHelper.login();
+        refreshTokenHelper.assertSuccessRegistration();
+        LoginResponse loginResponse = refreshTokenHelper.login();
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
         Callable<String> refreshRequest = () -> {
             countDownLatch.await();
-            return integrationRequestHelper.refreshStringBody(loginResponse);
+            return refreshTokenHelper.refreshStringBody(loginResponse);
         };
 
         String result1;
@@ -77,7 +77,7 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
         }
 
         StandardResponse<LoginResponse> refreshResponse = objectMapper.readValue(tokenBody, new TypeReference<>() {});
-        integrationRequestHelper.assertFailureRefresh(refreshResponse.data());
+        refreshTokenHelper.assertFailureRefresh(refreshResponse.data());
     }
 
     private boolean parseSuccess(String result) {

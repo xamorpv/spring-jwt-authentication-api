@@ -19,44 +19,44 @@ public class RefreshTokenCompromisingIntegrationTest extends WebSecurityTest {
         LoginRequest user1LoginRequest = new LoginRequest(user1.username(), user1.rawPassword());
         LoginRequest user2LoginRequest = new LoginRequest(user2.username(), user2.rawPassword());
 
-        integrationRequestHelper.assertSuccessRegistration(user1);
-        integrationRequestHelper.assertSuccessRegistration(user2);
+        refreshTokenHelper.assertSuccessRegistration(user1);
+        refreshTokenHelper.assertSuccessRegistration(user2);
 
-        LoginResponse user1Login1 = integrationRequestHelper.login(user1LoginRequest);
-        LoginResponse user1Login2 = integrationRequestHelper.login(user1LoginRequest);
-        LoginResponse user1Login3 = integrationRequestHelper.login(user1LoginRequest);
+        LoginResponse user1Login1 = refreshTokenHelper.login(user1LoginRequest);
+        LoginResponse user1Login2 = refreshTokenHelper.login(user1LoginRequest);
+        LoginResponse user1Login3 = refreshTokenHelper.login(user1LoginRequest);
 
-        StandardResponse<LoginResponse> user1Refresh = integrationRequestHelper.assertSuccessRefresh(user1Login1);
-        StandardResponse<LoginResponse> user1RefreshChain = integrationRequestHelper.assertSuccessRefresh(user1Refresh.data());
+        StandardResponse<LoginResponse> user1Refresh = refreshTokenHelper.assertSuccessRefresh(user1Login1);
+        StandardResponse<LoginResponse> user1RefreshChain = refreshTokenHelper.assertSuccessRefresh(user1Refresh.data());
 
 
-        LoginResponse user2Login = integrationRequestHelper.login(user2LoginRequest);
+        LoginResponse user2Login = refreshTokenHelper.login(user2LoginRequest);
 
-        integrationRequestHelper.assertSuccessRegistration();
-        LoginResponse loginResponse1 = integrationRequestHelper.login();
-        LoginResponse loginResponse2 = integrationRequestHelper.login();
-        LoginResponse loginResponse3 = integrationRequestHelper.login();
+        refreshTokenHelper.assertSuccessRegistration();
+        LoginResponse loginResponse1 = refreshTokenHelper.login();
+        LoginResponse loginResponse2 = refreshTokenHelper.login();
+        LoginResponse loginResponse3 = refreshTokenHelper.login();
 
-        StandardResponse<LoginResponse> refreshLoginSuccess = integrationRequestHelper.assertSuccessRefresh(loginResponse1); // успех
-        integrationRequestHelper.assertFailureRefresh(loginResponse1); // компроментация всех токенов пользователя: loginResponse1, loginResponse2, loginResponse3, refreshLoginSuccess
-        integrationRequestHelper.assertFailureRefresh(loginResponse2); // неудача, но по сути ничего не происходит
+        StandardResponse<LoginResponse> refreshLoginSuccess = refreshTokenHelper.assertSuccessRefresh(loginResponse1); // успех
+        refreshTokenHelper.assertFailureRefresh(loginResponse1); // компроментация всех токенов пользователя: loginResponse1, loginResponse2, loginResponse3, refreshLoginSuccess
+        refreshTokenHelper.assertFailureRefresh(loginResponse2); // неудача, но по сути ничего не происходит
 
-        LoginResponse loginResponseSuccess = integrationRequestHelper.login(); // новый вход легитимного пользователя
+        LoginResponse loginResponseSuccess = refreshTokenHelper.login(); // новый вход легитимного пользователя
 
-        integrationRequestHelper.assertFailureRefresh(loginResponse1); // злоумышленник пытается сбросить сессию
+        refreshTokenHelper.assertFailureRefresh(loginResponse1); // злоумышленник пытается сбросить сессию
 
-        StandardResponse<LoginResponse> refreshLoginSuccessAfterCompromising = integrationRequestHelper.assertSuccessRefresh(loginResponseSuccess); // успех - компроментированный токен ни на что не влияет
+        StandardResponse<LoginResponse> refreshLoginSuccessAfterCompromising = refreshTokenHelper.assertSuccessRefresh(loginResponseSuccess); // успех - компроментированный токен ни на что не влияет
         // попытки использовать другие токены. везде неудача
-        integrationRequestHelper.assertFailureRefresh(loginResponse3);
-        integrationRequestHelper.assertFailureRefresh(refreshLoginSuccess.data());
+        refreshTokenHelper.assertFailureRefresh(loginResponse3);
+        refreshTokenHelper.assertFailureRefresh(refreshLoginSuccess.data());
         // пользователь может продолжать цепочку обновлений
-        integrationRequestHelper.assertSuccessRefresh(refreshLoginSuccessAfterCompromising.data());
+        refreshTokenHelper.assertSuccessRefresh(refreshLoginSuccessAfterCompromising.data());
 
         // другие пользователи могут продолжать цепочку обновлений
-        integrationRequestHelper.assertSuccessRefresh(user2Login);
-        integrationRequestHelper.assertSuccessRefresh(user1Login2);
-        integrationRequestHelper.assertSuccessRefresh(user1Login3);
-        integrationRequestHelper.assertSuccessRefresh(user1RefreshChain.data());
+        refreshTokenHelper.assertSuccessRefresh(user2Login);
+        refreshTokenHelper.assertSuccessRefresh(user1Login2);
+        refreshTokenHelper.assertSuccessRefresh(user1Login3);
+        refreshTokenHelper.assertSuccessRefresh(user1RefreshChain.data());
     }
 
 

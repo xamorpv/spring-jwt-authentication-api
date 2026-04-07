@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @Slf4j
 @Component
-public class IntegrationRequestHelper {
+public class RefreshTokenHelper {
 
     @Autowired
     private MockMvc mockMvc;
