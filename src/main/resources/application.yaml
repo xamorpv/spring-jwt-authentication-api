@@ -3,9 +3,9 @@ spring:
     active: dev
   config:
     import:
-      - "optional:file:.env/prod/main.properties"
-      - "optional:file:.env/prod/postgres.properties"
-      - "optional:file:.env/prod/admin-password-idea.properties"
+      - "optional:file:.env/local/main.properties"
+      - "optional:file:.env/local/postgres.properties"
+      - "optional:file:.env/local/admin-password-idea.properties"
   application:
     name: pjwt
   jpa:
