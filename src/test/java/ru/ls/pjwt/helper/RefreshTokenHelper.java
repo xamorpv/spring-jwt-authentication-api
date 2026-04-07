@@ -21,6 +21,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
 @Component
@@ -103,5 +104,12 @@ public class RefreshTokenHelper {
                     assertEquals(authoritiesProperties.user(), registerResponse.data().authorities().stream().findFirst().orElseThrow());
                 }
         );
+    }
+
+    public void invalidateRefreshToken(LoginResponse loginResponse) throws Exception {
+        mockMvc.perform(post("/api/v1/auth/invalidate-refresh-token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new RefreshTokenRequest(loginResponse.refreshToken()))))
+                .andExpect(status().isCreated());
     }
 }
