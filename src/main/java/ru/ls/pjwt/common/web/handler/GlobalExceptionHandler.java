@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -70,5 +72,11 @@ public class GlobalExceptionHandler {
                 errors.add(new FieldErrorDto(fe.getField(), fe.getDefaultMessage())));
         log.warn("validation exception: {}. errors: {}", e.getMessage(), errors);
         return apiResponse.errorInFields(HttpStatus.BAD_REQUEST, exceptionsProperties.validationFailed(), errors);
+    }
+
+    // Пробрасываем ошибки безопасности дальше, чтобы их обработал AccessDeniedHandler из SecurityConfig
+    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
+    public void handleAccessDenied(RuntimeException e) {
+        throw e;
     }
 }

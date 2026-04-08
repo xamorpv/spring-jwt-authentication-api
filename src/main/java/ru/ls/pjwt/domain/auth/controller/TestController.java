@@ -10,9 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
-import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.common.web.api.ApiResponse;
+import ru.ls.pjwt.common.web.dto.api.StandardResponse;
+import ru.ls.pjwt.domain.auth.authorization.AdminAccess;
+import ru.ls.pjwt.domain.auth.authorization.UserAccess;
+import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 
 @Profile("dev")
 @Slf4j
@@ -35,12 +37,15 @@ public class TestController {
         return apiResponse.success(userDetails, controllerDevProperties.protectedResponse(), HttpStatus.OK);
     }
 
+    // почему-то не работает
+    @UserAccess
     @GetMapping("/user-only")
     public ResponseEntity<StandardResponse<Void>> getUserOnlyData() {
         log.debug("request to user only endpoint");
         return apiResponse.success(controllerDevProperties.userOnlyResponse(), HttpStatus.OK);
     }
 
+    @AdminAccess
     @GetMapping("/admin-only")
     public ResponseEntity<StandardResponse<Void>> getAdminOnlyData() {
         log.debug("request to admin only endpoint");
