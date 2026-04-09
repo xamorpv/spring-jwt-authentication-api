@@ -1,6 +1,7 @@
-package ru.ls.pjwt.tests.refresh.integration;
+package ru.ls.pjwt.domain.token.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -35,7 +36,8 @@ public class CompromisedTokenCoveringIntegrationTest extends WebSecurityTest {
     private ThreadHelper threadHelper;
 
     @Test
-    void test() throws Exception {
+    @DisplayName("Token should remain compromised after concurrent refresh and reuse attempt")
+    void givenRefreshToken_whenConcurrentRefreshAndReuse_thenTokenRemainsCompromised() throws Exception {
         refreshTokenHelper.assertSuccessRegistration();
         LoginResponse refreshTokenA = refreshTokenHelper.login();// 1. пользователь получает токен А
         LoginResponse refreshTokenB = refreshTokenHelper.assertSuccessRefresh(refreshTokenA).data();// 2. пользователь обновляет токен А, получает токен Б

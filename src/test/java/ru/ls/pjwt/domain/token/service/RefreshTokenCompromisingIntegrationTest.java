@@ -1,6 +1,7 @@
-package ru.ls.pjwt.tests.refresh.integration;
+package ru.ls.pjwt.domain.token.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.ls.pjwt.base.WebSecurityTest;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
@@ -10,8 +11,9 @@ import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 
 @Slf4j
 public class RefreshTokenCompromisingIntegrationTest extends WebSecurityTest {
+    @DisplayName("Token compromising flow")
     @Test
-    void test() throws Exception {
+    void testTokenCompromisingFlow() throws Exception {
         // сторонние пользователи
         RegisterRequest user1 = new RegisterRequest("test1", "test1@example.com", "12345677890");
         RegisterRequest user2 = new RegisterRequest("test2", "test2@example.com", "12345677890");

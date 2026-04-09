@@ -1,5 +1,6 @@
-package ru.ls.pjwt.tests.refresh.integration;
+package ru.ls.pjwt.domain.token.service;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ls.pjwt.base.WebSecurityTest;
@@ -9,8 +10,10 @@ import ru.ls.pjwt.helper.AccessTokenHelper;
 public class RefreshTokenFlowIntegrationTest extends WebSecurityTest {
     @Autowired
     private AccessTokenHelper accessTokenHelper;
+
+    @DisplayName("Token flow")
     @Test
-    void test() throws Exception {
+    void testSuccessfulTokenFlow() throws Exception {
         refreshTokenHelper.assertSuccessRegistration();
 
         LoginResponse loginResponse = refreshTokenHelper.login();

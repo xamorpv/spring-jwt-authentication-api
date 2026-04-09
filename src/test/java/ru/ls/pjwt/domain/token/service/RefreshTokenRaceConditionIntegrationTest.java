@@ -1,6 +1,7 @@
-package ru.ls.pjwt.tests.refresh.integration;
+package ru.ls.pjwt.domain.token.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,8 +31,9 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @DisplayName("Refresh token race condition: token replay")
     @Test
-    void test() throws Exception {
+    void givenRefreshToken_whenConcurrentRotation_thenCompromiseAllTokens() throws Exception {
         refreshTokenHelper.assertSuccessRegistration();
         LoginResponse loginResponse = refreshTokenHelper.login();
 
