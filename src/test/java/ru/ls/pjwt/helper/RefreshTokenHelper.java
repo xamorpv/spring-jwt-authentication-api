@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
@@ -14,7 +15,6 @@ import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
-import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -54,7 +54,7 @@ public class RefreshTokenHelper {
     public StandardResponse<LoginResponse> assertSuccessRefresh(LoginResponse loginResponse) throws Exception {
         StandardResponse<LoginResponse> loginResponseStandardResponse = objectMapper.readValue(
                 refreshStringBody(loginResponse), new TypeReference<>() {});
-        assertTrue(loginResponseStandardResponse.success());
+        assertTrue(loginResponseStandardResponse.success(), "Token refresh should succeed");
         return loginResponseStandardResponse;
     }
 
@@ -67,12 +67,14 @@ public class RefreshTokenHelper {
         try {
             errorResponse = objectMapper.readValue(response, new TypeReference<>() {});
         } catch (JacksonException e) {
-            fail("response not error, refresh not failed: "+response);
+            fail("Refresh should be failed. given response: "+response);
             return;
         }
-        assertTrue(errorResponse.message().contains("compromise"));
-        assertFalse(errorResponse.success());
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.data().statusCode());
+        assertAll("Token refresh should fail",
+                ()->assertTrue(errorResponse.message().contains("compromise"), "Message missing 'compromise' keyword"),
+                ()->assertFalse(errorResponse.success(), "Success flag must be false"),
+                ()->assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.data().statusCode())
+        );
     }
 
     public String refreshStringBody(LoginResponse loginResponse) throws Exception {
@@ -95,14 +97,13 @@ public class RefreshTokenHelper {
         ).andReturn();
         StandardResponse<RegisterResponse> registerResponse = objectMapper.readValue(
                 registerResult.getResponse().getContentAsString(), new TypeReference<>() {});
-        assertAll(
+        assertAll("Registration properties should be correct",
                 ()->assertEquals(registerRequest.username(), registerResponse.data().username()),
                 ()->assertEquals(registerRequest.email(), registerResponse.data().email()),
-                ()->{
-                    // зависимые утверждения
-                    assertEquals(1, registerResponse.data().authorities().size());
-                    assertEquals(authoritiesProperties.user(), registerResponse.data().authorities().stream().findFirst().orElseThrow());
-                }
+                ()->assertAll("New user should have only USER authority",
+                        ()->assertEquals(1, registerResponse.data().authorities().size()),
+                        ()->assertEquals(authoritiesProperties.user(), registerResponse.data().authorities().stream().findFirst().orElseThrow())
+                )
         );
     }
 

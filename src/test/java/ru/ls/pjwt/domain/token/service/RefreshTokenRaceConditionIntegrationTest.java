@@ -68,7 +68,7 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
         boolean success1 = parseSuccess(result1);
         boolean success2 = parseSuccess(result2);
 
-        assertNotEquals(success1, success2, "results should not be equals");
+        assertNotEquals(success1, success2, "First token should be rotated successfully, second token should be compromised");
 
         String tokenBody;
 
