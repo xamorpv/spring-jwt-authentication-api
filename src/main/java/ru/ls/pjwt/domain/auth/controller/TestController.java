@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ls.pjwt.common.web.api.ApiResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.authorization.AdminAccess;
+import ru.ls.pjwt.domain.auth.authorization.ModeratorAccess;
 import ru.ls.pjwt.domain.auth.authorization.UserAccess;
 import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 
@@ -43,6 +44,13 @@ public class TestController {
     public ResponseEntity<StandardResponse<Void>> getUserOnlyData() {
         log.debug("request to user only endpoint");
         return apiResponse.success(controllerDevProperties.userOnlyResponse(), HttpStatus.OK);
+    }
+
+    @ModeratorAccess
+    @GetMapping("/moder-only")
+    public ResponseEntity<StandardResponse<Void>> getModerOnlyData() {
+        log.debug("request to moder only endpoint");
+        return apiResponse.success(controllerDevProperties.moderOnlyResponse(), HttpStatus.OK);
     }
 
     @AdminAccess

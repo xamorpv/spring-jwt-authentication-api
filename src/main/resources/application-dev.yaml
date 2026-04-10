@@ -17,3 +17,4 @@ dev:
     protected-response: your details
     user-only-response: userOnly data
     admin-only-response: adminOnly data
+    moder-only-response: moderOnly data
