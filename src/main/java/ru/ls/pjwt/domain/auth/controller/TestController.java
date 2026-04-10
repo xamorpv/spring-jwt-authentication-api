@@ -38,7 +38,6 @@ public class TestController {
         return apiResponse.success(userDetails, controllerDevProperties.protectedResponse(), HttpStatus.OK);
     }
 
-    // почему-то не работает
     @UserAccess
     @GetMapping("/user-only")
     public ResponseEntity<StandardResponse<Void>> getUserOnlyData() {
