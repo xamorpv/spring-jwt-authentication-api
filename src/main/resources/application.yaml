@@ -5,7 +5,7 @@ spring:
     import:
       - "optional:file:.env/local/main.properties"
       - "optional:file:.env/local/postgres.properties"
-      - "optional:file:.env/local/admin-password-idea.properties"
+      - "optional:file:.env/local/passwords-idea.properties"
       - "optional:file:.env/local/migration.properties"
   application:
     name: pjwt

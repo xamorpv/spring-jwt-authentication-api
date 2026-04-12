@@ -15,6 +15,8 @@ import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
+import ru.ls.pjwt.domain.auth.property.DevPasswordsProperties;
+import ru.ls.pjwt.domain.auth.property.DevUsernamesProperties;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -36,20 +38,26 @@ public class RefreshTokenHelper {
     @Autowired
     private AuthoritiesProperties authoritiesProperties;
 
+    @Autowired
+    private DevPasswordsProperties devPasswordsProperties;
+
+    @Autowired
+    private DevUsernamesProperties devUsernamesProperties;
+
     public LoginResponse login() throws Exception {
         return login(StandardUser.loginRequest());
     }
 
     public LoginResponse loginAsExistingUser() throws Exception {
-        return login(new LoginRequest("oleg", "test"));
+        return login(new LoginRequest(devUsernamesProperties.user(), devPasswordsProperties.standard()));
     }
 
     public LoginResponse loginAsExistingModer() throws Exception {
-        return login(new LoginRequest("vlad", "test"));
+        return login(new LoginRequest(devUsernamesProperties.moderator(), devPasswordsProperties.standard()));
     }
 
     public LoginResponse loginAsExistingAdmin() throws Exception {
-        return login(new LoginRequest("egor", "test"));
+        return login(new LoginRequest(devUsernamesProperties.admin(), devPasswordsProperties.standard()));
     }
 
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
