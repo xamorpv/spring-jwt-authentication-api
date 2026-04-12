@@ -23,10 +23,9 @@ services:
     build:
       context: .
 
-    env_file:
-      - .env/prod/postgres.properties
-      - .env/prod/main.properties
-      - .env/prod/admin-password-docker.properties
+    volumes:
+      - ./.env:/app/.env:ro
+
     image: pjwt:latest
 
     networks:
