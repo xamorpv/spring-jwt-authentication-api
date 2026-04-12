@@ -11,12 +11,6 @@ spring:
     show-sql: true
   flyway:
     placeholders:
-      admin.name: ${DB_ADMIN_NAME}
-      admin.email: ${DB_ADMIN_EMAIL}
-      admin.password: ${DB_ADMIN_PASSWORD}
-      authorities.user: ${DB_AUTHORITY_USER}
-      authorities.moderator: ${DB_AUTHORITY_MODERATOR}
-      authorities.admin: ${DB_AUTHORITY_ADMIN}
       usernames.user: ${DB_USERNAMES_USER}
       usernames.moderator: ${DB_USERNAMES_MODERATOR}
       usernames.admin: ${DB_USERNAMES_ADMIN}
