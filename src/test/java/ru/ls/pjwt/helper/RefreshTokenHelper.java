@@ -40,6 +40,18 @@ public class RefreshTokenHelper {
         return login(StandardUser.loginRequest());
     }
 
+    public LoginResponse loginAsExistingUser() throws Exception {
+        return login(new LoginRequest("oleg", "test"));
+    }
+
+    public LoginResponse loginAsExistingModer() throws Exception {
+        return login(new LoginRequest("vlad", "test"));
+    }
+
+    public LoginResponse loginAsExistingAdmin() throws Exception {
+        return login(new LoginRequest("egor", "test"));
+    }
+
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
         MvcResult loginResult = mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
