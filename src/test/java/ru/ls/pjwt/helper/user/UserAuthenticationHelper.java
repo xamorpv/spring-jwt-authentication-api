@@ -3,6 +3,7 @@ package ru.ls.pjwt.helper.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
@@ -12,6 +13,8 @@ import ru.ls.pjwt.helper.MockMvcHelper;
 import ru.ls.pjwt.helper.ObjectMapperHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestComponent
 public class UserAuthenticationHelper {
@@ -54,6 +57,19 @@ public class UserAuthenticationHelper {
                 loginStringBody(loginRequest), new TypeReference<>() {});
 
         return loginResponse.data();
+    }
+
+    public void assertFailureLogin(LoginRequest loginRequest, int expectedStatusCode) throws Exception {
+        assertLoginFailure(loginStringBody(loginRequest), expectedStatusCode);
+    }
+
+    public void assertLoginFailure(String response, int failStatusCode) {
+        StandardResponse<ErrorResponse> errorResponse = objectMapperHelper.readErrorResponse(response, "Authentication");
+
+        assertAll("Authentication should fail",
+                ()->assertFalse(errorResponse.success(), "Success flag must be false"),
+                ()->assertEquals(failStatusCode, errorResponse.data().statusCode())
+        );
     }
 
     public String loginStringBody(LoginRequest loginRequest) throws Exception {
