@@ -1,4 +1,4 @@
-package ru.ls.pjwt.helper;
+package ru.ls.pjwt.helper.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -10,6 +10,7 @@ import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
+import ru.ls.pjwt.helper.ObjectMapperHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 

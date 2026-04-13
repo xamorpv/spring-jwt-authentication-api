@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
-import ru.ls.pjwt.helper.*;
+import ru.ls.pjwt.helper.token.AccessTokenHelper;
+import ru.ls.pjwt.helper.token.RefreshTokenHelper;
+import ru.ls.pjwt.helper.user.UserAuthenticationHelper;
+import ru.ls.pjwt.helper.user.UserRegistrationHelper;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)

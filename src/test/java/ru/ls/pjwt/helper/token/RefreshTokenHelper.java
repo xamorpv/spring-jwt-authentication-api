@@ -1,4 +1,4 @@
-package ru.ls.pjwt.helper;
+package ru.ls.pjwt.helper.token;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
+import ru.ls.pjwt.helper.ObjectMapperHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 

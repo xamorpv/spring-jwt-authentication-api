@@ -1,4 +1,4 @@
-package ru.ls.pjwt.helper;
+package ru.ls.pjwt.helper.token;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
