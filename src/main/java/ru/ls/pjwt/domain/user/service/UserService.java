@@ -53,7 +53,7 @@ public class UserService {
         log.debug("saving user {}", createUserCommand.username());
         User user = createUserCommandToUserMapper.commandToUser(createUserCommand,
                 passwordEncoder.encode(createUserCommand.rawPassword()));
-        authorityService.assignDefaultRole(user);
+        authorityService.assignDefaultAuthority(user);
         log.debug("user {} saved", user.getUsername());
         return userRepository.save(user);
     }

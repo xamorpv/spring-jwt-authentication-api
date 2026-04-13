@@ -27,7 +27,7 @@ public class AuthorityService {
     }
 
     @Transactional
-    public void assignDefaultRole(User user) {
+    public void assignDefaultAuthority(User user) {
         log.debug("add user authority for user with username={}", user.getUsername());
 
         Authority authority = authorityRepository.getReferenceById(userAuthorityId);
