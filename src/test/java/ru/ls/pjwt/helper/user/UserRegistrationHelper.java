@@ -2,20 +2,18 @@ package ru.ls.pjwt.helper.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
+import ru.ls.pjwt.helper.MockMvcHelper;
 import ru.ls.pjwt.helper.ObjectMapperHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @TestComponent
 public class UserRegistrationHelper {
@@ -27,6 +25,9 @@ public class UserRegistrationHelper {
 
     @Autowired
     private ObjectMapperHelper objectMapperHelper;
+
+    @Autowired
+    private MockMvcHelper mockMvcHelper;
 
     @Autowired
     private AuthoritiesProperties authoritiesProperties;
@@ -62,11 +63,6 @@ public class UserRegistrationHelper {
     }
 
     public String registerStringBody(RegisterRequest registerRequest) throws Exception {
-        MvcResult registerResult = mockMvc.perform(post("/api/v1/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerRequest))
-        ).andReturn();
-
-        return registerResult.getResponse().getContentAsString();
+        return mockMvcHelper.postForContent("/api/v1/auth/register", registerRequest);
     }
 }

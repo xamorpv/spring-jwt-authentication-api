@@ -2,18 +2,16 @@ package ru.ls.pjwt.helper.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.property.DevPasswordsProperties;
 import ru.ls.pjwt.domain.auth.property.DevUsernamesProperties;
+import ru.ls.pjwt.helper.MockMvcHelper;
+import ru.ls.pjwt.helper.ObjectMapperHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @TestComponent
 public class UserAuthenticationHelper {
@@ -22,6 +20,12 @@ public class UserAuthenticationHelper {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ObjectMapperHelper objectMapperHelper;
+
+    @Autowired
+    private MockMvcHelper mockMvcHelper;
 
     @Autowired
     private DevPasswordsProperties devPasswordsProperties;
@@ -46,13 +50,13 @@ public class UserAuthenticationHelper {
     }
 
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
-        MvcResult loginResult = mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest))
-        ).andReturn();
         StandardResponse<LoginResponse> loginResponse = objectMapper.readValue(
-                loginResult.getResponse().getContentAsString(), new TypeReference<>() {});
+                loginStringBody(loginRequest), new TypeReference<>() {});
 
         return loginResponse.data();
+    }
+
+    public String loginStringBody(LoginRequest loginRequest) throws Exception {
+        return mockMvcHelper.postForContent("/api/v1/auth/login", loginRequest);
     }
 }

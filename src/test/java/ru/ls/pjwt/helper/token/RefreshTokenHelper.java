@@ -6,11 +6,11 @@ import org.springframework.boot.test.context.TestComponent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
+import ru.ls.pjwt.helper.MockMvcHelper;
 import ru.ls.pjwt.helper.ObjectMapperHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -28,6 +28,9 @@ public class RefreshTokenHelper {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private MockMvcHelper mockMvcHelper;
 
     @Autowired
     private ObjectMapperHelper objectMapperHelper;
@@ -54,12 +57,7 @@ public class RefreshTokenHelper {
     }
 
     public String refreshStringBody(LoginResponse loginResponse) throws Exception {
-        MvcResult refreshTokenRequest = mockMvc.perform(post("/api/v1/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new RefreshTokenRequest(loginResponse.refreshToken()))))
-                .andReturn();
-
-        return refreshTokenRequest.getResponse().getContentAsString();
+        return mockMvcHelper.postForContent("/api/v1/auth/refresh", loginResponse);
     }
 
     public void invalidateRefreshToken(LoginResponse loginResponse) throws Exception {
