@@ -83,13 +83,8 @@ public class RefreshTokenHelper {
     }
 
     private void assertRefreshFailure(String response) {
-        StandardResponse<ErrorResponse> errorResponse;
-        try {
-            errorResponse = objectMapper.readValue(response, new TypeReference<>() {});
-        } catch (JacksonException e) {
-            fail("Refresh should be failed. given response: "+response);
-            return;
-        }
+        StandardResponse<ErrorResponse> errorResponse = read(response, "Refresh");
+
         assertAll("Token refresh should fail",
                 ()->assertTrue(errorResponse.message().contains("compromise"), "Message missing 'compromise' keyword"),
                 ()->assertFalse(errorResponse.success(), "Success flag must be false"),
@@ -111,12 +106,8 @@ public class RefreshTokenHelper {
     }
 
     public void assertSuccessRegistration(RegisterRequest registerRequest) throws Exception {
-        MvcResult registerResult = mockMvc.perform(post("/api/v1/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerRequest))
-        ).andReturn();
         StandardResponse<RegisterResponse> registerResponse = objectMapper.readValue(
-                registerResult.getResponse().getContentAsString(), new TypeReference<>() {});
+                registerStringBody(registerRequest), new TypeReference<>() {});
         assertAll("Registration properties should be correct",
                 ()->assertEquals(registerRequest.username(), registerResponse.data().username()),
                 ()->assertEquals(registerRequest.email(), registerResponse.data().email()),
@@ -127,10 +118,40 @@ public class RefreshTokenHelper {
         );
     }
 
+    public void assertFailureRegistration(RegisterRequest registerRequest, int expectedStatusCode) throws Exception {
+        assertRegistrationFailure(registerStringBody(registerRequest), expectedStatusCode);
+    }
+
+    private void assertRegistrationFailure(String response, int failStatusCode) {
+        StandardResponse<ErrorResponse> errorResponse = read(response, "Registration");
+
+        assertAll("Registration should fail",
+                ()->assertFalse(errorResponse.success(), "Success flag must be false"),
+                ()->assertEquals(failStatusCode, errorResponse.data().statusCode())
+        );
+    }
+
+    public String registerStringBody(RegisterRequest registerRequest) throws Exception {
+        MvcResult registerResult = mockMvc.perform(post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerRequest))
+        ).andReturn();
+
+        return registerResult.getResponse().getContentAsString();
+    }
+
     public void invalidateRefreshToken(LoginResponse loginResponse) throws Exception {
         mockMvc.perform(post("/api/v1/auth/invalidate-refresh-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new RefreshTokenRequest(loginResponse.refreshToken()))))
                 .andExpect(status().isOk());
+    }
+
+    private StandardResponse<ErrorResponse> read(String response, String operation) {
+        try {
+            return objectMapper.readValue(response, new TypeReference<>() {});
+        } catch (JacksonException e) {
+            return fail(operation+" should be failed. given response: "+response);
+        }
     }
 }
