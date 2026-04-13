@@ -38,8 +38,8 @@ public class CompromisedTokenCoveringIntegrationTest extends WebSecurityTest {
     @Test
     @DisplayName("Token should remain compromised after concurrent refresh and reuse attempt")
     void givenRefreshToken_whenConcurrentRefreshAndReuse_thenTokenRemainsCompromised() throws Exception {
-        refreshTokenHelper.assertSuccessRegistration();
-        LoginResponse refreshTokenA = refreshTokenHelper.login();// 1. пользователь получает токен А
+        userRegistrationHelper.assertSuccessRegistration();
+        LoginResponse refreshTokenA = userAuthenticationHelper.login();// 1. пользователь получает токен А
         LoginResponse refreshTokenB = refreshTokenHelper.assertSuccessRefresh(refreshTokenA).data();// 2. пользователь обновляет токен А, получает токен Б
 
         doAnswer(invocation -> {

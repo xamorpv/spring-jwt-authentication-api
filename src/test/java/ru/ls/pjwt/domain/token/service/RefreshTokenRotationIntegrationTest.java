@@ -9,8 +9,8 @@ public class RefreshTokenRotationIntegrationTest extends WebSecurityTest {
     @DisplayName("Refresh token rotation test")
     @Test
     void testSuccessfulTokenRotationFlow() throws Exception {
-        refreshTokenHelper.assertSuccessRegistration();
-        LoginResponse loginResponse = refreshTokenHelper.login();
+        userRegistrationHelper.assertSuccessRegistration();
+        LoginResponse loginResponse = userAuthenticationHelper.login();
         refreshTokenHelper.assertSuccessRefresh(loginResponse);
         refreshTokenHelper.assertFailureRefresh(loginResponse); // повторное использование токена невозможно - он уже использован
     }

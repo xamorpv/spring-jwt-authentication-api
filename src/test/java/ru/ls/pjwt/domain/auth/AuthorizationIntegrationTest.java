@@ -45,14 +45,14 @@ public class AuthorizationIntegrationTest extends WebSecurityTest {
     void shouldAllowAccessWhenRequestingModerEndpointWithModerToken() throws Exception {
         performOk("/api/v1/test/moder-only",
                 controllerDevProperties.moderOnlyResponse(),
-                refreshTokenHelper.loginAsExistingModer().accessToken());
+                userAuthenticationHelper.loginAsExistingModer().accessToken());
     }
 
     @Test
     void shouldAllowAccessWhenRequestingAdminEndpointWithAdminToken() throws Exception {
         performOk("/api/v1/test/admin-only",
                 controllerDevProperties.adminOnlyResponse(),
-                refreshTokenHelper.loginAsExistingAdmin().accessToken());
+                userAuthenticationHelper.loginAsExistingAdmin().accessToken());
     }
 
     @ParameterizedTest
@@ -60,7 +60,7 @@ public class AuthorizationIntegrationTest extends WebSecurityTest {
             "/api/v1/test/user-only", "/api/v1/test/admin-only"
     })
     void shouldReturn403WhenModeratorRequestsOtherAuthorityEndpoints(String endpoint) throws Exception {
-        perform403(endpoint, refreshTokenHelper.loginAsExistingModer().accessToken());
+        perform403(endpoint, userAuthenticationHelper.loginAsExistingModer().accessToken());
     }
 
     @ParameterizedTest
@@ -68,7 +68,7 @@ public class AuthorizationIntegrationTest extends WebSecurityTest {
             "/api/v1/test/user-only", "/api/v1/test/moder-only"
     })
     void shouldReturn403WhenAdminRequestsOtherAuthorityEndpoints(String endpoint) throws Exception {
-        perform403(endpoint, refreshTokenHelper.loginAsExistingAdmin().accessToken());
+        perform403(endpoint, userAuthenticationHelper.loginAsExistingAdmin().accessToken());
     }
 
 

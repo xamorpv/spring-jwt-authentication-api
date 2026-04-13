@@ -21,29 +21,29 @@ public class RefreshTokenCompromisingIntegrationTest extends WebSecurityTest {
         LoginRequest user1LoginRequest = new LoginRequest(user1.username(), user1.rawPassword());
         LoginRequest user2LoginRequest = new LoginRequest(user2.username(), user2.rawPassword());
 
-        refreshTokenHelper.assertSuccessRegistration(user1);
-        refreshTokenHelper.assertSuccessRegistration(user2);
+        userRegistrationHelper.assertSuccessRegistration(user1);
+        userRegistrationHelper.assertSuccessRegistration(user2);
 
-        LoginResponse user1Login1 = refreshTokenHelper.login(user1LoginRequest);
-        LoginResponse user1Login2 = refreshTokenHelper.login(user1LoginRequest);
-        LoginResponse user1Login3 = refreshTokenHelper.login(user1LoginRequest);
+        LoginResponse user1Login1 = userAuthenticationHelper.login(user1LoginRequest);
+        LoginResponse user1Login2 = userAuthenticationHelper.login(user1LoginRequest);
+        LoginResponse user1Login3 = userAuthenticationHelper.login(user1LoginRequest);
 
         StandardResponse<LoginResponse> user1Refresh = refreshTokenHelper.assertSuccessRefresh(user1Login1);
         StandardResponse<LoginResponse> user1RefreshChain = refreshTokenHelper.assertSuccessRefresh(user1Refresh.data());
 
 
-        LoginResponse user2Login = refreshTokenHelper.login(user2LoginRequest);
+        LoginResponse user2Login = userAuthenticationHelper.login(user2LoginRequest);
 
-        refreshTokenHelper.assertSuccessRegistration();
-        LoginResponse loginResponse1 = refreshTokenHelper.login();
-        LoginResponse loginResponse2 = refreshTokenHelper.login();
-        LoginResponse loginResponse3 = refreshTokenHelper.login();
+        userRegistrationHelper.assertSuccessRegistration();
+        LoginResponse loginResponse1 = userAuthenticationHelper.login();
+        LoginResponse loginResponse2 = userAuthenticationHelper.login();
+        LoginResponse loginResponse3 = userAuthenticationHelper.login();
 
         StandardResponse<LoginResponse> refreshLoginSuccess = refreshTokenHelper.assertSuccessRefresh(loginResponse1); // успех
         refreshTokenHelper.assertFailureRefresh(loginResponse1); // компроментация всех токенов пользователя: loginResponse1, loginResponse2, loginResponse3, refreshLoginSuccess
         refreshTokenHelper.assertFailureRefresh(loginResponse2); // неудача, но по сути ничего не происходит
 
-        LoginResponse loginResponseSuccess = refreshTokenHelper.login(); // новый вход легитимного пользователя
+        LoginResponse loginResponseSuccess = userAuthenticationHelper.login(); // новый вход легитимного пользователя
 
         refreshTokenHelper.assertFailureRefresh(loginResponse1); // злоумышленник пытается сбросить сессию
 

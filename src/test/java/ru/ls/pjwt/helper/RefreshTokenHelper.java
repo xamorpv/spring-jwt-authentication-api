@@ -7,17 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
-import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
-import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
-import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
-import ru.ls.pjwt.domain.auth.property.DevPasswordsProperties;
-import ru.ls.pjwt.domain.auth.property.DevUsernamesProperties;
-import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -36,40 +29,7 @@ public class RefreshTokenHelper {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private AuthoritiesProperties authoritiesProperties;
-
-    @Autowired
-    private DevPasswordsProperties devPasswordsProperties;
-
-    @Autowired
-    private DevUsernamesProperties devUsernamesProperties;
-
-    public LoginResponse login() throws Exception {
-        return login(StandardUser.loginRequest());
-    }
-
-    public LoginResponse loginAsExistingUser() throws Exception {
-        return login(new LoginRequest(devUsernamesProperties.user(), devPasswordsProperties.standard()));
-    }
-
-    public LoginResponse loginAsExistingModer() throws Exception {
-        return login(new LoginRequest(devUsernamesProperties.moderator(), devPasswordsProperties.standard()));
-    }
-
-    public LoginResponse loginAsExistingAdmin() throws Exception {
-        return login(new LoginRequest(devUsernamesProperties.admin(), devPasswordsProperties.standard()));
-    }
-
-    public LoginResponse login(LoginRequest loginRequest) throws Exception {
-        MvcResult loginResult = mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest))
-        ).andReturn();
-        StandardResponse<LoginResponse> loginResponse = objectMapper.readValue(
-                loginResult.getResponse().getContentAsString(), new TypeReference<>() {});
-
-        return loginResponse.data();
-    }
+    private ObjectMapperHelper objectMapperHelper;
 
     public StandardResponse<LoginResponse> assertSuccessRefresh(LoginResponse loginResponse) throws Exception {
         StandardResponse<LoginResponse> loginResponseStandardResponse = objectMapper.readValue(
@@ -83,7 +43,7 @@ public class RefreshTokenHelper {
     }
 
     private void assertRefreshFailure(String response) {
-        StandardResponse<ErrorResponse> errorResponse = read(response, "Refresh");
+        StandardResponse<ErrorResponse> errorResponse = objectMapperHelper.readErrorResponse(response, "Refresh");
 
         assertAll("Token refresh should fail",
                 ()->assertTrue(errorResponse.message().contains("compromise"), "Message missing 'compromise' keyword"),
@@ -101,57 +61,10 @@ public class RefreshTokenHelper {
         return refreshTokenRequest.getResponse().getContentAsString();
     }
 
-    public void assertSuccessRegistration() throws Exception {
-        assertSuccessRegistration(StandardUser.registerRequest());
-    }
-
-    public void assertSuccessRegistration(RegisterRequest registerRequest) throws Exception {
-        StandardResponse<RegisterResponse> registerResponse = objectMapper.readValue(
-                registerStringBody(registerRequest), new TypeReference<>() {});
-        assertAll("Registration properties should be correct",
-                ()->assertEquals(registerRequest.username(), registerResponse.data().username()),
-                ()->assertEquals(registerRequest.email(), registerResponse.data().email()),
-                ()->assertAll("New user should have only USER authority",
-                        ()->assertEquals(1, registerResponse.data().authorities().size()),
-                        ()->assertEquals(authoritiesProperties.user(), registerResponse.data().authorities().stream().findFirst().orElseThrow())
-                )
-        );
-    }
-
-    public void assertFailureRegistration(RegisterRequest registerRequest, int expectedStatusCode) throws Exception {
-        assertRegistrationFailure(registerStringBody(registerRequest), expectedStatusCode);
-    }
-
-    private void assertRegistrationFailure(String response, int failStatusCode) {
-        StandardResponse<ErrorResponse> errorResponse = read(response, "Registration");
-
-        assertAll("Registration should fail",
-                ()->assertFalse(errorResponse.success(), "Success flag must be false"),
-                ()->assertEquals(failStatusCode, errorResponse.data().statusCode())
-        );
-    }
-
-    public String registerStringBody(RegisterRequest registerRequest) throws Exception {
-        MvcResult registerResult = mockMvc.perform(post("/api/v1/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerRequest))
-        ).andReturn();
-
-        return registerResult.getResponse().getContentAsString();
-    }
-
     public void invalidateRefreshToken(LoginResponse loginResponse) throws Exception {
         mockMvc.perform(post("/api/v1/auth/invalidate-refresh-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new RefreshTokenRequest(loginResponse.refreshToken()))))
                 .andExpect(status().isOk());
-    }
-
-    private StandardResponse<ErrorResponse> read(String response, String operation) {
-        try {
-            return objectMapper.readValue(response, new TypeReference<>() {});
-        } catch (JacksonException e) {
-            return fail(operation+" should be failed. given response: "+response);
-        }
     }
 }

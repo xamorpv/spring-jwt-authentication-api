@@ -34,8 +34,8 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
     @DisplayName("Refresh token race condition: token replay")
     @Test
     void givenRefreshToken_whenConcurrentRotation_thenCompromiseAllTokens() throws Exception {
-        refreshTokenHelper.assertSuccessRegistration();
-        LoginResponse loginResponse = refreshTokenHelper.login();
+        userRegistrationHelper.assertSuccessRegistration();
+        LoginResponse loginResponse = userAuthenticationHelper.login();
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
 

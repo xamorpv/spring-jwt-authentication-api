@@ -4,13 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
-import ru.ls.pjwt.helper.AccessTokenHelper;
-import ru.ls.pjwt.helper.RefreshTokenHelper;
+import ru.ls.pjwt.helper.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@Import({AccessTokenHelper.class, RefreshTokenHelper.class})
+@Import({AccessTokenHelper.class, RefreshTokenHelper.class, UserAuthenticationHelper.class, UserRegistrationHelper.class})
 public class WebSecurityTest extends TestWithContainer{
     @Autowired
     protected RefreshTokenHelper refreshTokenHelper;
+
+    @Autowired
+    protected AccessTokenHelper accessTokenHelper;
+
+    @Autowired
+    protected UserAuthenticationHelper userAuthenticationHelper;
+
+    @Autowired
+    protected UserRegistrationHelper userRegistrationHelper;
 }
