@@ -59,7 +59,7 @@ public class UserAuthenticationHelper {
         assertLoginFailure(loginStringBody(loginRequest), expectedStatusCode);
     }
 
-    public void assertLoginFailure(String response, int failStatusCode) {
+    private void assertLoginFailure(String response, int failStatusCode) {
         StandardResponse<ErrorResponse> errorResponse = objectMapperHelper.readErrorResponse(response, "Authentication");
 
         assertAll("Authentication should fail",
