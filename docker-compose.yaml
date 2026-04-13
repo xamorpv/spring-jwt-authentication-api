@@ -3,7 +3,7 @@ services:
     restart: unless-stopped
     image: postgres:18-alpine
     env_file:
-      - .env/prod/postgres.properties
+      - .env/local/postgres.properties
     networks:
       - pjwtnw
     ports:
