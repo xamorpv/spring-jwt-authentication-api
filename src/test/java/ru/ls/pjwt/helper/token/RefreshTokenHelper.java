@@ -35,15 +35,15 @@ public class RefreshTokenHelper {
     @Autowired
     private ObjectMapperHelper objectMapperHelper;
 
-    public StandardResponse<LoginResponse> assertSuccessRefresh(LoginResponse loginResponse) throws Exception {
+    public StandardResponse<LoginResponse> assertSuccessRefresh(String refreshToken) throws Exception {
         StandardResponse<LoginResponse> loginResponseStandardResponse = objectMapper.readValue(
-                refreshStringBody(loginResponse), new TypeReference<>() {});
+                refreshStringBody(refreshToken), new TypeReference<>() {});
         assertTrue(loginResponseStandardResponse.success(), "Token refresh should succeed");
         return loginResponseStandardResponse;
     }
 
-    public void assertFailureRefresh(LoginResponse loginResponse) throws Exception {
-        assertRefreshFailure(refreshStringBody(loginResponse));
+    public void assertFailureRefresh(String refreshToken) throws Exception {
+        assertRefreshFailure(refreshStringBody(refreshToken));
     }
 
     private void assertRefreshFailure(String response) {
@@ -56,14 +56,14 @@ public class RefreshTokenHelper {
         );
     }
 
-    public String refreshStringBody(LoginResponse loginResponse) throws Exception {
-        return mockMvcHelper.postForContent("/api/v1/auth/refresh", loginResponse);
+    public String refreshStringBody(String refreshToken) throws Exception {
+        return mockMvcHelper.postForContent("/api/v1/auth/refresh", new RefreshTokenRequest(refreshToken));
     }
 
-    public void invalidateRefreshToken(LoginResponse loginResponse) throws Exception {
+    public void invalidateRefreshToken(String refreshToken) throws Exception {
         mockMvc.perform(post("/api/v1/auth/invalidate-refresh-token")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new RefreshTokenRequest(loginResponse.refreshToken()))))
+                .content(objectMapper.writeValueAsString(new RefreshTokenRequest(refreshToken))))
                 .andExpect(status().isOk());
     }
 }

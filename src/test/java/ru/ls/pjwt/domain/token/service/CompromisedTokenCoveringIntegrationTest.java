@@ -40,15 +40,15 @@ public class CompromisedTokenCoveringIntegrationTest extends WebSecurityTest {
     void givenRefreshToken_whenConcurrentRefreshAndReuse_thenTokenRemainsCompromised() throws Exception {
         userRegistrationHelper.assertSuccessRegistration();
         LoginResponse refreshTokenA = userAuthenticationHelper.login();// 1. пользователь получает токен А
-        LoginResponse refreshTokenB = refreshTokenHelper.assertSuccessRefresh(refreshTokenA).data();// 2. пользователь обновляет токен А, получает токен Б
+        LoginResponse refreshTokenB = refreshTokenHelper.assertSuccessRefresh(refreshTokenA.refreshToken()).data();// 2. пользователь обновляет токен А, получает токен Б
 
         doAnswer(invocation -> {
             // токен B уже загружен из бд, компроментируем токены
-            threadHelper.runInIndependentThread(() -> refreshTokenHelper.assertFailureRefresh(refreshTokenA));
+            threadHelper.runInIndependentThread(() -> refreshTokenHelper.assertFailureRefresh(refreshTokenA.refreshToken()));
             return invocation.callRealMethod();
         }).when(refreshTokenValidator).checkUsed(argThat(r ->
                 r.getUuid().equals(jwtParser.parseToken(refreshTokenB.refreshToken()).uuid())));
 
-        refreshTokenHelper.assertFailureRefresh(refreshTokenB); // затирание токена в doAnswer должно быть обнаружено через версию
+        refreshTokenHelper.assertFailureRefresh(refreshTokenB.refreshToken()); // затирание токена в doAnswer должно быть обнаружено через версию
     }
 }

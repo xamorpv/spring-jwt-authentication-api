@@ -41,7 +41,7 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
 
         Callable<String> refreshRequest = () -> {
             countDownLatch.await();
-            return refreshTokenHelper.refreshStringBody(loginResponse);
+            return refreshTokenHelper.refreshStringBody(loginResponse.refreshToken());
         };
 
         String result1;
@@ -79,7 +79,7 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
         }
 
         StandardResponse<LoginResponse> refreshResponse = objectMapper.readValue(tokenBody, new TypeReference<>() {});
-        refreshTokenHelper.assertFailureRefresh(refreshResponse.data());
+        refreshTokenHelper.assertFailureRefresh(refreshResponse.data().refreshToken());
     }
 
     private boolean parseSuccess(String result) {

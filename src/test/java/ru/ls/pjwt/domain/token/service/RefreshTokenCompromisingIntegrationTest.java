@@ -28,8 +28,8 @@ public class RefreshTokenCompromisingIntegrationTest extends WebSecurityTest {
         LoginResponse user1Login2 = userAuthenticationHelper.login(user1LoginRequest);
         LoginResponse user1Login3 = userAuthenticationHelper.login(user1LoginRequest);
 
-        StandardResponse<LoginResponse> user1Refresh = refreshTokenHelper.assertSuccessRefresh(user1Login1);
-        StandardResponse<LoginResponse> user1RefreshChain = refreshTokenHelper.assertSuccessRefresh(user1Refresh.data());
+        StandardResponse<LoginResponse> user1Refresh = refreshTokenHelper.assertSuccessRefresh(user1Login1.refreshToken());
+        StandardResponse<LoginResponse> user1RefreshChain = refreshTokenHelper.assertSuccessRefresh(user1Refresh.data().refreshToken());
 
 
         LoginResponse user2Login = userAuthenticationHelper.login(user2LoginRequest);
@@ -39,26 +39,26 @@ public class RefreshTokenCompromisingIntegrationTest extends WebSecurityTest {
         LoginResponse loginResponse2 = userAuthenticationHelper.login();
         LoginResponse loginResponse3 = userAuthenticationHelper.login();
 
-        StandardResponse<LoginResponse> refreshLoginSuccess = refreshTokenHelper.assertSuccessRefresh(loginResponse1); // успех
-        refreshTokenHelper.assertFailureRefresh(loginResponse1); // компроментация всех токенов пользователя: loginResponse1, loginResponse2, loginResponse3, refreshLoginSuccess
-        refreshTokenHelper.assertFailureRefresh(loginResponse2); // неудача, но по сути ничего не происходит
+        StandardResponse<LoginResponse> refreshLoginSuccess = refreshTokenHelper.assertSuccessRefresh(loginResponse1.refreshToken()); // успех
+        refreshTokenHelper.assertFailureRefresh(loginResponse1.refreshToken()); // компроментация всех токенов пользователя: loginResponse1, loginResponse2, loginResponse3, refreshLoginSuccess
+        refreshTokenHelper.assertFailureRefresh(loginResponse2.refreshToken()); // неудача, но по сути ничего не происходит
 
         LoginResponse loginResponseSuccess = userAuthenticationHelper.login(); // новый вход легитимного пользователя
 
-        refreshTokenHelper.assertFailureRefresh(loginResponse1); // злоумышленник пытается сбросить сессию
+        refreshTokenHelper.assertFailureRefresh(loginResponse1.refreshToken()); // злоумышленник пытается сбросить сессию
 
-        StandardResponse<LoginResponse> refreshLoginSuccessAfterCompromising = refreshTokenHelper.assertSuccessRefresh(loginResponseSuccess); // успех - компроментированный токен ни на что не влияет
+        StandardResponse<LoginResponse> refreshLoginSuccessAfterCompromising = refreshTokenHelper.assertSuccessRefresh(loginResponseSuccess.refreshToken()); // успех - компроментированный токен ни на что не влияет
         // попытки использовать другие токены. везде неудача
-        refreshTokenHelper.assertFailureRefresh(loginResponse3);
-        refreshTokenHelper.assertFailureRefresh(refreshLoginSuccess.data());
+        refreshTokenHelper.assertFailureRefresh(loginResponse3.refreshToken());
+        refreshTokenHelper.assertFailureRefresh(refreshLoginSuccess.data().refreshToken());
         // пользователь может продолжать цепочку обновлений
-        refreshTokenHelper.assertSuccessRefresh(refreshLoginSuccessAfterCompromising.data());
+        refreshTokenHelper.assertSuccessRefresh(refreshLoginSuccessAfterCompromising.data().refreshToken());
 
         // другие пользователи могут продолжать цепочку обновлений
-        refreshTokenHelper.assertSuccessRefresh(user2Login);
-        refreshTokenHelper.assertSuccessRefresh(user1Login2);
-        refreshTokenHelper.assertSuccessRefresh(user1Login3);
-        refreshTokenHelper.assertSuccessRefresh(user1RefreshChain.data());
+        refreshTokenHelper.assertSuccessRefresh(user2Login.refreshToken());
+        refreshTokenHelper.assertSuccessRefresh(user1Login2.refreshToken());
+        refreshTokenHelper.assertSuccessRefresh(user1Login3.refreshToken());
+        refreshTokenHelper.assertSuccessRefresh(user1RefreshChain.data().refreshToken());
     }
 
 

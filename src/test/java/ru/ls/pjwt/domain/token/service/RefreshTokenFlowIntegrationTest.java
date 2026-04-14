@@ -14,14 +14,14 @@ public class RefreshTokenFlowIntegrationTest extends WebSecurityTest {
         LoginResponse loginResponse = userAuthenticationHelper.login();
         accessTokenHelper.assertUserTokenIsValid(loginResponse.accessToken());
 
-        LoginResponse refreshResponse = refreshTokenHelper.assertSuccessRefresh(loginResponse).data();
+        LoginResponse refreshResponse = refreshTokenHelper.assertSuccessRefresh(loginResponse.refreshToken()).data();
         accessTokenHelper.assertUserTokenIsValid(refreshResponse.accessToken());
 
-        LoginResponse refreshResponse2 = refreshTokenHelper.assertSuccessRefresh(refreshResponse).data(); // проверяем, что повторный refresh также работает
+        LoginResponse refreshResponse2 = refreshTokenHelper.assertSuccessRefresh(refreshResponse.refreshToken()).data(); // проверяем, что повторный refresh также работает
         accessTokenHelper.assertUserTokenIsValid(refreshResponse2.accessToken());
 
-        refreshTokenHelper.invalidateRefreshToken(refreshResponse2);
-        refreshTokenHelper.assertFailureRefresh(refreshResponse2);
+        refreshTokenHelper.invalidateRefreshToken(refreshResponse2.refreshToken());
+        refreshTokenHelper.assertFailureRefresh(refreshResponse2.refreshToken());
         accessTokenHelper.assertUserTokenIsValid(refreshResponse2.accessToken()); // черный список access токенов не планируется добавлять
     }
 }
