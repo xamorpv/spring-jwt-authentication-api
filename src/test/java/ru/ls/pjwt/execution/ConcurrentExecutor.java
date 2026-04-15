@@ -1,7 +1,6 @@
-package ru.ls.pjwt.helper;
+package ru.ls.pjwt.execution;
 
 import org.springframework.stereotype.Component;
-import ru.ls.pjwt.util.ThrowingRunnable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -9,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Component
-public class ThreadHelper {
-    public void runInIndependentThread(ThrowingRunnable runnable) {
+public class ConcurrentExecutor {
+    public void runAsyncAndWait(ThrowingRunnable runnable) {
         CompletableFuture<Void> future = CompletableFuture.runAsync(()-> {
             try {
                 runnable.run();
@@ -24,5 +23,9 @@ public class ThreadHelper {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public interface ThrowingRunnable {
+        void run() throws Exception;
     }
 }

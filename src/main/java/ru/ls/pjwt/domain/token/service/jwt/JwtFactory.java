@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import ru.ls.pjwt.domain.token.dto.CreatedRefreshToken;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
 import ru.ls.pjwt.common.property.ApplicationProperties;
-import ru.ls.pjwt.common.util.TimeUtils;
-import ru.ls.pjwt.common.util.UUIDUtils;
+import ru.ls.pjwt.common.time.TimeProvider;
+import ru.ls.pjwt.common.id.UUIDGenerator;
 import ru.ls.pjwt.common.property.JwtProperties;
 
 import java.time.Instant;
@@ -24,8 +24,8 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class JwtFactory {
     private final JwtProperties jwtProperties;
-    private final TimeUtils timeUtils;
-    private final UUIDUtils uuidUtils;
+    private final TimeProvider timeProvider;
+    private final UUIDGenerator uuidGenerator;
     private final ApplicationProperties applicationProperties;
 
     public String createAccessToken(UserDetails userDetails) {
@@ -37,7 +37,7 @@ public class JwtFactory {
     }
 
     public CreatedRefreshToken createRefreshToken(String username) {
-        String uuid = uuidUtils.random();
+        String uuid = uuidGenerator.random();
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("type", jwtProperties.getRefreshToken());
         claims.put("uuid", uuid);
@@ -50,14 +50,14 @@ public class JwtFactory {
         Instant time = oldClaims.getExpiration().toInstant();
         String username = oldClaims.getSubject();
         HashMap<String, Object> newClaims = new HashMap<>();
-        String uuid = uuidUtils.random();
+        String uuid = uuidGenerator.random();
         newClaims.put("type", jwtProperties.getRefreshToken());
         newClaims.put("uuid", uuid);
         return new CreatedRefreshToken(uuid, buildToken(username, time, newClaims));
     }
 
     private String buildToken(String username, Instant time, HashMap<String, Object> claims) {
-        log.debug("creating token: username={}, time={}, claims={}", username, timeUtils.getFormatter().format(time), claims);
+        log.debug("creating token: username={}, time={}, claims={}", username, timeProvider.getFormatter().format(time), claims);
         return Jwts.builder()
                 .signWith(jwtProperties.getSecretKey())
                 .issuer(applicationProperties.name())

@@ -2,34 +2,44 @@ package ru.ls.pjwt.domain.auth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import ru.ls.pjwt.base.WebSecurityTest;
+import ru.ls.pjwt.base.WebIntegrationTest;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.repository.UserRepository;
-import ru.ls.pjwt.helper.user.StandardUser;
+import ru.ls.pjwt.fixture.StandardUserFixture;
+import ru.ls.pjwt.steps.user.AuthenticationSteps;
+import ru.ls.pjwt.steps.user.RegistrationSteps;
 
-public class AuthenticationIntegrationTest extends WebSecurityTest {
+@Import({RegistrationSteps.class, AuthenticationSteps.class})
+public class AuthenticationIntegrationTest extends WebIntegrationTest {
+    @Autowired
+    private RegistrationSteps registrationSteps;
+
+    @Autowired
+    private AuthenticationSteps authenticationSteps;
+
     @Autowired
     private UserRepository userRepository;
 
     @Test
     void shouldReturn401WhenGivenWrongPassword() throws Exception {
-        userRegistrationHelper.assertSuccessRegistration();
-        userAuthenticationHelper.assertFailureLogin(new LoginRequest(StandardUser.USERNAME, StandardUser.PASSWORD+"WRONG"), HttpStatus.UNAUTHORIZED.value());
+        registrationSteps.registerSuccessfully();
+        authenticationSteps.expectLoginFailure(new LoginRequest(StandardUserFixture.DEFAULT_USERNAME, StandardUserFixture.DEFAULT_PASSWORD +"WRONG"), HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
     void shouldReturn401WhenGivenNonExistentUsername() throws Exception {
-        userAuthenticationHelper.assertFailureLogin(StandardUser.loginRequest(), HttpStatus.UNAUTHORIZED.value());
+        authenticationSteps.expectLoginFailure(StandardUserFixture.getDefaultLoginRequest(), HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
     void shouldReturn401WhenGivenLockedAccount() throws Exception {
-        userRegistrationHelper.assertSuccessRegistration();
-        User user = userRepository.findByUsername(StandardUser.USERNAME).orElseThrow();
+        registrationSteps.registerSuccessfully();
+        User user = userRepository.findByUsername(StandardUserFixture.DEFAULT_USERNAME).orElseThrow();
         user.setAccountNonLocked(false);
         userRepository.saveAndFlush(user);
-        userAuthenticationHelper.assertFailureLogin(StandardUser.loginRequest(), HttpStatus.UNAUTHORIZED.value());
+        authenticationSteps.expectLoginFailure(StandardUserFixture.getDefaultLoginRequest(), HttpStatus.UNAUTHORIZED.value());
     }
 }

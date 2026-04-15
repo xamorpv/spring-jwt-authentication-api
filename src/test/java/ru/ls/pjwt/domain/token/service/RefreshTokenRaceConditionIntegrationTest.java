@@ -5,17 +5,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import ru.ls.pjwt.base.WebSecurityTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockHttpServletResponse;
+import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
+import ru.ls.pjwt.steps.token.RefreshTokenSteps;
+import ru.ls.pjwt.steps.user.AuthenticationSteps;
+import ru.ls.pjwt.steps.user.RegistrationSteps;
 import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.concurrent.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j
@@ -27,29 +30,42 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
                 "spring.datasource.hikari.connection-timeout=3000"
         }
 )
-public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
+@Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
+public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest {
+    @Autowired
+    private RegistrationSteps registrationSteps;
+
+    @Autowired
+    private AuthenticationSteps authenticationSteps;
+
+    @Autowired
+    private RefreshTokenSteps refreshTokenSteps;
+
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private MockMvcClient mockMvcClient;
 
     @DisplayName("Refresh token race condition: token replay")
     @Test
     void givenRefreshToken_whenConcurrentRotation_thenCompromiseAllTokens() throws Exception {
-        userRegistrationHelper.assertSuccessRegistration();
-        LoginResponse loginResponse = userAuthenticationHelper.login();
+        registrationSteps.registerSuccessfully();
+        LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        Callable<String> refreshRequest = () -> {
+        Callable<MockHttpServletResponse> refreshRequest = () -> {
             countDownLatch.await();
-            return refreshTokenHelper.refreshStringBody(loginResponse.refreshToken());
+            return mockMvcClient.postReturningStatus("/api/v1/auth/refresh", loginResponse);
         };
 
-        String result1;
-        String result2;
+        MockHttpServletResponse result1;
+        MockHttpServletResponse result2;
 
         try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
-            Future<String> future1 = executorService.submit(refreshRequest);
-            Future<String> future2 = executorService.submit(refreshRequest);
+            Future<MockHttpServletResponse> future1 = executorService.submit(refreshRequest);
+            Future<MockHttpServletResponse> future2 = executorService.submit(refreshRequest);
 
             countDownLatch.countDown();
 
@@ -65,29 +81,20 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebSecurityTest {
         log.info("result 1: {}", result1);
         log.info("result 2: {}", result2);
 
-        boolean success1 = parseSuccess(result1);
-        boolean success2 = parseSuccess(result2);
+        boolean success1 = result1.getStatus() == 200;
+        boolean success2 = result2.getStatus() == 200;
 
         assertNotEquals(success1, success2, "First token should be rotated successfully, second token should be compromised");
 
         String tokenBody;
 
         if (success1) {
-            tokenBody = result1;
+            tokenBody = result1.getContentAsString();
         } else {
-            tokenBody = result2;
+            tokenBody = result2.getContentAsString();
         }
 
         StandardResponse<LoginResponse> refreshResponse = objectMapper.readValue(tokenBody, new TypeReference<>() {});
-        refreshTokenHelper.assertFailureRefresh(refreshResponse.data().refreshToken());
-    }
-
-    private boolean parseSuccess(String result) {
-        JsonNode treeNode = objectMapper.readTree(result);
-        boolean success = treeNode.at("/success").asBoolean();
-        if (!success) {
-            assertEquals(HttpStatus.UNAUTHORIZED.value(), treeNode.at("/data/statusCode").asInt());
-        }
-        return success;
+        refreshTokenSteps.expectTokenCompromised(refreshResponse.data().refreshToken());
     }
 }

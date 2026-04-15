@@ -1,4 +1,4 @@
-package ru.ls.pjwt.helper.token;
+package ru.ls.pjwt.steps.token;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestComponent
-public class AccessTokenHelper {
+public class AccessTokenSteps {
     @Autowired
     private MockMvc mockMvc;
 
@@ -23,21 +23,21 @@ public class AccessTokenHelper {
         assertTokenNotGrantsAdminAccess(token);
     }
 
-    public void assertTokenGrantsAccess(String token) throws Exception {
+    private void assertTokenGrantsAccess(String token) throws Exception {
         mockMvc.perform(get("/api/v1/test/protected")
                         .header("Authorization", "Bearer "+token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(controllerDevProperties.protectedResponse()));
     }
 
-    public void assertTokenGrantsUserAccess(String token) throws Exception {
+    private void assertTokenGrantsUserAccess(String token) throws Exception {
         mockMvc.perform(get("/api/v1/test/user-only")
                         .header("Authorization", "Bearer "+token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(controllerDevProperties.userOnlyResponse()));
     }
 
-    public void assertTokenNotGrantsAdminAccess(String token) throws Exception {
+    private void assertTokenNotGrantsAdminAccess(String token) throws Exception {
         mockMvc.perform(get("/api/v1/test/admin-only")
                 .header("Authorization", "Bearer "+token))
                 .andExpect(status().isForbidden());

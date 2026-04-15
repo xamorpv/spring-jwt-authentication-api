@@ -7,21 +7,21 @@ import org.springframework.stereotype.Component;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.exception.FieldErrorDto;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
-import ru.ls.pjwt.common.util.TimeUtils;
+import ru.ls.pjwt.common.time.TimeProvider;
 
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class ApiResponse {
-    private final TimeUtils timeUtils;
+    private final TimeProvider timeProvider;
 
     public ResponseEntity<StandardResponse<ErrorResponse>> error(HttpStatus status, String message) {
         return errorInFields(status, message, null);
     }
 
     public ResponseEntity<StandardResponse<ErrorResponse>> errorInFields(HttpStatus status, String message, List<FieldErrorDto> errors) {
-        return failure(new ErrorResponse(status.value(), timeUtils.timestamp(), errors), message, status);
+        return failure(new ErrorResponse(status.value(), timeProvider.timestamp(), errors), message, status);
     }
 
     public <T> ResponseEntity<StandardResponse<T>> failure(T data, String message, HttpStatus status) {

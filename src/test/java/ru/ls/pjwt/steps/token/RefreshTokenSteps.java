@@ -1,4 +1,4 @@
-package ru.ls.pjwt.helper.token;
+package ru.ls.pjwt.steps.token;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,12 +6,11 @@ import org.springframework.boot.test.context.TestComponent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
-import ru.ls.pjwt.helper.MockMvcHelper;
-import ru.ls.pjwt.helper.ObjectMapperHelper;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -21,7 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Slf4j
 @TestComponent
-public class RefreshTokenHelper {
+public class RefreshTokenSteps {
+    private final String ENDPOINT = "/api/v1/auth/refresh";
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,24 +30,18 @@ public class RefreshTokenHelper {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private MockMvcHelper mockMvcHelper;
+    private MockMvcClient mockMvcClient;
 
-    @Autowired
-    private ObjectMapperHelper objectMapperHelper;
-
-    public StandardResponse<LoginResponse> assertSuccessRefresh(String refreshToken) throws Exception {
+    public StandardResponse<LoginResponse> refreshTokensSuccessfully(String refreshToken) throws Exception {
         StandardResponse<LoginResponse> loginResponseStandardResponse = objectMapper.readValue(
-                refreshStringBody(refreshToken), new TypeReference<>() {});
+                refreshReturningStringBody(refreshToken), new TypeReference<>() {});
         assertTrue(loginResponseStandardResponse.success(), "Token refresh should succeed");
         return loginResponseStandardResponse;
     }
 
-    public void assertFailureRefresh(String refreshToken) throws Exception {
-        assertRefreshFailure(refreshStringBody(refreshToken));
-    }
-
-    private void assertRefreshFailure(String response) {
-        StandardResponse<ErrorResponse> errorResponse = objectMapperHelper.readErrorResponse(response, "Refresh");
+    public void expectTokenCompromised(String refreshToken) throws Exception {
+        StandardResponse<ErrorResponse> errorResponse = mockMvcClient.postExpectingError(
+                ENDPOINT, new RefreshTokenRequest(refreshToken), "Refresh");
 
         assertAll("Token refresh should fail",
                 ()->assertTrue(errorResponse.message().contains("compromise"), "Message missing 'compromise' keyword"),
@@ -56,8 +50,8 @@ public class RefreshTokenHelper {
         );
     }
 
-    public String refreshStringBody(String refreshToken) throws Exception {
-        return mockMvcHelper.postForContent("/api/v1/auth/refresh", new RefreshTokenRequest(refreshToken));
+    public String refreshReturningStringBody(String refreshToken) throws Exception {
+        return mockMvcClient.post(ENDPOINT, new RefreshTokenRequest(refreshToken));
     }
 
     public void invalidateRefreshToken(String refreshToken) throws Exception {

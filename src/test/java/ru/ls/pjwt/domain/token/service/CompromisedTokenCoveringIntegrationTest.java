@@ -4,18 +4,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import ru.ls.pjwt.base.WebSecurityTest;
+import ru.ls.pjwt.base.WebIntegrationTest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenValidator;
-import ru.ls.pjwt.helper.ThreadHelper;
+import ru.ls.pjwt.execution.ConcurrentExecutor;
+import ru.ls.pjwt.steps.token.RefreshTokenSteps;
+import ru.ls.pjwt.steps.user.AuthenticationSteps;
+import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 
 @Slf4j
-public class CompromisedTokenCoveringIntegrationTest extends WebSecurityTest {
+@Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
+public class CompromisedTokenCoveringIntegrationTest extends WebIntegrationTest {
     // кейс:
     // 1. пользователь получает токен А
     // 2. пользователь обновляет токен А, получает токен Б
@@ -30,25 +35,34 @@ public class CompromisedTokenCoveringIntegrationTest extends WebSecurityTest {
     private RefreshTokenValidator refreshTokenValidator;
 
     @Autowired
+    private RegistrationSteps registrationSteps;
+
+    @Autowired
+    private AuthenticationSteps authenticationSteps;
+
+    @Autowired
+    private RefreshTokenSteps refreshTokenSteps;
+
+    @Autowired
     private JwtParser jwtParser;
 
     @Autowired
-    private ThreadHelper threadHelper;
+    private ConcurrentExecutor concurrentExecutor;
 
     @Test
     @DisplayName("Token should remain compromised after concurrent refresh and reuse attempt")
     void givenRefreshToken_whenConcurrentRefreshAndReuse_thenTokenRemainsCompromised() throws Exception {
-        userRegistrationHelper.assertSuccessRegistration();
-        LoginResponse refreshTokenA = userAuthenticationHelper.login();// 1. пользователь получает токен А
-        LoginResponse refreshTokenB = refreshTokenHelper.assertSuccessRefresh(refreshTokenA.refreshToken()).data();// 2. пользователь обновляет токен А, получает токен Б
+        registrationSteps.registerSuccessfully();
+        LoginResponse refreshTokenA = authenticationSteps.loginAsFixtureUser();// 1. пользователь получает токен А
+        LoginResponse refreshTokenB = refreshTokenSteps.refreshTokensSuccessfully(refreshTokenA.refreshToken()).data();// 2. пользователь обновляет токен А, получает токен Б
 
         doAnswer(invocation -> {
             // токен B уже загружен из бд, компроментируем токены
-            threadHelper.runInIndependentThread(() -> refreshTokenHelper.assertFailureRefresh(refreshTokenA.refreshToken()));
+            concurrentExecutor.runAsyncAndWait(() -> refreshTokenSteps.expectTokenCompromised(refreshTokenA.refreshToken()));
             return invocation.callRealMethod();
         }).when(refreshTokenValidator).checkUsed(argThat(r ->
                 r.getUuid().equals(jwtParser.parseToken(refreshTokenB.refreshToken()).uuid())));
 
-        refreshTokenHelper.assertFailureRefresh(refreshTokenB.refreshToken()); // затирание токена в doAnswer должно быть обнаружено через версию
+        refreshTokenSteps.expectTokenCompromised(refreshTokenB.refreshToken()); // затирание токена в doAnswer должно быть обнаружено через версию
     }
 }

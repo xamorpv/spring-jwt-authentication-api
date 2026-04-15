@@ -1,40 +1,39 @@
-package ru.ls.pjwt.helper.user;
+package ru.ls.pjwt.steps.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
+import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
-import ru.ls.pjwt.helper.MockMvcHelper;
-import ru.ls.pjwt.helper.ObjectMapperHelper;
+import ru.ls.pjwt.fixture.StandardUserFixture;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestComponent
-public class UserRegistrationHelper {
+public class RegistrationSteps {
+    private final String ENDPOINT = "/api/v1/auth/register";
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    private ObjectMapperHelper objectMapperHelper;
-
-    @Autowired
-    private MockMvcHelper mockMvcHelper;
+    private MockMvcClient mockMvcClient;
 
     @Autowired
     private AuthoritiesProperties authoritiesProperties;
 
-    public void assertSuccessRegistration() throws Exception {
-        assertSuccessRegistration(StandardUser.registerRequest());
+    public void registerSuccessfully() throws Exception {
+        registerSuccessfully(StandardUserFixture.getDefaultRegisterRequest());
     }
 
-    public void assertSuccessRegistration(RegisterRequest registerRequest) throws Exception {
+    public void registerSuccessfully(RegisterRequest registerRequest) throws Exception {
         StandardResponse<RegisterResponse> registerResponse = objectMapper.readValue(
-                registerStringBody(registerRequest), new TypeReference<>() {});
+                mockMvcClient.post(ENDPOINT, registerRequest), new TypeReference<>() {});
         assertAll("Registration properties should be correct",
                 ()->assertEquals(registerRequest.username(), registerResponse.data().username()),
                 ()->assertEquals(registerRequest.email(), registerResponse.data().email()),
@@ -45,20 +44,14 @@ public class UserRegistrationHelper {
         );
     }
 
-    public void assertFailureRegistration(RegisterRequest registerRequest, int expectedStatusCode) throws Exception {
-        assertRegistrationFailure(registerStringBody(registerRequest), expectedStatusCode);
-    }
-
-    private void assertRegistrationFailure(String response, int failStatusCode) {
-        StandardResponse<ErrorResponse> errorResponse = objectMapperHelper.readErrorResponse(response, "Registration");
+    public StandardResponse<ErrorResponse> expectRegistrationFailure(RegisterRequest registerRequest, int expectedStatusCode) throws Exception {
+        StandardResponse<ErrorResponse> errorResponse = mockMvcClient.postExpectingError(ENDPOINT, registerRequest, "Registration");
 
         assertAll("Registration should fail",
-                ()->assertFalse(errorResponse.success(), "Success flag must be false"),
-                ()->assertEquals(failStatusCode, errorResponse.data().statusCode())
+                ()->assertFalse(errorResponse.success(), "Success flag"),
+                ()->assertEquals(expectedStatusCode, errorResponse.data().statusCode())
         );
-    }
 
-    public String registerStringBody(RegisterRequest registerRequest) throws Exception {
-        return mockMvcHelper.postForContent("/api/v1/auth/register", registerRequest);
+        return errorResponse;
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-public abstract class TestWithContainer extends IntegrationTest {
+public abstract class DatabaseIntegrationTest extends IntegrationTest {
     @SuppressWarnings("resource")
     static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
             new PostgreSQLContainer<>("postgres:18-alpine")

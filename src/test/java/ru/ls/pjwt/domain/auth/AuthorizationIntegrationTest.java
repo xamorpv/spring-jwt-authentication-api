@@ -4,16 +4,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.ls.pjwt.base.WebSecurityTest;
+import ru.ls.pjwt.base.WebIntegrationTest;
 import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
+import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AuthorizationIntegrationTest extends WebSecurityTest {
+@Import(AuthenticationSteps.class)
+public class AuthorizationIntegrationTest extends WebIntegrationTest {
+    @Autowired
+    private AuthenticationSteps authenticationSteps;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -45,14 +51,14 @@ public class AuthorizationIntegrationTest extends WebSecurityTest {
     void shouldAllowAccessWhenRequestingModerEndpointWithModerToken() throws Exception {
         performOk("/api/v1/test/moder-only",
                 controllerDevProperties.moderOnlyResponse(),
-                userAuthenticationHelper.loginAsExistingModer().accessToken());
+                authenticationSteps.loginAsDevModer().accessToken());
     }
 
     @Test
     void shouldAllowAccessWhenRequestingAdminEndpointWithAdminToken() throws Exception {
         performOk("/api/v1/test/admin-only",
                 controllerDevProperties.adminOnlyResponse(),
-                userAuthenticationHelper.loginAsExistingAdmin().accessToken());
+                authenticationSteps.loginAsDevAdmin().accessToken());
     }
 
     @ParameterizedTest
@@ -60,7 +66,7 @@ public class AuthorizationIntegrationTest extends WebSecurityTest {
             "/api/v1/test/user-only", "/api/v1/test/admin-only"
     })
     void shouldReturn403WhenModeratorRequestsOtherAuthorityEndpoints(String endpoint) throws Exception {
-        perform403(endpoint, userAuthenticationHelper.loginAsExistingModer().accessToken());
+        perform403(endpoint, authenticationSteps.loginAsDevModer().accessToken());
     }
 
     @ParameterizedTest
@@ -68,7 +74,7 @@ public class AuthorizationIntegrationTest extends WebSecurityTest {
             "/api/v1/test/user-only", "/api/v1/test/moder-only"
     })
     void shouldReturn403WhenAdminRequestsOtherAuthorityEndpoints(String endpoint) throws Exception {
-        perform403(endpoint, userAuthenticationHelper.loginAsExistingAdmin().accessToken());
+        perform403(endpoint, authenticationSteps.loginAsDevAdmin().accessToken());
     }
 
 

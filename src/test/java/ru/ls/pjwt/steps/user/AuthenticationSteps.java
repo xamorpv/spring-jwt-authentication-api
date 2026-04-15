@@ -1,30 +1,29 @@
-package ru.ls.pjwt.helper.user;
+package ru.ls.pjwt.steps.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
+import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.property.DevPasswordsProperties;
 import ru.ls.pjwt.domain.auth.property.DevUsernamesProperties;
-import ru.ls.pjwt.helper.MockMvcHelper;
-import ru.ls.pjwt.helper.ObjectMapperHelper;
+import ru.ls.pjwt.fixture.StandardUserFixture;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestComponent
-public class UserAuthenticationHelper {
+public class AuthenticationSteps {
+    private final String ENDPOINT = "/api/v1/auth/login";
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    private ObjectMapperHelper objectMapperHelper;
-
-    @Autowired
-    private MockMvcHelper mockMvcHelper;
+    private MockMvcClient mockMvcClient;
 
     @Autowired
     private DevPasswordsProperties devPasswordsProperties;
@@ -32,43 +31,35 @@ public class UserAuthenticationHelper {
     @Autowired
     private DevUsernamesProperties devUsernamesProperties;
 
-    public LoginResponse login() throws Exception {
-        return login(StandardUser.loginRequest());
+    public LoginResponse loginAsFixtureUser() throws Exception {
+        return login(StandardUserFixture.getDefaultLoginRequest());
     }
 
-    public LoginResponse loginAsExistingUser() throws Exception {
+    public LoginResponse loginAsDevUser() throws Exception {
         return login(new LoginRequest(devUsernamesProperties.user(), devPasswordsProperties.standard()));
     }
 
-    public LoginResponse loginAsExistingModer() throws Exception {
+    public LoginResponse loginAsDevModer() throws Exception {
         return login(new LoginRequest(devUsernamesProperties.moderator(), devPasswordsProperties.standard()));
     }
 
-    public LoginResponse loginAsExistingAdmin() throws Exception {
+    public LoginResponse loginAsDevAdmin() throws Exception {
         return login(new LoginRequest(devUsernamesProperties.admin(), devPasswordsProperties.standard()));
     }
 
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
         StandardResponse<LoginResponse> loginResponse = objectMapper.readValue(
-                loginStringBody(loginRequest), new TypeReference<>() {});
+                mockMvcClient.post(ENDPOINT, loginRequest), new TypeReference<>() {});
 
         return loginResponse.data();
     }
 
-    public void assertFailureLogin(LoginRequest loginRequest, int expectedStatusCode) throws Exception {
-        assertLoginFailure(loginStringBody(loginRequest), expectedStatusCode);
-    }
-
-    private void assertLoginFailure(String response, int failStatusCode) {
-        StandardResponse<ErrorResponse> errorResponse = objectMapperHelper.readErrorResponse(response, "Authentication");
+    public void expectLoginFailure(LoginRequest loginRequest, int expectedStatusCode) throws Exception {
+        StandardResponse<ErrorResponse> errorResponse = mockMvcClient.postExpectingError(ENDPOINT, loginRequest, "Authentication");
 
         assertAll("Authentication should fail",
                 ()->assertFalse(errorResponse.success(), "Success flag must be false"),
-                ()->assertEquals(failStatusCode, errorResponse.data().statusCode())
+                ()->assertEquals(expectedStatusCode, errorResponse.data().statusCode())
         );
-    }
-
-    public String loginStringBody(LoginRequest loginRequest) throws Exception {
-        return mockMvcHelper.postForContent("/api/v1/auth/login", loginRequest);
     }
 }

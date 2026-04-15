@@ -1,4 +1,4 @@
-package ru.ls.pjwt.common.util;
+package ru.ls.pjwt.common.time;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 @Component
-public class TimeUtils {
+public class TimeProvider {
     private final FormatProperties formatProperties;
     @Getter
     private DateTimeFormatter formatter;
