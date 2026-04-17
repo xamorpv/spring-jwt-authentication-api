@@ -20,7 +20,7 @@ public class RefreshTokenScheduler {
     private final JwtProperties jwtProperties;
     private final Clock clock;
 
-    @Scheduled(fixedDelay = 1000L * 60 * 60 * 24 * 7)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24 * 7, initialDelay = 1000 * 15)
     @Transactional
     public void clearRefreshTokens() {
         int count = refreshTokenRepository.deleteUsedBefore(Instant.now(clock).minus(jwtProperties.getRefreshTokenExpirationDays()+30, ChronoUnit.DAYS));
