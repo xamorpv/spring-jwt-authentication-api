@@ -14,6 +14,8 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestComponent
 public class MockMvcClient {
@@ -46,5 +48,11 @@ public class MockMvcClient {
         ).andReturn();
 
         return registerResult.getResponse().getContentAsString();
+    }
+
+    public void getProtectedDataExpecting401(String headerName, String headerValue) throws Exception {
+        mockMvc.perform(get("/api/v1/test/protected")
+                .header(headerName, headerValue))
+                .andExpect(status().isUnauthorized());
     }
 }
