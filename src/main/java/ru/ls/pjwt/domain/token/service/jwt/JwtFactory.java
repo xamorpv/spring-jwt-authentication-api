@@ -14,6 +14,7 @@ import ru.ls.pjwt.common.time.TimeProvider;
 import ru.ls.pjwt.common.id.UUIDGenerator;
 import ru.ls.pjwt.common.property.JwtProperties;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -27,13 +28,14 @@ public class JwtFactory {
     private final TimeProvider timeProvider;
     private final UUIDGenerator uuidGenerator;
     private final ApplicationProperties applicationProperties;
+    private final Clock clock;
 
     public String createAccessToken(UserDetails userDetails) {
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("type", jwtProperties.getAccessToken());
         claims.put("authorities", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
         return buildToken(userDetails.getUsername(),
-                Instant.now().plus(jwtProperties.getAccessTokenExpirationMinutes(), ChronoUnit.MINUTES), claims);
+                Instant.now(clock).plus(jwtProperties.getAccessTokenExpirationMinutes(), ChronoUnit.MINUTES), claims);
     }
 
     public CreatedRefreshToken createRefreshToken(String username) {
@@ -42,7 +44,7 @@ public class JwtFactory {
         claims.put("type", jwtProperties.getRefreshToken());
         claims.put("uuid", uuid);
         return new CreatedRefreshToken(uuid, buildToken(username,
-                Instant.now().plus(jwtProperties.getRefreshTokenExpirationDays(), ChronoUnit.DAYS), claims));
+                Instant.now(clock).plus(jwtProperties.getRefreshTokenExpirationDays(), ChronoUnit.DAYS), claims));
     }
 
     public CreatedRefreshToken updateRefreshToken(JwtClaims jwtClaims) {
@@ -63,7 +65,7 @@ public class JwtFactory {
                 .issuer(applicationProperties.name())
                 .subject(username)
                 .expiration(Date.from(time))
-                .issuedAt(Date.from(Instant.now()))
+                .issuedAt(Date.from(Instant.now(clock)))
                 .claims(claims)
                 .compact();
     }
