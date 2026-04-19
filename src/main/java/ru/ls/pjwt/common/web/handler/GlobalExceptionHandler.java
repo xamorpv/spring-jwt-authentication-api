@@ -49,13 +49,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotUniqueDataException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> notUniqueData(NotUniqueDataException e) {
-        log.warn(e.getMessage());
+        log.warn("not unique data exception: {}", e.getMessage());
         return apiResponse.error(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<StandardResponse<ErrorResponse>> noResourceFound(NoResourceFoundException e) {
-        log.warn(e.getMessage());
+        log.warn("resource not found: {}", e.getMessage());
         return apiResponse.error(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
