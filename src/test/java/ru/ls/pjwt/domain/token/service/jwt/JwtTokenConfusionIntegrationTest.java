@@ -23,7 +23,7 @@ public class JwtTokenConfusionIntegrationTest extends WebIntegrationTest {
 
     @Test
     void shouldReturn401WhenUsingRefreshTokenInsteadOfAccessToken() throws Exception {
-        mockMvcClient.getProtectedDataExpecting401("Authorization", "Bearer " +
+        mockMvcClient.getProtectedDataExpecting401("Bearer " +
                 authenticationSteps.loginAsDevUser().refreshToken());
     }
 

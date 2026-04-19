@@ -39,6 +39,6 @@ public class JwtExpirationIntegrationTest extends WebIntegrationTest {
 
         when(clock.instant()).thenReturn(now.plus(jwtProperties.getAccessTokenExpirationMinutes()+1, ChronoUnit.MINUTES));
 
-        mockMvcClient.getProtectedDataExpecting401("Authorization", "Bearer "+loginResponse.accessToken());
+        mockMvcClient.getProtectedDataExpecting401("Bearer "+loginResponse.accessToken());
     }
 }

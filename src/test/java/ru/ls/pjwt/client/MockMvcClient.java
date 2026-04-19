@@ -50,9 +50,9 @@ public class MockMvcClient {
         return registerResult.getResponse().getContentAsString();
     }
 
-    public void getProtectedDataExpecting401(String headerName, String headerValue) throws Exception {
+    public void getProtectedDataExpecting401(String headerValue) throws Exception {
         mockMvc.perform(get("/api/v1/test/protected")
-                .header(headerName, headerValue))
+                .header("Authorization", headerValue))
                 .andExpect(status().isUnauthorized());
     }
 }
