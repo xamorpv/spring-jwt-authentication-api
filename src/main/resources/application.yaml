@@ -16,6 +16,14 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB}
+    hikari:
+      pool-name: HikariCP
+      maximum-pool-size: 24
+      minimum-idle: 8
+      connection-timeout: 3000
+      idle-timeout: 300000
+      max-lifetime: 1700000
+      validation-timeout: 3000
   flyway:
     placeholders:
       admin.name: ${DB_ADMIN_NAME}

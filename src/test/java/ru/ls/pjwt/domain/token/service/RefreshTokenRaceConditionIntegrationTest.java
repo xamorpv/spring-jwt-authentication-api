@@ -26,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {
                 // тест должен падать в случае дедлока
-                "spring.datasource.hikari.data-source-properties.options=-c lock_timeout=3000 -c statement_timeout=5000 -c idle_in_transaction_session_timeout=10000",
-                "spring.datasource.hikari.connection-timeout=3000"
+                "spring.datasource.hikari.data-source-properties.options=-c lock_timeout=3000 -c statement_timeout=5000 -c idle_in_transaction_session_timeout=10000"
         }
 )
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
