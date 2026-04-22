@@ -27,9 +27,22 @@ import java.util.List;
 public class JwtParser {
     private final JwtProperties jwtProperties;
     private final ApplicationProperties applicationProperties;
+    private final JwtValidator jwtValidator;
     private final Clock clock;
 
-    public JwtClaims parseToken(String token) {
+    public JwtClaims parseRefreshToken(String token) {
+        JwtClaims jwtClaims = parseToken(token);
+        jwtValidator.validateType(jwtProperties.getRefreshToken(), jwtClaims);
+        return jwtClaims;
+    }
+
+    public JwtClaims parseAccessToken(String token) {
+        JwtClaims jwtClaims = parseToken(token);
+        jwtValidator.validateType(jwtProperties.getAccessToken(), jwtClaims);
+        return jwtClaims;
+    }
+
+    private JwtClaims parseToken(String token) {
         Claims claims = getClaims(token);
         UserDetails userDetails = extractUserDetails(claims);
         String uuid = getUuid(claims);

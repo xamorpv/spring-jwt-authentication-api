@@ -61,7 +61,7 @@ public class CompromisedTokenCoveringIntegrationTest extends WebIntegrationTest 
             concurrentExecutor.runAsyncAndWait(() -> refreshTokenSteps.expectTokenCompromised(refreshTokenA.refreshToken()));
             return invocation.callRealMethod();
         }).when(refreshTokenValidator).checkUsed(argThat(r ->
-                r.getUuid().equals(jwtParser.parseToken(refreshTokenB.refreshToken()).uuid())));
+                r.getUuid().equals(jwtParser.parseRefreshToken(refreshTokenB.refreshToken()).uuid())));
 
         refreshTokenSteps.expectTokenCompromised(refreshTokenB.refreshToken()); // затирание токена в doAnswer должно быть обнаружено через версию
     }

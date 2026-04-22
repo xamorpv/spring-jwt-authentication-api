@@ -1,5 +1,6 @@
 package ru.ls.pjwt.steps.token;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @TestComponent
 public class RefreshTokenSteps {
+    @Getter
     private final String ENDPOINT = "/api/v1/auth/refresh";
 
     @Autowired

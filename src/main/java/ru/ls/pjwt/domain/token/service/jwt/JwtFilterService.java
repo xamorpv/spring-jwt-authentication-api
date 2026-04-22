@@ -15,7 +15,7 @@ public class JwtFilterService {
 
     // todo check fingerprint (add in future)
     public UserDetails getUserDetails(String jwt) {
-        JwtClaims jwtClaims = jwtParser.parseToken(jwt);
+        JwtClaims jwtClaims = jwtParser.parseAccessToken(jwt);
         jwtValidator.validateType(jwtProperties.getAccessToken(), jwtClaims);
         return jwtClaims.userDetails();
     }
