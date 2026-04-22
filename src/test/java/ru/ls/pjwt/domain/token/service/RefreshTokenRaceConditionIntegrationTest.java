@@ -56,7 +56,7 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest
 
         Callable<MockHttpServletResponse> refreshRequest = () -> {
             countDownLatch.await();
-            return mockMvcClient.postReturningStatus("/api/v1/auth/refresh", loginResponse);
+            return mockMvcClient.postReturningStatus(RefreshTokenSteps.ENDPOINT, loginResponse);
         };
 
         MockHttpServletResponse result1;

@@ -1,6 +1,5 @@
 package ru.ls.pjwt.steps.token;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -22,8 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @TestComponent
 public class RefreshTokenSteps {
-    @Getter
-    private final String ENDPOINT = "/api/v1/auth/refresh";
+    public static final String ENDPOINT = "/api/v1/auth/refresh";
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,6 +37,13 @@ public class RefreshTokenSteps {
                 refreshReturningStringBody(refreshToken), new TypeReference<>() {});
         assertTrue(loginResponseStandardResponse.success(), "Token refresh should succeed");
         return loginResponseStandardResponse;
+    }
+
+    public void refreshExpectingError(String refreshToken, HttpStatus expectedStatus) throws Exception {
+        StandardResponse<ErrorResponse> errorResponse = mockMvcClient.postExpectingError(
+                ENDPOINT, new RefreshTokenRequest(refreshToken), "Refresh");
+
+        assertEquals(expectedStatus.value(), errorResponse.data().statusCode(), "status code");
     }
 
     public void expectTokenCompromised(String refreshToken) throws Exception {

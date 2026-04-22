@@ -9,6 +9,7 @@ import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
+import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +31,7 @@ public class JwtTokenConfusionIntegrationTest extends WebIntegrationTest {
     @Test
     void shouldReturn401WhenUsingAccessTokenInsteadOfRefreshToken() throws Exception {
         StandardResponse<ErrorResponse> error = mockMvcClient.postExpectingError(
-                "/api/v1/auth/refresh",
+                RefreshTokenSteps.ENDPOINT,
                 new RefreshTokenRequest(authenticationSteps.loginAsDevUser().accessToken()),
                 "Refresh"
         );
