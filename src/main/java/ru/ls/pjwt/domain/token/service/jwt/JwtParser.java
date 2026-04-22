@@ -10,11 +10,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.ls.pjwt.domain.token.dto.JwtClaims;
-import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.common.property.ApplicationProperties;
 import ru.ls.pjwt.common.property.JwtProperties;
+import ru.ls.pjwt.domain.token.dto.JwtClaims;
+import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -24,8 +27,22 @@ import java.util.List;
 public class JwtParser {
     private final JwtProperties jwtProperties;
     private final ApplicationProperties applicationProperties;
+    private final JwtValidator jwtValidator;
+    private final Clock clock;
 
-    public JwtClaims parseToken(String token) {
+    public JwtClaims parseRefreshToken(String token) {
+        JwtClaims jwtClaims = parseToken(token);
+        jwtValidator.validateType(jwtProperties.getRefreshToken(), jwtClaims);
+        return jwtClaims;
+    }
+
+    public JwtClaims parseAccessToken(String token) {
+        JwtClaims jwtClaims = parseToken(token);
+        jwtValidator.validateType(jwtProperties.getAccessToken(), jwtClaims);
+        return jwtClaims;
+    }
+
+    private JwtClaims parseToken(String token) {
         Claims claims = getClaims(token);
         UserDetails userDetails = extractUserDetails(claims);
         String uuid = getUuid(claims);
@@ -36,6 +53,7 @@ public class JwtParser {
     private Claims getClaims(String token) {
         try {
             return Jwts.parser()
+                    .clock(()-> Date.from(Instant.now(clock)))
                     .verifyWith(jwtProperties.getSecretKey()) // подпись и expiration time уже проверены. username нужно проверить на null, а его наличие уже проверено
                     .requireIssuer(applicationProperties.name())
                     .build()

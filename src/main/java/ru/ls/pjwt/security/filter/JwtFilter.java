@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             String header = request.getHeader("Authorization");
-            if (header == null || !header.startsWith("Bearer ")) {
+            if (header == null || !header.startsWith("Bearer ") || header.equals("Bearer ")) {
                 log.debug("no Bearer token in request, skipping authentication");
                 filterChain.doFilter(request, response);
                 return;

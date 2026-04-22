@@ -3,11 +3,11 @@ services:
     restart: unless-stopped
     image: postgres:18-alpine
     env_file:
-      - .env/prod/postgres.properties
+      - .env/local/postgres.properties
     networks:
       - pjwtnw
     ports:
-      - 127.0.0.1:5434:5432
+      - "127.0.0.1:5434:5432"
     volumes:
       - pjwt_pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -23,10 +23,9 @@ services:
     build:
       context: .
 
-    env_file:
-      - .env/prod/postgres.properties
-      - .env/prod/main.properties
-      - .env/prod/admin-password-docker.properties
+    volumes:
+      - ./.env:/app/.env:ro
+
     image: pjwt:latest
 
     networks:
@@ -34,7 +33,7 @@ services:
     tmpfs:
       - /tmp
     ports:
-      - 127.0.0.1:8080:8080
+      - "127.0.0.1:8080:8080"
 
     depends_on:
       postgres:

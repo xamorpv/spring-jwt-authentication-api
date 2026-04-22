@@ -4,9 +4,30 @@ logging:
     ru.ls.pjwt.*: debug
 
 spring:
+  config:
+    import:
+      - "optional:file:.env/local/dev-migration.properties"
   jpa:
     show-sql: true
   flyway:
+    placeholders:
+      usernames.user: ${DB_USERNAMES_USER}
+      usernames.moderator: ${DB_USERNAMES_MODERATOR}
+      usernames.admin: ${DB_USERNAMES_ADMIN}
+      passwords.standard: ${DB_DEFAULT_TEST_PASSWORD}
     locations:
       - classpath:db/migration/common
       - classpath:db/migration/dev
+dev:
+  test-controller:
+    public-response: public data
+    protected-response: your details
+    user-only-response: userOnly data
+    admin-only-response: adminOnly data
+    moder-only-response: moderOnly data
+  test-users-passwords:
+    standard: test
+  test-users-names:
+    user: ${DB_USERNAMES_USER}
+    moderator: ${DB_USERNAMES_MODERATOR}
+    admin: ${DB_USERNAMES_ADMIN}

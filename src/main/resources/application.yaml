@@ -3,9 +3,10 @@ spring:
     active: dev
   config:
     import:
-      - "optional:file:.env/prod/main.properties"
-      - "optional:file:.env/prod/postgres.properties"
-      - "optional:file:.env/prod/admin-password-idea.properties"
+      - "optional:file:.env/local/main.properties"
+      - "optional:file:.env/local/postgres.properties"
+      - "optional:file:.env/local/password-hashes.properties"
+      - "optional:file:.env/local/migration.properties"
   application:
     name: pjwt
   jpa:
@@ -15,23 +16,31 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB}
+    hikari:
+      pool-name: HikariCP
+      maximum-pool-size: 24
+      minimum-idle: 8
+      connection-timeout: 3000
+      idle-timeout: 300000
+      max-lifetime: 1700000
+      validation-timeout: 3000
   flyway:
     placeholders:
       admin.name: ${DB_ADMIN_NAME}
       admin.email: ${DB_ADMIN_EMAIL}
       admin.password: ${DB_ADMIN_PASSWORD}
-      authorities.user: USER
-      authorities.moderator: MODERATOR
-      authorities.admin: ADMIN
+      authorities.user: ${DB_AUTHORITY_USER}
+      authorities.moderator: ${DB_AUTHORITY_MODERATOR}
+      authorities.admin: ${DB_AUTHORITY_ADMIN}
 pjwt:
   application:
     name: jwt-authorization-api-1445
   format:
     date-format: yyyy-MM-dd__HH:mm:ss
   authorities:
-    user: USER
-    mod: MODERATOR
-    admin: ADMIN
+    user: ${DB_AUTHORITY_USER}
+    mod: ${DB_AUTHORITY_MODERATOR}
+    admin: ${DB_AUTHORITY_ADMIN}
   jwt:
     secret-key-string: ${JWT_SECRET_KEY}
     access-token: access

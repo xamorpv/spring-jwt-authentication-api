@@ -37,7 +37,7 @@ public class TokenService {
 
     @Transactional
     public LoginResponse refreshTokens(String token) {
-        JwtClaims jwtClaims = jwtParser.parseToken(token);
+        JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
         log.debug("refreshing tokens for username={}", jwtClaims.username());
         User user = userService.findUserByUsername(jwtClaims.username());
         userValidator.validateAccountStatus(user);
@@ -58,7 +58,7 @@ public class TokenService {
 
     @Transactional
     public void invalidateRefreshToken(String token) {
-        JwtClaims jwtClaims = jwtParser.parseToken(token);
+        JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
         log.info("invalidating refresh token: {}", jwtClaims.uuid());
         refreshTokenService.markTokenAsUsed(jwtClaims);
     }

@@ -2,6 +2,7 @@ package ru.ls.pjwt.domain.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,32 +10,53 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.common.web.api.ApiResponse;
+import ru.ls.pjwt.common.web.dto.api.StandardResponse;
+import ru.ls.pjwt.domain.auth.authorization.AdminAccess;
+import ru.ls.pjwt.domain.auth.authorization.ModeratorAccess;
+import ru.ls.pjwt.domain.auth.authorization.UserAccess;
+import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 
+@Profile("dev")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/test")
 public class TestController {
     private final ApiResponse apiResponse;
+    private final ControllerDevProperties controllerDevProperties;
 
     @GetMapping("/public")
     public ResponseEntity<StandardResponse<Void>> getPublicData() {
         log.debug("public data requested");
-        return apiResponse.success("public data", HttpStatus.OK);
+        return apiResponse.success(controllerDevProperties.publicResponse(), HttpStatus.OK);
     }
 
     @GetMapping("/protected")
     public ResponseEntity<StandardResponse<UserDetails>> getProtectedData(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("request to protected endpoint {}", userDetails.getUsername());
-        return apiResponse.success(userDetails, "your details", HttpStatus.OK);
+        return apiResponse.success(userDetails, controllerDevProperties.protectedResponse(), HttpStatus.OK);
     }
 
+    @UserAccess
     @GetMapping("/user-only")
     public ResponseEntity<StandardResponse<Void>> getUserOnlyData() {
         log.debug("request to user only endpoint");
-        return apiResponse.success("userOnly data", HttpStatus.OK);
+        return apiResponse.success(controllerDevProperties.userOnlyResponse(), HttpStatus.OK);
+    }
+
+    @ModeratorAccess
+    @GetMapping("/moder-only")
+    public ResponseEntity<StandardResponse<Void>> getModerOnlyData() {
+        log.debug("request to moder only endpoint");
+        return apiResponse.success(controllerDevProperties.moderOnlyResponse(), HttpStatus.OK);
+    }
+
+    @AdminAccess
+    @GetMapping("/admin-only")
+    public ResponseEntity<StandardResponse<Void>> getAdminOnlyData() {
+        log.debug("request to admin only endpoint");
+        return apiResponse.success(controllerDevProperties.adminOnlyResponse(), HttpStatus.OK);
     }
 
 //    @GetMapping("/critical")

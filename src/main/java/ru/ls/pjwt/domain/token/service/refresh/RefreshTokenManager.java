@@ -9,6 +9,7 @@ import ru.ls.pjwt.domain.token.entity.RefreshToken;
 import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.domain.token.repository.RefreshTokenRepository;
 
+import java.time.Clock;
 import java.time.Instant;
 
 @Slf4j
@@ -16,13 +17,14 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class RefreshTokenManager {
     private final RefreshTokenRepository refreshTokenRepository;
+    private final Clock clock;
 
     @Transactional
     public void use(RefreshToken refreshToken) {
         try {
             log.debug("using token {}", refreshToken.getUuid());
             refreshToken.setUsed(true);
-            refreshToken.setUsedAt(Instant.now());
+            refreshToken.setUsedAt(Instant.now(clock));
             refreshTokenRepository.saveAndFlush(refreshToken);
         } catch (OptimisticLockingFailureException e) {
             log.debug("race condition when using token: {}", e.getMessage(), e);
