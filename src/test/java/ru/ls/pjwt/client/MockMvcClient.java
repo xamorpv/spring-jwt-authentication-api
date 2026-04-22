@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
@@ -51,8 +52,17 @@ public class MockMvcClient {
     }
 
     public void getProtectedDataExpecting401(String headerValue) throws Exception {
-        mockMvc.perform(get("/api/v1/test/protected")
-                .header("Authorization", headerValue))
+        getProtectedData(headerValue)
                 .andExpect(status().isUnauthorized());
+    }
+
+    public void getProtectedDataExpecting500(String headerValue) throws Exception {
+        getProtectedData(headerValue)
+                .andExpect(status().isInternalServerError());
+    }
+
+    private ResultActions getProtectedData(String headerValue) throws Exception {
+        return mockMvc.perform(get("/api/v1/test/protected")
+                .header("Authorization", headerValue));
     }
 }
