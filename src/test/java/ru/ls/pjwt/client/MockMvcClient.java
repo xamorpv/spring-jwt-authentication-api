@@ -2,6 +2,7 @@ package ru.ls.pjwt.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,6 +17,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestComponent
@@ -53,12 +55,17 @@ public class MockMvcClient {
 
     public void getProtectedDataExpecting401(String headerValue) throws Exception {
         getProtectedData(headerValue)
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.data.statusCode").value(HttpStatus.UNAUTHORIZED.value()));
+
     }
 
     public void getProtectedDataExpecting500(String headerValue) throws Exception {
         getProtectedData(headerValue)
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.data.statusCode").value(HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
     private ResultActions getProtectedData(String headerValue) throws Exception {
