@@ -28,7 +28,7 @@ public class TokenWithoutTypeIntegrationTest extends WebIntegrationTest {
 
     @Test
     void shouldReturn500WhenGivenAccessTokenWithoutType() throws Exception {
-        String jwtWithoutType = jwtTokenFixture.getBaseJwtTokenBuilder()
+        String jwtWithoutType = jwtTokenFixture.getBaseJwtBuilder()
                 .claim("authorities", List.of(authoritiesProperties.user()))
                 .compact();
 
@@ -37,7 +37,7 @@ public class TokenWithoutTypeIntegrationTest extends WebIntegrationTest {
 
     @Test
     void shouldReturn500WhenGivenRefreshTokenWithoutType() throws Exception {
-        String jwtWithoutType = jwtTokenFixture.getBaseJwtTokenBuilder().compact();
+        String jwtWithoutType = jwtTokenFixture.getBaseJwtBuilder().compact();
         refreshTokenSteps.refreshExpectingError(jwtWithoutType, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -2,8 +2,6 @@ package ru.ls.pjwt.fixture;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import jakarta.annotation.PostConstruct;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ls.pjwt.common.property.ApplicationProperties;
@@ -16,9 +14,6 @@ import java.util.Date;
 
 @Component
 public class JwtTokenFixture {
-    @Getter
-    private JwtBuilder baseJwtTokenBuilder;
-
     @Autowired
     private JwtProperties jwtProperties;
 
@@ -28,9 +23,8 @@ public class JwtTokenFixture {
     @Autowired
     private Clock clock;
 
-    @PostConstruct
-    private void init() {
-        baseJwtTokenBuilder = Jwts.builder()
+    public JwtBuilder getBaseJwtBuilder() {
+        return Jwts.builder()
                 .signWith(jwtProperties.getSecretKey())
                 .issuer(applicationProperties.name())
                 .subject("username")
