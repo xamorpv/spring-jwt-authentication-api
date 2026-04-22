@@ -27,7 +27,6 @@ public class JwtTokenFixture {
         return Jwts.builder()
                 .signWith(jwtProperties.getSecretKey())
                 .issuer(applicationProperties.name())
-                .subject("username")
                 .expiration(Date.from(Instant.now(clock).plus(30, ChronoUnit.MINUTES)))
                 .issuedAt(Date.from(Instant.now(clock)));
     }
