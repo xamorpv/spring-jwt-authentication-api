@@ -7,18 +7,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ru.ls.pjwt.common.id.UUIDGenerator;
+import ru.ls.pjwt.common.property.ApplicationProperties;
+import ru.ls.pjwt.common.property.JwtProperties;
+import ru.ls.pjwt.common.time.TimeProvider;
 import ru.ls.pjwt.domain.token.dto.CreatedRefreshToken;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
-import ru.ls.pjwt.common.property.ApplicationProperties;
-import ru.ls.pjwt.common.time.TimeProvider;
-import ru.ls.pjwt.common.id.UUIDGenerator;
-import ru.ls.pjwt.common.property.JwtProperties;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -31,7 +32,7 @@ public class JwtFactory {
     private final Clock clock;
 
     public String createAccessToken(UserDetails userDetails) {
-        HashMap<String, Object> claims = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>();
         claims.put("type", jwtProperties.getAccessToken());
         claims.put("authorities", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
         return buildToken(userDetails.getUsername(),
@@ -40,7 +41,7 @@ public class JwtFactory {
 
     public CreatedRefreshToken createRefreshToken(String username) {
         String uuid = uuidGenerator.random();
-        HashMap<String, Object> claims = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>();
         claims.put("type", jwtProperties.getRefreshToken());
         claims.put("uuid", uuid);
         return new CreatedRefreshToken(uuid, buildToken(username,
@@ -51,14 +52,14 @@ public class JwtFactory {
         Claims oldClaims = jwtClaims.claims();
         Instant time = oldClaims.getExpiration().toInstant();
         String username = oldClaims.getSubject();
-        HashMap<String, Object> newClaims = new HashMap<>();
+        Map<String, Object> newClaims = new HashMap<>();
         String uuid = uuidGenerator.random();
         newClaims.put("type", jwtProperties.getRefreshToken());
         newClaims.put("uuid", uuid);
         return new CreatedRefreshToken(uuid, buildToken(username, time, newClaims));
     }
 
-    private String buildToken(String username, Instant time, HashMap<String, Object> claims) {
+    private String buildToken(String username, Instant time, Map<String, Object> claims) {
         log.debug("creating token: username={}, time={}, claims={}", username, timeProvider.getFormatter().format(time), claims);
         return Jwts.builder()
                 .signWith(jwtProperties.getSecretKey())
