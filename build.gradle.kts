@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "4.0.2"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("com.diffplug.spotless") version "8.4.0"
 }
 
 group = "ru.ls"
@@ -26,6 +27,23 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+spotless {
+	java {
+		googleJavaFormat()
+		trimTrailingWhitespace()
+		removeUnusedImports()
+		endWithNewline()
+	}
+}
+
+tasks.register("codeQualityCheck") {
+	group = "verification"
+	dependsOn(
+		"spotlessCheck",
+		"test"
+	)
 }
 
 dependencies {
