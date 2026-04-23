@@ -1,5 +1,6 @@
 plugins {
 	java
+	id("checkstyle")
 	id("org.springframework.boot") version "4.0.2"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("com.diffplug.spotless") version "8.4.0"
@@ -38,10 +39,19 @@ spotless {
 	}
 }
 
+checkstyle {
+	toolVersion = "13.4.0"
+	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+	isIgnoreFailures = false
+	maxWarnings = 0
+}
+
 tasks.register("codeQualityCheck") {
 	group = "verification"
 	dependsOn(
 		"spotlessCheck",
+		"checkstyleMain",
+		"checkstyleTest",
 		"test"
 	)
 }
