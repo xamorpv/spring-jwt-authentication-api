@@ -46,6 +46,20 @@ tasks.register("codeQualityCheck") {
 	)
 }
 
+tasks.register("installGitHooks") {
+	group = "help"
+	doLast {
+		val hookFile = file("${rootDir}/.git/hooks/pre-commit")
+		val hookContent = """
+            #!/bin/sh
+            ./gradlew spotlessApply --quiet
+            git add -u
+        """.trimIndent()
+		hookFile.writeText(hookContent)
+		hookFile.setExecutable(true)
+	}
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-flyway")
