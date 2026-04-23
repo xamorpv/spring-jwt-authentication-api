@@ -14,18 +14,22 @@ import ru.ls.pjwt.security.filter.JwtFilter;
 @Configuration
 @Profile("dev")
 public class DevSecurityConfig extends BaseSecurityConfig {
-    public DevSecurityConfig(JwtFilter jwtFilter, HttpResponseWriter httpResponseWriter) {
-        super(jwtFilter, httpResponseWriter);
-    }
+  public DevSecurityConfig(JwtFilter jwtFilter, HttpResponseWriter httpResponseWriter) {
+    super(jwtFilter, httpResponseWriter);
+  }
 
-    @Bean
-    @Order(1)
-    public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) {
-        return chain(http)
-                .securityMatcher("/api/v1/test/**")
-                .authorizeHttpRequests( request -> request
-                        .requestMatchers(HttpMethod.GET, "/api/v1/test/public").permitAll()
-                        .anyRequest().authenticated())
-                .build();
-    }
+  @Bean
+  @Order(1)
+  public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) {
+    return chain(http)
+        .securityMatcher("/api/v1/test/**")
+        .authorizeHttpRequests(
+            request ->
+                request
+                    .requestMatchers(HttpMethod.GET, "/api/v1/test/public")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .build();
+  }
 }

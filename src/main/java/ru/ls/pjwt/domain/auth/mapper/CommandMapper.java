@@ -6,5 +6,5 @@ import ru.ls.pjwt.domain.user.dto.CreateUserCommand;
 
 @Mapper(componentModel = "spring")
 public interface CommandMapper {
-    CreateUserCommand registerRequestToCommand(RegisterRequest registerRequest);
+  CreateUserCommand registerRequestToCommand(RegisterRequest registerRequest);
 }

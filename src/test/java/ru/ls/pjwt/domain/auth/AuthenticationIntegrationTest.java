@@ -14,32 +14,34 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Import({RegistrationSteps.class, AuthenticationSteps.class})
 public class AuthenticationIntegrationTest extends WebIntegrationTest {
-    @Autowired
-    private RegistrationSteps registrationSteps;
+  @Autowired private RegistrationSteps registrationSteps;
 
-    @Autowired
-    private AuthenticationSteps authenticationSteps;
+  @Autowired private AuthenticationSteps authenticationSteps;
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Test
-    void shouldReturn401WhenGivenWrongPassword() throws Exception {
-        registrationSteps.registerSuccessfully();
-        authenticationSteps.expectLoginFailure(new LoginRequest(StandardUserFixture.DEFAULT_USERNAME, StandardUserFixture.DEFAULT_PASSWORD +"WRONG"), HttpStatus.UNAUTHORIZED.value());
-    }
+  @Test
+  void shouldReturn401WhenGivenWrongPassword() throws Exception {
+    registrationSteps.registerSuccessfully();
+    authenticationSteps.expectLoginFailure(
+        new LoginRequest(
+            StandardUserFixture.DEFAULT_USERNAME, StandardUserFixture.DEFAULT_PASSWORD + "WRONG"),
+        HttpStatus.UNAUTHORIZED.value());
+  }
 
-    @Test
-    void shouldReturn401WhenGivenNonExistentUsername() throws Exception {
-        authenticationSteps.expectLoginFailure(StandardUserFixture.getDefaultLoginRequest(), HttpStatus.UNAUTHORIZED.value());
-    }
+  @Test
+  void shouldReturn401WhenGivenNonExistentUsername() throws Exception {
+    authenticationSteps.expectLoginFailure(
+        StandardUserFixture.getDefaultLoginRequest(), HttpStatus.UNAUTHORIZED.value());
+  }
 
-    @Test
-    void shouldReturn401WhenGivenLockedAccount() throws Exception {
-        registrationSteps.registerSuccessfully();
-        User user = userRepository.findByUsername(StandardUserFixture.DEFAULT_USERNAME).orElseThrow();
-        user.setAccountNonLocked(false);
-        userRepository.saveAndFlush(user);
-        authenticationSteps.expectLoginFailure(StandardUserFixture.getDefaultLoginRequest(), HttpStatus.UNAUTHORIZED.value());
-    }
+  @Test
+  void shouldReturn401WhenGivenLockedAccount() throws Exception {
+    registrationSteps.registerSuccessfully();
+    User user = userRepository.findByUsername(StandardUserFixture.DEFAULT_USERNAME).orElseThrow();
+    user.setAccountNonLocked(false);
+    userRepository.saveAndFlush(user);
+    authenticationSteps.expectLoginFailure(
+        StandardUserFixture.getDefaultLoginRequest(), HttpStatus.UNAUTHORIZED.value());
+  }
 }

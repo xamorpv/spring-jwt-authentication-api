@@ -11,36 +11,42 @@ import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 import ru.ls.pjwt.steps.user.RegistrationSteps;
 
-@Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class, AccessTokenSteps.class})
+@Import({
+  RegistrationSteps.class,
+  AuthenticationSteps.class,
+  RefreshTokenSteps.class,
+  AccessTokenSteps.class
+})
 public class RefreshTokenFlowIntegrationTest extends WebIntegrationTest {
-    @Autowired
-    private RegistrationSteps registrationSteps;
+  @Autowired private RegistrationSteps registrationSteps;
 
-    @Autowired
-    private AuthenticationSteps authenticationSteps;
+  @Autowired private AuthenticationSteps authenticationSteps;
 
-    @Autowired
-    private RefreshTokenSteps refreshTokenSteps;
+  @Autowired private RefreshTokenSteps refreshTokenSteps;
 
-    @Autowired
-    private AccessTokenSteps accessTokenSteps;
+  @Autowired private AccessTokenSteps accessTokenSteps;
 
-    @DisplayName("Token flow")
-    @Test
-    void testSuccessfulTokenFlow() throws Exception {
-        registrationSteps.registerSuccessfully();
+  @DisplayName("Token flow")
+  @Test
+  void testSuccessfulTokenFlow() throws Exception {
+    registrationSteps.registerSuccessfully();
 
-        LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
-        accessTokenSteps.assertUserTokenIsValid(loginResponse.accessToken());
+    LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
+    accessTokenSteps.assertUserTokenIsValid(loginResponse.accessToken());
 
-        LoginResponse refreshResponse = refreshTokenSteps.refreshTokensSuccessfully(loginResponse.refreshToken()).data();
-        accessTokenSteps.assertUserTokenIsValid(refreshResponse.accessToken());
+    LoginResponse refreshResponse =
+        refreshTokenSteps.refreshTokensSuccessfully(loginResponse.refreshToken()).data();
+    accessTokenSteps.assertUserTokenIsValid(refreshResponse.accessToken());
 
-        LoginResponse refreshResponse2 = refreshTokenSteps.refreshTokensSuccessfully(refreshResponse.refreshToken()).data(); // проверяем, что повторный refresh также работает
-        accessTokenSteps.assertUserTokenIsValid(refreshResponse2.accessToken());
+    LoginResponse refreshResponse2 =
+        refreshTokenSteps
+            .refreshTokensSuccessfully(refreshResponse.refreshToken())
+            .data(); // проверяем, что повторный refresh также работает
+    accessTokenSteps.assertUserTokenIsValid(refreshResponse2.accessToken());
 
-        refreshTokenSteps.invalidateRefreshToken(refreshResponse2.refreshToken());
-        refreshTokenSteps.expectTokenCompromised(refreshResponse2.refreshToken());
-        accessTokenSteps.assertUserTokenIsValid(refreshResponse2.accessToken()); // черный список access токенов не планируется добавлять
-    }
+    refreshTokenSteps.invalidateRefreshToken(refreshResponse2.refreshToken());
+    refreshTokenSteps.expectTokenCompromised(refreshResponse2.refreshToken());
+    accessTokenSteps.assertUserTokenIsValid(
+        refreshResponse2.accessToken()); // черный список access токенов не планируется добавлять
+  }
 }

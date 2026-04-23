@@ -13,42 +13,40 @@ import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 
 @Import({RefreshTokenSteps.class})
 public class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest {
-    @Autowired
-    private JwtTokenFixture jwtTokenFixture;
-    @Autowired
-    private JwtProperties jwtProperties;
-    @Autowired
-    private RefreshTokenSteps refreshTokenSteps;
-    @Autowired
-    private MockMvcClient mockMvcClient;
-    @Autowired
-    private DevUsernamesProperties devUsernamesProperties;
+  @Autowired private JwtTokenFixture jwtTokenFixture;
+  @Autowired private JwtProperties jwtProperties;
+  @Autowired private RefreshTokenSteps refreshTokenSteps;
+  @Autowired private MockMvcClient mockMvcClient;
+  @Autowired private DevUsernamesProperties devUsernamesProperties;
 
-    @Test
-    void shouldReturn401WhenGivenRefreshTokenWithoutUUID() throws Exception {
-        String refreshTokenWithoutUUID = jwtTokenFixture.getBaseJwtBuilder()
-                .subject(devUsernamesProperties.user())
-                .claim("type", jwtProperties.getRefreshToken())
-                .compact();
-        refreshTokenSteps.refreshExpectingError(refreshTokenWithoutUUID, HttpStatus.UNAUTHORIZED);
-    }
+  @Test
+  void shouldReturn401WhenGivenRefreshTokenWithoutUUID() throws Exception {
+    String refreshTokenWithoutUUID =
+        jwtTokenFixture
+            .getBaseJwtBuilder()
+            .subject(devUsernamesProperties.user())
+            .claim("type", jwtProperties.getRefreshToken())
+            .compact();
+    refreshTokenSteps.refreshExpectingError(refreshTokenWithoutUUID, HttpStatus.UNAUTHORIZED);
+  }
 
-    @Test
-    void shouldReturn401WhenGivenAccessTokenWithoutSubject() throws Exception {
-        String accessTokenWithoutSubject = jwtTokenFixture.getBaseJwtBuilder()
-                .claim("type", jwtProperties.getAccessToken())
-                .compact();
+  @Test
+  void shouldReturn401WhenGivenAccessTokenWithoutSubject() throws Exception {
+    String accessTokenWithoutSubject =
+        jwtTokenFixture.getBaseJwtBuilder().claim("type", jwtProperties.getAccessToken()).compact();
 
-        mockMvcClient.getProtectedDataExpecting401("Bearer "+accessTokenWithoutSubject);
-    }
+    mockMvcClient.getProtectedDataExpecting401("Bearer " + accessTokenWithoutSubject);
+  }
 
-    @Test
-    void shouldReturn401WhenGivenRefreshTokenWithoutSubject() throws Exception {
-        String accessTokenWithoutSubject = jwtTokenFixture.getBaseJwtBuilder()
-                .claim("type", jwtProperties.getRefreshToken())
-                .claim("uuid", "123456770881adfkajdfskjfa")
-                .compact();
+  @Test
+  void shouldReturn401WhenGivenRefreshTokenWithoutSubject() throws Exception {
+    String accessTokenWithoutSubject =
+        jwtTokenFixture
+            .getBaseJwtBuilder()
+            .claim("type", jwtProperties.getRefreshToken())
+            .claim("uuid", "123456770881adfkajdfskjfa")
+            .compact();
 
-        mockMvcClient.getProtectedDataExpecting401("Bearer "+accessTokenWithoutSubject);
-    }
+    mockMvcClient.getProtectedDataExpecting401("Bearer " + accessTokenWithoutSubject);
+  }
 }

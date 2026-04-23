@@ -8,5 +8,4 @@ import ru.ls.pjwt.client.MockMvcClient;
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Import(MockMvcClient.class)
-public class WebIntegrationTest extends DatabaseIntegrationTest {
-}
+public class WebIntegrationTest extends DatabaseIntegrationTest {}

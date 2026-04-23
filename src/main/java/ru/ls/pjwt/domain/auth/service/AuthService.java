@@ -18,28 +18,28 @@ import ru.ls.pjwt.domain.user.service.UserValidator;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final ExceptionsProperties exceptionsProperties;
-    private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
-    private final UserValidator userValidator;
-    private final UserToResponseMapper userToResponseMapper;
-    private final CommandMapper commandMapper;
+  private final ExceptionsProperties exceptionsProperties;
+  private final PasswordEncoder passwordEncoder;
+  private final UserService userService;
+  private final UserValidator userValidator;
+  private final UserToResponseMapper userToResponseMapper;
+  private final CommandMapper commandMapper;
 
-    public User authenticate(String username, String password) {
-        User user = userService.findUserByUsername(username);
-        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
-            throw new BadCredentialsException(exceptionsProperties.badCredentials());
-        }
-        userValidator.validateAccountStatus(user);
-        log.info("user {} authenticated", username);
-        return user;
+  public User authenticate(String username, String password) {
+    User user = userService.findUserByUsername(username);
+    if (!passwordEncoder.matches(password, user.getPasswordHash())) {
+      throw new BadCredentialsException(exceptionsProperties.badCredentials());
     }
+    userValidator.validateAccountStatus(user);
+    log.info("user {} authenticated", username);
+    return user;
+  }
 
-    public RegisterResponse register(RegisterRequest registerRequest) {
-        RegisterResponse registerResponse = userToResponseMapper.userToResponse(
-                userService.registerNewUser(commandMapper.registerRequestToCommand(registerRequest))
-        );
-        log.info("user registered successfully: {}", registerResponse);
-        return registerResponse;
-    }
+  public RegisterResponse register(RegisterRequest registerRequest) {
+    RegisterResponse registerResponse =
+        userToResponseMapper.userToResponse(
+            userService.registerNewUser(commandMapper.registerRequestToCommand(registerRequest)));
+    log.info("user registered successfully: {}", registerResponse);
+    return registerResponse;
+  }
 }

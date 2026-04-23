@@ -17,34 +17,36 @@ import ru.ls.pjwt.domain.user.entity.User;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-    private final ExceptionsProperties exceptionsProperties;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final RefreshTokenValidator refreshTokenValidator;
-    private final RefreshTokenManager refreshTokenManager;
+  private final ExceptionsProperties exceptionsProperties;
+  private final RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenValidator refreshTokenValidator;
+  private final RefreshTokenManager refreshTokenManager;
 
-    @Transactional
-    public void markTokenAsUsed(JwtClaims claims) {
-        RefreshToken refreshToken = getToken(claims);
-        log.debug("marking token as used: {}", refreshToken.getUuid());
-        refreshTokenManager.use(refreshToken);
+  @Transactional
+  public void markTokenAsUsed(JwtClaims claims) {
+    RefreshToken refreshToken = getToken(claims);
+    log.debug("marking token as used: {}", refreshToken.getUuid());
+    refreshTokenManager.use(refreshToken);
+  }
+
+  @Transactional
+  public RefreshToken getToken(JwtClaims jwtClaims) {
+    String uuid = jwtClaims.uuid();
+    if (uuid == null) {
+      log.warn("jwt token without uuid, may be deprecated");
+      throw new BadCredentialsException(exceptionsProperties.badCredentials());
     }
+    RefreshToken refreshToken =
+        refreshTokenRepository
+            .findByUuid(uuid)
+            .orElseThrow(() -> new JwtTokenRequestException("token not found"));
 
-    @Transactional
-    public RefreshToken getToken(JwtClaims jwtClaims) {
-        String uuid = jwtClaims.uuid();
-        if (uuid == null) {
-            log.warn("jwt token without uuid, may be deprecated");
-            throw new BadCredentialsException(exceptionsProperties.badCredentials());
-        }
-        RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
-                .orElseThrow(() -> new JwtTokenRequestException("token not found"));
+    refreshTokenValidator.checkUsed(refreshToken);
+    return refreshToken;
+  }
 
-        refreshTokenValidator.checkUsed(refreshToken);
-        return refreshToken;
-    }
-
-    @Transactional
-    public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
-        return refreshTokenRepository.save(new RefreshToken(createdRefreshToken.uuid(), user));
-    }
+  @Transactional
+  public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
+    return refreshTokenRepository.save(new RefreshToken(createdRefreshToken.uuid(), user));
+  }
 }

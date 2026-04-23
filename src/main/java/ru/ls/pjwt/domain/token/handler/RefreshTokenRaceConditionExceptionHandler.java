@@ -14,14 +14,16 @@ import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenManager;
 @Component
 @RequiredArgsConstructor
 public class RefreshTokenRaceConditionExceptionHandler {
-    private final RefreshTokenManager refreshTokenManager;
-    private final RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenManager refreshTokenManager;
+  private final RefreshTokenRepository refreshTokenRepository;
 
-    @Transactional
-    public void handleException(RefreshTokenRaceConditionException e) {
-        RefreshToken compromisedRefreshToken = refreshTokenRepository.findById(e.getTokenId()).orElseThrow(
-                () -> new JwtTokenRequestException("token not found"));
-        log.warn("RefreshToken race condition with {}", compromisedRefreshToken.getUuid());
-        refreshTokenManager.compromiseIfUsed(compromisedRefreshToken);
-    }
+  @Transactional
+  public void handleException(RefreshTokenRaceConditionException e) {
+    RefreshToken compromisedRefreshToken =
+        refreshTokenRepository
+            .findById(e.getTokenId())
+            .orElseThrow(() -> new JwtTokenRequestException("token not found"));
+    log.warn("RefreshToken race condition with {}", compromisedRefreshToken.getUuid());
+    refreshTokenManager.compromiseIfUsed(compromisedRefreshToken);
+  }
 }

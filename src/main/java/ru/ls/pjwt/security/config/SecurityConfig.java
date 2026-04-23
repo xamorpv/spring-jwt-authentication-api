@@ -11,16 +11,20 @@ import ru.ls.pjwt.security.filter.JwtFilter;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig extends BaseSecurityConfig {
-    public SecurityConfig(JwtFilter jwtFilter, HttpResponseWriter httpResponseWriter) {
-        super(jwtFilter, httpResponseWriter);
-    }
+  public SecurityConfig(JwtFilter jwtFilter, HttpResponseWriter httpResponseWriter) {
+    super(jwtFilter, httpResponseWriter);
+  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
-        return chain(http)
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/**", "/actuator/health").permitAll()
-                        .anyRequest().authenticated()
-                ).build();
-    }
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    return chain(http)
+        .authorizeHttpRequests(
+            request ->
+                request
+                    .requestMatchers("/api/v1/auth/**", "/actuator/health")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .build();
+  }
 }

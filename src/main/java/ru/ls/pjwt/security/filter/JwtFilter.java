@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,48 +17,52 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFilterService;
 
-import java.io.IOException;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private final JwtFilterService jwtFilterService;
+  private final JwtFilterService jwtFilterService;
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
+  private final HandlerExceptionResolver handlerExceptionResolver;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        SecurityContext context = SecurityContextHolder.getContext();
-        // если по какой-то причине пользователь уже аутентифицирован
-        if (context.getAuthentication() != null) {
-            log.warn("user authenticated before filter. uri={}, ip={}", request.getRequestURI(), request.getRemoteAddr());
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        try {
-            String header = request.getHeader("Authorization");
-            if (header == null || !header.startsWith("Bearer ") || header.equals("Bearer ")) {
-                log.debug("no Bearer token in request, skipping authentication");
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            String jwt = header.substring(7);
-
-            UserDetails userDetails = jwtFilterService.getUserDetails(jwt);
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            context.setAuthentication(token);
-
-            log.info("user {} authenticated with token", userDetails.getUsername());
-            filterChain.doFilter(request, response);
-        } catch (Exception e) {
-            SecurityContextHolder.clearContext(); // стандарт безопасности
-            log.warn("exception in filter: {}", e.getMessage());
-            handlerExceptionResolver.resolveException(request, response, null, e);
-        }
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+    SecurityContext context = SecurityContextHolder.getContext();
+    // если по какой-то причине пользователь уже аутентифицирован
+    if (context.getAuthentication() != null) {
+      log.warn(
+          "user authenticated before filter. uri={}, ip={}",
+          request.getRequestURI(),
+          request.getRemoteAddr());
+      filterChain.doFilter(request, response);
+      return;
     }
+
+    try {
+      String header = request.getHeader("Authorization");
+      if (header == null || !header.startsWith("Bearer ") || header.equals("Bearer ")) {
+        log.debug("no Bearer token in request, skipping authentication");
+        filterChain.doFilter(request, response);
+        return;
+      }
+
+      String jwt = header.substring(7);
+
+      UserDetails userDetails = jwtFilterService.getUserDetails(jwt);
+      UsernamePasswordAuthenticationToken token =
+          new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+      token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+      context.setAuthentication(token);
+
+      log.info("user {} authenticated with token", userDetails.getUsername());
+      filterChain.doFilter(request, response);
+    } catch (Exception e) {
+      SecurityContextHolder.clearContext(); // стандарт безопасности
+      log.warn("exception in filter: {}", e.getMessage());
+      handlerExceptionResolver.resolveException(request, response, null, e);
+    }
+  }
 }

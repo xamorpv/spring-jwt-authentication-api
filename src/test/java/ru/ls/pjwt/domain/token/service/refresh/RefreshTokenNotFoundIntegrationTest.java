@@ -12,25 +12,23 @@ import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 
 @Import({RefreshTokenSteps.class})
 public class RefreshTokenNotFoundIntegrationTest extends WebIntegrationTest {
-    @Autowired
-    private DevUsernamesProperties devUsernamesProperties;
+  @Autowired private DevUsernamesProperties devUsernamesProperties;
 
-    @Autowired
-    private JwtProperties jwtProperties;
+  @Autowired private JwtProperties jwtProperties;
 
-    @Autowired
-    private JwtTokenFixture jwtTokenFixture;
+  @Autowired private JwtTokenFixture jwtTokenFixture;
 
-    @Autowired
-    private RefreshTokenSteps refreshTokenSteps;
+  @Autowired private RefreshTokenSteps refreshTokenSteps;
 
-    @Test
-    void shouldReturn401WhenGivenNonExistentRefreshToken() throws Exception {
-        String refreshTokenWithoutUUID = jwtTokenFixture.getBaseJwtBuilder()
-                .subject(devUsernamesProperties.user())
-                .claim("type", jwtProperties.getRefreshToken())
-                .claim("uuid", "123456770881adfkajdfskjfa")
-                .compact();
-        refreshTokenSteps.refreshExpectingError(refreshTokenWithoutUUID, HttpStatus.UNAUTHORIZED);
-    }
+  @Test
+  void shouldReturn401WhenGivenNonExistentRefreshToken() throws Exception {
+    String refreshTokenWithoutUUID =
+        jwtTokenFixture
+            .getBaseJwtBuilder()
+            .subject(devUsernamesProperties.user())
+            .claim("type", jwtProperties.getRefreshToken())
+            .claim("uuid", "123456770881adfkajdfskjfa")
+            .compact();
+    refreshTokenSteps.refreshExpectingError(refreshTokenWithoutUUID, HttpStatus.UNAUTHORIZED);
+  }
 }

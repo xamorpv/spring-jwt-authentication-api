@@ -1,5 +1,10 @@
 package ru.ls.pjwt.domain.token.service.jwt;
 
+import static org.mockito.Mockito.when;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -10,35 +15,27 @@ import ru.ls.pjwt.common.property.JwtProperties;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
-import static org.mockito.Mockito.when;
-
 @Import(AuthenticationSteps.class)
 public class JwtExpirationIntegrationTest extends WebIntegrationTest {
-    @MockitoBean
-    private Clock clock;
+  @MockitoBean private Clock clock;
 
-    @Autowired
-    private AuthenticationSteps authenticationSteps;
+  @Autowired private AuthenticationSteps authenticationSteps;
 
-    @Autowired
-    private JwtProperties jwtProperties;
+  @Autowired private JwtProperties jwtProperties;
 
-    @Autowired
-    private MockMvcClient mockMvcClient;
+  @Autowired private MockMvcClient mockMvcClient;
 
-    @Test
-    void shouldReturn401WhenGivenExpiredAccessToken() throws Exception {
-        Instant now = Instant.now();
-        when(clock.instant()).thenReturn(now);
+  @Test
+  void shouldReturn401WhenGivenExpiredAccessToken() throws Exception {
+    Instant now = Instant.now();
+    when(clock.instant()).thenReturn(now);
 
-        LoginResponse loginResponse = authenticationSteps.loginAsDevUser();
+    LoginResponse loginResponse = authenticationSteps.loginAsDevUser();
 
-        when(clock.instant()).thenReturn(now.plus(jwtProperties.getAccessTokenExpirationMinutes()+1, ChronoUnit.MINUTES));
+    when(clock.instant())
+        .thenReturn(
+            now.plus(jwtProperties.getAccessTokenExpirationMinutes() + 1, ChronoUnit.MINUTES));
 
-        mockMvcClient.getProtectedDataExpecting401("Bearer "+loginResponse.accessToken());
-    }
+    mockMvcClient.getProtectedDataExpecting401("Bearer " + loginResponse.accessToken());
+  }
 }

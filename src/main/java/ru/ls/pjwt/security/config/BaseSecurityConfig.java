@@ -18,36 +18,42 @@ import ru.ls.pjwt.security.filter.JwtFilter;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public abstract class BaseSecurityConfig {
-    private final JwtFilter jwtFilter;
-    private final HttpResponseWriter httpResponseWriter;
+  private final JwtFilter jwtFilter;
+  private final HttpResponseWriter httpResponseWriter;
 
-    public HttpSecurity chain(HttpSecurity http) {
-        return http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(e ->
-                        e.authenticationEntryPoint(authenticationEntryPoint())
-                                .accessDeniedHandler(accessDeniedHandler())
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-    }
+  public HttpSecurity chain(HttpSecurity http) {
+    return http.csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(
+            e ->
+                e.authenticationEntryPoint(authenticationEntryPoint())
+                    .accessDeniedHandler(accessDeniedHandler()))
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+  }
 
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return (request, response, e) -> {
-            log.warn("authentication entry point: {}", e.getMessage());
-            log.trace("entry point exception: ", e);
-            httpResponseWriter.writeError(response, HttpStatus.UNAUTHORIZED, e.getMessage() +
-                    "; hint: maybe you forgot header Authorization: Bearer <token> to become authenticated");
-        };
-    }
+  @Bean
+  public AuthenticationEntryPoint authenticationEntryPoint() {
+    return (request, response, e) -> {
+      log.warn("authentication entry point: {}", e.getMessage());
+      log.trace("entry point exception: ", e);
+      httpResponseWriter.writeError(
+          response,
+          HttpStatus.UNAUTHORIZED,
+          e.getMessage()
+              + "; hint: maybe you forgot header Authorization: Bearer <token> to become authenticated");
+    };
+  }
 
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return (request, response, e) -> {
-            log.warn("access denied: {}", e.getMessage());
-            log.trace("access denied exception: ", e);
-            httpResponseWriter.writeError(response, HttpStatus.FORBIDDEN, "permission denied (you don't have authorities to use this endpoint)");
-        };
-    }
+  @Bean
+  public AccessDeniedHandler accessDeniedHandler() {
+    return (request, response, e) -> {
+      log.warn("access denied: {}", e.getMessage());
+      log.trace("access denied exception: ", e);
+      httpResponseWriter.writeError(
+          response,
+          HttpStatus.FORBIDDEN,
+          "permission denied (you don't have authorities to use this endpoint)");
+    };
+  }
 }

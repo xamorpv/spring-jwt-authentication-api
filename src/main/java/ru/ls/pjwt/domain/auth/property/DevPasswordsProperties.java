@@ -5,5 +5,4 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("dev")
 @ConfigurationProperties("dev.test-users-passwords")
-public record DevPasswordsProperties(String standard) {
-}
+public record DevPasswordsProperties(String standard) {}

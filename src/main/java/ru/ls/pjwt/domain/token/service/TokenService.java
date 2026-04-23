@@ -21,45 +21,46 @@ import ru.ls.pjwt.domain.user.service.UserValidator;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-    private final JwtFactory jwtFactory;
-    private final JwtParser jwtParser;
+  private final JwtFactory jwtFactory;
+  private final JwtParser jwtParser;
 
-    private final AccessTokenService accessTokenService;
+  private final AccessTokenService accessTokenService;
 
-    private final RefreshTokenFactory refreshTokenFactory;
-    private final RefreshTokenService refreshTokenService;
+  private final RefreshTokenFactory refreshTokenFactory;
+  private final RefreshTokenService refreshTokenService;
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    private final UserValidator userValidator;
-    private final UserService userService;
-    private final UserToDetailsMapper userToDetailsMapper;
+  private final UserValidator userValidator;
+  private final UserService userService;
+  private final UserToDetailsMapper userToDetailsMapper;
 
-    @Transactional
-    public LoginResponse refreshTokens(String token) {
-        JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
-        log.debug("refreshing tokens for username={}", jwtClaims.username());
-        User user = userService.findUserByUsername(jwtClaims.username());
-        userValidator.validateAccountStatus(user);
-        String accessToken = accessTokenService.createAccessToken(jwtClaims, user);
-        String refreshToken = refreshTokenFactory.rotateRefreshToken(jwtClaims, user);
-        log.debug("successful refresh for {}", jwtClaims.username());
-        return new LoginResponse(refreshToken, accessToken);
-    }
+  @Transactional
+  public LoginResponse refreshTokens(String token) {
+    JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
+    log.debug("refreshing tokens for username={}", jwtClaims.username());
+    User user = userService.findUserByUsername(jwtClaims.username());
+    userValidator.validateAccountStatus(user);
+    String accessToken = accessTokenService.createAccessToken(jwtClaims, user);
+    String refreshToken = refreshTokenFactory.rotateRefreshToken(jwtClaims, user);
+    log.debug("successful refresh for {}", jwtClaims.username());
+    return new LoginResponse(refreshToken, accessToken);
+  }
 
-    @Transactional
-    public LoginResponse createTokens(LoginRequest loginRequest) {
-        log.info("creating tokens for login request {}", loginRequest.username());
-        User user = authService.authenticate(loginRequest.username(), loginRequest.password());
-        String accessToken = jwtFactory.createAccessToken(userToDetailsMapper.userEntityToUserDetails(user));
-        String refreshToken = refreshTokenFactory.createAndSaveToken(user);
-        return new LoginResponse(refreshToken, accessToken);
-    }
+  @Transactional
+  public LoginResponse createTokens(LoginRequest loginRequest) {
+    log.info("creating tokens for login request {}", loginRequest.username());
+    User user = authService.authenticate(loginRequest.username(), loginRequest.password());
+    String accessToken =
+        jwtFactory.createAccessToken(userToDetailsMapper.userEntityToUserDetails(user));
+    String refreshToken = refreshTokenFactory.createAndSaveToken(user);
+    return new LoginResponse(refreshToken, accessToken);
+  }
 
-    @Transactional
-    public void invalidateRefreshToken(String token) {
-        JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
-        log.info("invalidating refresh token: {}", jwtClaims.uuid());
-        refreshTokenService.markTokenAsUsed(jwtClaims);
-    }
+  @Transactional
+  public void invalidateRefreshToken(String token) {
+    JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
+    log.info("invalidating refresh token: {}", jwtClaims.uuid());
+    refreshTokenService.markTokenAsUsed(jwtClaims);
+  }
 }

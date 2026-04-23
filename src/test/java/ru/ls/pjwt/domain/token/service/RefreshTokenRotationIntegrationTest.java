@@ -12,21 +12,20 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
 public class RefreshTokenRotationIntegrationTest extends WebIntegrationTest {
-    @Autowired
-    private RegistrationSteps registrationSteps;
+  @Autowired private RegistrationSteps registrationSteps;
 
-    @Autowired
-    private AuthenticationSteps authenticationSteps;
+  @Autowired private AuthenticationSteps authenticationSteps;
 
-    @Autowired
-    private RefreshTokenSteps refreshTokenSteps;
+  @Autowired private RefreshTokenSteps refreshTokenSteps;
 
-    @DisplayName("Refresh token rotation test")
-    @Test
-    void testSuccessfulTokenRotationFlow() throws Exception {
-        registrationSteps.registerSuccessfully();
-        LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
-        refreshTokenSteps.refreshTokensSuccessfully(loginResponse.refreshToken());
-        refreshTokenSteps.expectTokenCompromised(loginResponse.refreshToken()); // повторное использование токена невозможно - он уже использован
-    }
+  @DisplayName("Refresh token rotation test")
+  @Test
+  void testSuccessfulTokenRotationFlow() throws Exception {
+    registrationSteps.registerSuccessfully();
+    LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
+    refreshTokenSteps.refreshTokensSuccessfully(loginResponse.refreshToken());
+    refreshTokenSteps.expectTokenCompromised(
+        loginResponse
+            .refreshToken()); // повторное использование токена невозможно - он уже использован
+  }
 }

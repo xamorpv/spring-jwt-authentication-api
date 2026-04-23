@@ -23,44 +23,46 @@ import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/test")
 public class TestController {
-    private final ApiResponse apiResponse;
-    private final ControllerDevProperties controllerDevProperties;
+  private final ApiResponse apiResponse;
+  private final ControllerDevProperties controllerDevProperties;
 
-    @GetMapping("/public")
-    public ResponseEntity<StandardResponse<Void>> getPublicData() {
-        log.debug("public data requested");
-        return apiResponse.success(controllerDevProperties.publicResponse(), HttpStatus.OK);
-    }
+  @GetMapping("/public")
+  public ResponseEntity<StandardResponse<Void>> getPublicData() {
+    log.debug("public data requested");
+    return apiResponse.success(controllerDevProperties.publicResponse(), HttpStatus.OK);
+  }
 
-    @GetMapping("/protected")
-    public ResponseEntity<StandardResponse<UserDetails>> getProtectedData(@AuthenticationPrincipal UserDetails userDetails) {
-        log.info("request to protected endpoint {}", userDetails.getUsername());
-        return apiResponse.success(userDetails, controllerDevProperties.protectedResponse(), HttpStatus.OK);
-    }
+  @GetMapping("/protected")
+  public ResponseEntity<StandardResponse<UserDetails>> getProtectedData(
+      @AuthenticationPrincipal UserDetails userDetails) {
+    log.info("request to protected endpoint {}", userDetails.getUsername());
+    return apiResponse.success(
+        userDetails, controllerDevProperties.protectedResponse(), HttpStatus.OK);
+  }
 
-    @UserAccess
-    @GetMapping("/user-only")
-    public ResponseEntity<StandardResponse<Void>> getUserOnlyData() {
-        log.debug("request to user only endpoint");
-        return apiResponse.success(controllerDevProperties.userOnlyResponse(), HttpStatus.OK);
-    }
+  @UserAccess
+  @GetMapping("/user-only")
+  public ResponseEntity<StandardResponse<Void>> getUserOnlyData() {
+    log.debug("request to user only endpoint");
+    return apiResponse.success(controllerDevProperties.userOnlyResponse(), HttpStatus.OK);
+  }
 
-    @ModeratorAccess
-    @GetMapping("/moder-only")
-    public ResponseEntity<StandardResponse<Void>> getModerOnlyData() {
-        log.debug("request to moder only endpoint");
-        return apiResponse.success(controllerDevProperties.moderOnlyResponse(), HttpStatus.OK);
-    }
+  @ModeratorAccess
+  @GetMapping("/moder-only")
+  public ResponseEntity<StandardResponse<Void>> getModerOnlyData() {
+    log.debug("request to moder only endpoint");
+    return apiResponse.success(controllerDevProperties.moderOnlyResponse(), HttpStatus.OK);
+  }
 
-    @AdminAccess
-    @GetMapping("/admin-only")
-    public ResponseEntity<StandardResponse<Void>> getAdminOnlyData() {
-        log.debug("request to admin only endpoint");
-        return apiResponse.success(controllerDevProperties.adminOnlyResponse(), HttpStatus.OK);
-    }
+  @AdminAccess
+  @GetMapping("/admin-only")
+  public ResponseEntity<StandardResponse<Void>> getAdminOnlyData() {
+    log.debug("request to admin only endpoint");
+    return apiResponse.success(controllerDevProperties.adminOnlyResponse(), HttpStatus.OK);
+  }
 
-//    @GetMapping("/critical")
-//    public ResponseEntity<StandardResponse<Void>> criticalData() {
-//        return ApiResponse.success("public data", HttpStatus.OK);
-//    }
+  //    @GetMapping("/critical")
+  //    public ResponseEntity<StandardResponse<Void>> criticalData() {
+  //        return ApiResponse.success("public data", HttpStatus.OK);
+  //    }
 }
