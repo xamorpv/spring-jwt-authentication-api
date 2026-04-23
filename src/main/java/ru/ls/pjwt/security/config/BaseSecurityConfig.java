@@ -41,7 +41,8 @@ public abstract class BaseSecurityConfig {
           response,
           HttpStatus.UNAUTHORIZED,
           e.getMessage()
-              + "; hint: maybe you forgot header Authorization: Bearer <token> to become authenticated");
+              + "; hint: maybe you forgot header Authorization: "
+              + "Bearer <token> to become authenticated");
     };
   }
 

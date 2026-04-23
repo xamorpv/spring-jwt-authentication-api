@@ -14,6 +14,12 @@ public interface UserToResponseMapper {
   @Mapping(
       target = "authorities",
       expression =
-          "java(user.getAuthorities().stream().map(Authority::getAuthority).collect(Collectors.toSet()))")
+"""
+java(
+  user.getAuthorities()
+  .stream()
+  .map(Authority::getAuthority)
+  .collect(Collectors.toSet())
+)""")
   RegisterResponse userToResponse(User user);
 }

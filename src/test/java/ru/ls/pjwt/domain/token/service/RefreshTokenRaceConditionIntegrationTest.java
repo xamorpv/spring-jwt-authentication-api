@@ -2,7 +2,12 @@ package ru.ls.pjwt.domain.token.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +30,10 @@ import tools.jackson.databind.ObjectMapper;
     webEnvironment = SpringBootTest.WebEnvironment.MOCK,
     properties = {
       // тест должен падать в случае дедлока
-      "spring.datasource.hikari.data-source-properties.options=-c lock_timeout=3000 -c statement_timeout=5000 -c idle_in_transaction_session_timeout=10000"
+      "spring.datasource.hikari.data-source-properties.options="
+          + "-c lock_timeout=3000 "
+          + "-c statement_timeout=5000 "
+          + "-c idle_in_transaction_session_timeout=10000"
     })
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
 public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest {
