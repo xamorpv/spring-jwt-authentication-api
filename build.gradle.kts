@@ -51,7 +51,7 @@ checkstyle {
 pmd {
 	toolVersion = "7.23.0"
 	ruleSetFiles = files("${rootDir}/config/pmd/ruleset.xml")
-	rulesMinimumPriority = 3
+	rulesMinimumPriority = 5
 	isIgnoreFailures = false
 	maxFailures = 0
 }
