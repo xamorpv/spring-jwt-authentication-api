@@ -16,5 +16,11 @@
 
     <module name="TreeWalker">
         <module name="AvoidStarImport"/>
+
+        <module name="JavadocMethod">
+            <property name="accessModifiers" value="public"/>
+            <property name="allowMissingParamTags" value="false"/>
+            <property name="allowMissingReturnTag" value="false"/>
+        </module>
     </module>
 </module>
