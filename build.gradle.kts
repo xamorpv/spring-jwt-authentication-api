@@ -51,8 +51,8 @@ checkstyle {
 pmd {
 	toolVersion = "7.23.0"
 	ruleSetFiles = files("${rootDir}/config/pmd/ruleset.xml")
-	rulesMinimumPriority = 3          // ловим даже medium-предупреждения
-	isIgnoreFailures = false          // в CI должно падать
+	rulesMinimumPriority = 3
+	isIgnoreFailures = false
 	maxFailures = 0
 }
 
