@@ -32,5 +32,11 @@
             <property name="allowMissingPropertyJavadoc" value="true"/>
             <property name="allowedAnnotations" value="Override, Test, Bean"/>
         </module>
+
+        <module name="SummaryJavadoc">
+            <property name="forbiddenSummaryFragments"
+                      value="^@return|^[a-z]|^This method"/>
+            <property name="period" value="."/>
+        </module>
     </module>
 </module>
