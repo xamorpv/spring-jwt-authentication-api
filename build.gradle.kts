@@ -91,8 +91,13 @@ tasks.register("installGitHooks") {
 		val hookFile = file("${rootDir}/.git/hooks/pre-commit")
 		val hookContent = """
             #!/bin/sh
-            ./gradlew spotlessApply --quiet
-            git add -u
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+./gradlew spotlessApply --quiet
+for file in ${'$'}STAGED_FILES; do
+    if [ -f "${'$'}file" ] && echo "${'$'}file" | grep -q '\.java$'; then
+        git add "${'$'}file"
+    fi
+done
         """.trimIndent()
 		hookFile.writeText(hookContent)
 		hookFile.setExecutable(true)
