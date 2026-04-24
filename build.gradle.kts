@@ -4,6 +4,8 @@ plugins {
 	id("org.springframework.boot") version "4.0.2"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("com.diffplug.spotless") version "8.4.0"
+	id("pmd")
+	id("de.aaschmid.cpd") version "3.5"
 }
 
 group = "ru.ls"
@@ -46,12 +48,39 @@ checkstyle {
 	maxWarnings = 0
 }
 
+pmd {
+	toolVersion = "7.23.0"
+	ruleSetFiles = files("${rootDir}/config/pmd/ruleset.xml")
+	rulesMinimumPriority = 3          // ловим даже medium-предупреждения
+	isIgnoreFailures = false          // в CI должно падать
+	maxFailures = 0
+}
+
+cpd {
+	language = "java"
+	minimumTokenCount = 100
+}
+
+tasks.cpdCheck {
+	source = fileTree("src/main") {
+		exclude("**/generated/**", "**/dto/**")
+	}
+
+	reports {
+		text.required.set(true)
+		xml.required.set(true)
+	}
+}
+
 tasks.register("codeQualityCheck") {
 	group = "verification"
 	dependsOn(
 		"spotlessCheck",
 		"checkstyleMain",
 		"checkstyleTest",
+		"pmdMain",
+		"pmdTest",
+		"cpdCheck",
 		"test"
 	)
 }
