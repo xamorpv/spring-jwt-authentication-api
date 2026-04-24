@@ -38,5 +38,7 @@
                       value="^@return|^[a-z]|^This method"/>
             <property name="period" value="."/>
         </module>
+
+        <module name="NonEmptyAtclauseDescription"/>
     </module>
 </module>
