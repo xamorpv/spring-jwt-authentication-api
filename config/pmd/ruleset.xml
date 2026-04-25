@@ -7,7 +7,9 @@
     <rule ref="category/java/performance.xml"/>
 
     <rule ref="category/java/documentation.xml">
+        <!-- Покрыто через Checkstyle -->
         <exclude name="CommentRequired"/>
+        <exclude name="CommentSize"/>
     </rule>
 
     <rule ref="category/java/errorprone.xml">
