@@ -30,7 +30,7 @@
         <module name="MissingJavadocMethod">
             <property name="scope" value="public"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>
-            <property name="allowedAnnotations" value="Override, Test, Bean"/>
+            <property name="allowedAnnotations" value="Override, Test, Bean, ExceptionHandler"/>
         </module>
 
         <module name="SummaryJavadoc">
