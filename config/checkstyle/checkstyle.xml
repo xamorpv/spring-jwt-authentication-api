@@ -31,6 +31,7 @@
             <property name="scope" value="public"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>
             <property name="allowedAnnotations" value="Override, Test, Bean, ExceptionHandler"/>
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
         </module>
 
         <module name="SummaryJavadoc">
