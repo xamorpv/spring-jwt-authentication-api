@@ -3,6 +3,7 @@ package ru.ls.pjwt.domain.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -16,6 +17,12 @@ import ru.ls.pjwt.domain.user.entity.User;
 public class UserValidator {
   private final ExceptionsProperties exceptionsProperties;
 
+  /**
+   * Validates the account status of the given user.
+   *
+   * @param user the user to validate
+   * @throws AccountStatusException if the user account is locked, disabled, or expired
+   */
   public void validateAccountStatus(User user) {
     if (!user.isAccountNonExpired()) {
       throw new AccountExpiredException(exceptionsProperties.accountExpired());

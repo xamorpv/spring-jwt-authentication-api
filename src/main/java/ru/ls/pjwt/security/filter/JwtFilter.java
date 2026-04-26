@@ -11,12 +11,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFilterService;
 
+/**
+ * A security filter that runs once per request and extracts JWT authentication from the {@code
+ * Authorization} header.
+ *
+ * <p>It is placed before {@link UsernamePasswordAuthenticationFilter} in the Spring Security filter
+ * chain and populates the security context if a valid access token is present.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

@@ -28,6 +28,14 @@ public class AuthorityService {
             .orElseThrow(() -> new ServerError("authority USER not found!"));
   }
 
+  /**
+   * Assigns the default user authority to the given user.
+   *
+   * <p>The default authority is loaded once during initialization and cached. This method adds the
+   * authority to the user's collection within the current transaction.
+   *
+   * @param user the user to whom the default authority will be assigned
+   */
   @Transactional
   public void assignDefaultAuthority(User user) {
     log.debug("add user authority for user with username={}", user.getUsername());

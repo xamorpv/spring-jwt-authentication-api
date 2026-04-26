@@ -22,6 +22,11 @@ public class TimeProvider {
     formatter = DateTimeFormatter.ofPattern(formatProperties.dateFormat()).withZone(ZoneOffset.UTC);
   }
 
+  /**
+   * Formats the current UTC time according to the configured pattern.
+   *
+   * @return formatted timestamp string (e.g. {@code 2026-04-23__13:36:59})
+   */
   public String timestamp() {
     return Instant.now(clock).atZone(ZoneOffset.UTC).format(formatter);
   }

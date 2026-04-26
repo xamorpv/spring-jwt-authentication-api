@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
 public class Main {
 
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public static void main(String[] args) {
     SpringApplication.run(Main.class, args);
   }

@@ -14,6 +14,7 @@ import ru.ls.pjwt.security.filter.JwtFilter;
 @Configuration
 @Profile("dev")
 public class DevSecurityConfig extends BaseSecurityConfig {
+  /** Injection constructor. */
   public DevSecurityConfig(JwtFilter jwtFilter, HttpResponseWriter httpResponseWriter) {
     super(jwtFilter, httpResponseWriter);
   }

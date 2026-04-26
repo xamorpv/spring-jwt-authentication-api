@@ -15,6 +15,7 @@ public class JwtProperties {
   private final int accessTokenExpirationMinutes;
   private final int refreshTokenExpirationDays;
 
+  /** Injection constructor. */
   public JwtProperties(
       String secretKeyString,
       String accessToken,

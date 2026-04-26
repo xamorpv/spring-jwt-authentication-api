@@ -17,9 +17,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.common.property.ApplicationProperties;
 import ru.ls.pjwt.common.property.JwtProperties;
+import ru.ls.pjwt.common.web.exception.ServerError;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 
+/**
+ * Parses and validates JWT tokens, extracting claims and user details.
+ *
+ * <p>This class handles the cryptographic verification and structural parsing of access and refresh
+ * tokens. For type validation, it delegates to {@link JwtValidator}.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,12 +36,28 @@ public class JwtParser {
   private final JwtValidator jwtValidator;
   private final Clock clock;
 
+  /**
+   * Parses and validates a refresh token JWT.
+   *
+   * @param token the refresh token string
+   * @return the parsed {@link JwtClaims} with user details and metadata
+   * @throws JwtTokenRequestException if the token is invalid, expired, or has an incorrect type
+   * @throws ServerError if the token type claim is missing
+   */
   public JwtClaims parseRefreshToken(String token) {
     JwtClaims jwtClaims = parseToken(token);
     jwtValidator.validateType(jwtProperties.getRefreshToken(), jwtClaims);
     return jwtClaims;
   }
 
+  /**
+   * Parses and validates an access token JWT.
+   *
+   * @param token the access token string
+   * @return the parsed {@link JwtClaims} with user details and authorities
+   * @throws JwtTokenRequestException if the token is invalid, expired, or has an incorrect type
+   * @throws ServerError if the token type claim is missing
+   */
   public JwtClaims parseAccessToken(String token) {
     JwtClaims jwtClaims = parseToken(token);
     jwtValidator.validateType(jwtProperties.getAccessToken(), jwtClaims);

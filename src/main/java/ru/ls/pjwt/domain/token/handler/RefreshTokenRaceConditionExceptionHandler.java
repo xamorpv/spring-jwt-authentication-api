@@ -17,6 +17,15 @@ public class RefreshTokenRaceConditionExceptionHandler {
   private final RefreshTokenManager refreshTokenManager;
   private final RefreshTokenRepository refreshTokenRepository;
 
+  /**
+   * Handles a {@link RefreshTokenRaceConditionException} by marking the involved refresh token as
+   * compromised if it was already used.
+   *
+   * <p>The method is invoked from the token exception handler when a race condition is detected
+   * during concurrent token rotations.
+   *
+   * @param e the exception carrying the ID of the refresh token that triggered the race condition
+   */
   @Transactional
   public void handleException(RefreshTokenRaceConditionException e) {
     RefreshToken compromisedRefreshToken =

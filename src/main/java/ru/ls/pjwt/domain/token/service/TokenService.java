@@ -2,12 +2,16 @@ package ru.ls.pjwt.domain.token.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.service.AuthService;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
+import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
+import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFactory;
 import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenFactory;
@@ -35,6 +39,16 @@ public class TokenService {
   private final UserService userService;
   private final UserToDetailsMapper userToDetailsMapper;
 
+  /**
+   * Refreshes the access and refresh token pair using a valid refresh token.
+   *
+   * @param token the refresh token string
+   * @return a new {@link LoginResponse} containing the rotated access and refresh tokens
+   * @throws JwtTokenRequestException if the token is invalid, expired, or has an incorrect type
+   * @throws BadCredentialsException if the associated user is not found
+   * @throws AccountStatusException if the user account is locked, disabled, or expired
+   * @throws RefreshTokenRaceConditionException if a concurrent token rotation is detected
+   */
   @Transactional
   public LoginResponse refreshTokens(String token) {
     JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
@@ -47,6 +61,14 @@ public class TokenService {
     return new LoginResponse(refreshToken, accessToken);
   }
 
+  /**
+   * Creates a new access and refresh token pair for an authenticated user.
+   *
+   * @param loginRequest the login credentials (username and password)
+   * @return a {@link LoginResponse} with the fresh access and refresh tokens
+   * @throws BadCredentialsException if the username is not found or the password does not match
+   * @throws AccountStatusException if the user account is locked, disabled, or expired
+   */
   @Transactional
   public LoginResponse createTokens(LoginRequest loginRequest) {
     log.info("creating tokens for login request {}", loginRequest.username());
@@ -57,6 +79,13 @@ public class TokenService {
     return new LoginResponse(refreshToken, accessToken);
   }
 
+  /**
+   * Invalidates a refresh token by marking it as used.
+   *
+   * @param token the refresh token string to invalidate
+   * @throws JwtTokenRequestException if the token is invalid or its type is incorrect
+   * @throws BadCredentialsException if the token UUID is missing (legacy token)
+   */
   @Transactional
   public void invalidateRefreshToken(String token) {
     JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);

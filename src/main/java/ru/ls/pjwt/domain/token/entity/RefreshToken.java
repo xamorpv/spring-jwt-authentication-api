@@ -47,6 +47,12 @@ public class RefreshToken extends TimestampedEntity {
   @Column(name = "version")
   private Integer version;
 
+  /**
+   * Creates a new refresh token associated with the given user and UUID.
+   *
+   * @param uuid unique token identifier
+   * @param user the user who owns this token
+   */
   public RefreshToken(String uuid, User user) {
     this.user = user;
     this.uuid = uuid;

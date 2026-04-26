@@ -22,6 +22,13 @@ public class RefreshTokenService {
   private final RefreshTokenValidator refreshTokenValidator;
   private final RefreshTokenManager refreshTokenManager;
 
+  /**
+   * Marks the refresh token identified by the given claims as used.
+   *
+   * @param claims the parsed JWT claims containing the token UUID
+   * @throws BadCredentialsException if the claims do not contain a UUID
+   * @throws JwtTokenRequestException if the token is not found
+   */
   @Transactional
   public void markTokenAsUsed(JwtClaims claims) {
     RefreshToken refreshToken = getToken(claims);
@@ -29,6 +36,14 @@ public class RefreshTokenService {
     refreshTokenManager.use(refreshToken);
   }
 
+  /**
+   * Finds and validates a refresh token by UUID from the provided JWT claims.
+   *
+   * @param jwtClaims the parsed JWT claims containing the token UUID
+   * @return the corresponding {@link RefreshToken} entity
+   * @throws BadCredentialsException if the claims do not contain a UUID
+   * @throws JwtTokenRequestException if the token is not found or has already been used
+   */
   @Transactional
   public RefreshToken getToken(JwtClaims jwtClaims) {
     String uuid = jwtClaims.uuid();
@@ -45,6 +60,13 @@ public class RefreshTokenService {
     return refreshToken;
   }
 
+  /**
+   * Saves a new refresh token entity for the specified user.
+   *
+   * @param createdRefreshToken the token data to persist (contains UUID and token string)
+   * @param user the user who owns this token
+   * @return the persisted {@link RefreshToken} entity
+   */
   @Transactional
   public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
     return refreshTokenRepository.save(new RefreshToken(createdRefreshToken.uuid(), user));

@@ -24,6 +24,13 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final CreateUserCommandToUserMapper createUserCommandToUserMapper;
 
+  /**
+   * Finds a user by username.
+   *
+   * @param username the username to search for
+   * @return the matching {@link User} entity with authorities eagerly loaded
+   * @throws BadCredentialsException if no user with the given username exists
+   */
   @Transactional(readOnly = true)
   public User findUserByUsername(String username) {
     log.debug("loading user {}...", username);
@@ -32,6 +39,14 @@ public class UserService {
         .orElseThrow(() -> new BadCredentialsException(exceptionsProperties.badCredentials()));
   }
 
+  /**
+   * Registers a new user if the username and email are unique.
+   *
+   * @param createUserCommand the registration data
+   * @return the newly persisted {@link User} entity
+   * @throws NotUniqueDataException if the username or email already exists, including in the case
+   *     of a concurrent registration conflict
+   */
   @Transactional
   public User registerNewUser(CreateUserCommand createUserCommand) {
     if (userRepository.existsByEmail(createUserCommand.email())) {

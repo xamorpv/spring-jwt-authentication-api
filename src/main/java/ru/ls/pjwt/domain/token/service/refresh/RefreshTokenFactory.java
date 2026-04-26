@@ -2,14 +2,24 @@ package ru.ls.pjwt.domain.token.service.refresh;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.domain.token.dto.CreatedRefreshToken;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
 import ru.ls.pjwt.domain.token.entity.RefreshToken;
+import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
+import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFactory;
 import ru.ls.pjwt.domain.user.entity.User;
 
+/**
+ * Creates new refresh tokens and persists them, delegating token building to {@link JwtFactory} and
+ * persistence to {@link RefreshTokenService}.
+ *
+ * <p>This class is responsible for the "creation" part of the refresh token lifecycle, including
+ * token rotation (updating an existing token with a new UUID).
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -18,6 +28,12 @@ public class RefreshTokenFactory {
   private final RefreshTokenService refreshTokenService;
   private final RefreshTokenManager refreshTokenManager;
 
+  /**
+   * Creates a new refresh token and persists it for the given user.
+   *
+   * @param user the user for whom the refresh token is created
+   * @return the compact refresh token string
+   */
   public String createAndSaveToken(User user) {
     log.debug("saving token for user: {}", user.getUsername());
     CreatedRefreshToken createdRefreshToken = jwtFactory.createRefreshToken(user.getUsername());
@@ -29,6 +45,17 @@ public class RefreshTokenFactory {
     return createdRefreshToken.token();
   }
 
+  /**
+   * Rotates an existing refresh token, marking the previous one as used and persisting a new token
+   * for the specified user.
+   *
+   * @param token the parsed claims of the current refresh token
+   * @param user the user who owns this token
+   * @return the new refresh token string
+   * @throws BadCredentialsException if the token UUID is missing (legacy token)
+   * @throws JwtTokenRequestException if the token is not found or has already been used
+   * @throws RefreshTokenRaceConditionException if a concurrent rotation is detected
+   */
   @Transactional
   public String rotateRefreshToken(JwtClaims token, User user) {
     // todo grace period

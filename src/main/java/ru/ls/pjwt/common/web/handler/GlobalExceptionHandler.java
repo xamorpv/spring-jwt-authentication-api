@@ -23,9 +23,11 @@ import ru.ls.pjwt.common.web.exception.NotUniqueDataException;
 import ru.ls.pjwt.common.web.exception.ServerError;
 
 /**
- * Глобальный обработчик ошибок (Fallback). Имеет самый низкий приоритет по умолчанию. Для
- * специфичных доменных ошибок используйте локальные @ControllerAdvice
- * с @Order(Ordered.HIGHEST_PRECEDENCE).
+ * Global fallback exception handler for common application exceptions.
+ *
+ * <p>This handler has the lowest precedence by default. For domain-specific error handling, create
+ * a separate {@code @ControllerAdvice} class with {@code @Order(Ordered.HIGHEST_PRECEDENCE)} to
+ * override it.
  */
 @Slf4j
 @ControllerAdvice

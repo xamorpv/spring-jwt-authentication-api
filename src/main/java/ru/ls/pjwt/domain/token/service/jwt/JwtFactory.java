@@ -20,6 +20,16 @@ import ru.ls.pjwt.common.time.TimeProvider;
 import ru.ls.pjwt.domain.token.dto.CreatedRefreshToken;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
 
+/**
+ * Factory for creating and rotating JWT access and refresh tokens.
+ *
+ * <p>This class encapsulates the low‑level token construction logic using the JJWT library and is
+ * responsible for signing tokens, setting expiration times, and embedding standard claims (type,
+ * authorities, UUID).
+ *
+ * <p>Token configuration is taken from {@link JwtProperties}, while {@link TimeProvider} and {@link
+ * UUIDGenerator} provide timestamps and unique identifiers respectively.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,6 +40,12 @@ public class JwtFactory {
   private final ApplicationProperties applicationProperties;
   private final Clock clock;
 
+  /**
+   * Creates a signed access token for the given user.
+   *
+   * @param userDetails the authenticated user's details (used to extract username and authorities)
+   * @return a compact access token string
+   */
   public String createAccessToken(UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
     claims.put("type", jwtProperties.getAccessToken());
@@ -43,6 +59,12 @@ public class JwtFactory {
         claims);
   }
 
+  /**
+   * Creates a new refresh token for the specified username.
+   *
+   * @param username the subject for which the refresh token is issued
+   * @return a {@link CreatedRefreshToken} containing the token UUID and the compact token string
+   */
   public CreatedRefreshToken createRefreshToken(String username) {
     String uuid = uuidGenerator.random();
     Map<String, Object> claims = new HashMap<>();
@@ -56,6 +78,13 @@ public class JwtFactory {
             claims));
   }
 
+  /**
+   * Rotates an existing refresh token, preserving the original expiration time.
+   *
+   * @param jwtClaims the parsed claims of the current refresh token
+   * @return a {@link CreatedRefreshToken} with a new UUID and token, but with the same expiration
+   *     as the original token
+   */
   public CreatedRefreshToken updateRefreshToken(JwtClaims jwtClaims) {
     Claims oldClaims = jwtClaims.claims();
     Instant time = oldClaims.getExpiration().toInstant();

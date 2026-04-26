@@ -11,6 +11,13 @@ import ru.ls.pjwt.domain.token.entity.RefreshToken;
 import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.domain.token.repository.RefreshTokenRepository;
 
+/**
+ * Performs low-level state changes on refresh tokens (marking as used, compromising) and handles
+ * race conditions via optimistic locking.
+ *
+ * <p>Unlike {@link RefreshTokenService}, this class focuses on single-token state transitions and
+ * does not perform validation.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -18,6 +25,12 @@ public class RefreshTokenManager {
   private final RefreshTokenRepository refreshTokenRepository;
   private final Clock clock;
 
+  /**
+   * Marks the given refresh token as used and immediately persists the change.
+   *
+   * @param refreshToken the token to mark as used
+   * @throws RefreshTokenRaceConditionException if an optimistic locking conflict occurs
+   */
   @Transactional
   public void use(RefreshToken refreshToken) {
     try {
@@ -31,6 +44,14 @@ public class RefreshTokenManager {
     }
   }
 
+  /**
+   * Checks whether the given refresh token has already been used, and if so, compromises it along
+   * with all remaining unused tokens of the same user.
+   *
+   * @param refreshToken the token to check
+   * @return {@code true} if the token was already used (and has been compromised), {@code false} if
+   *     the token is still unused
+   */
   @Transactional
   public boolean compromiseIfUsed(RefreshToken refreshToken) {
     if (refreshToken.isUsed()) {
