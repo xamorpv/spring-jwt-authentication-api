@@ -1,3 +1,6 @@
+import net.ltgt.gradle.errorprone.CheckSeverity
+import net.ltgt.gradle.errorprone.errorprone
+
 plugins {
 	java
 	id("checkstyle")
@@ -6,6 +9,7 @@ plugins {
 	id("com.diffplug.spotless") version "8.4.0"
 	id("pmd")
 	id("de.aaschmid.cpd") version "3.5"
+	id("net.ltgt.errorprone") version "5.1.0"
 }
 
 group = "ru.ls"
@@ -61,6 +65,18 @@ cpd {
 	minimumTokenCount = 100
 }
 
+tasks.withType<JavaCompile>().configureEach {
+	options.errorprone {
+		disableAllChecks.set(true)
+
+		check("NullAway", CheckSeverity.ERROR)
+
+		option("NullAway:AnnotatedPackages", "ru.ls")
+
+		option("NullAway:TreatGeneratedAsUnannotated", "true")
+	}
+}
+
 tasks.cpdCheck {
 	source = fileTree("src/main") {
 		exclude("**/generated/**", "**/dto/**")
@@ -78,6 +94,7 @@ tasks.register("codeQualityCheck") {
 		"spotlessCheck",
 		"checkstyleMain",
 		"checkstyleTest",
+		"compileJava",
 		"pmdMain",
 		"pmdTest",
 		"cpdCheck",
@@ -105,6 +122,9 @@ done
 }
 
 dependencies {
+	errorprone("com.google.errorprone:error_prone_core:2.30.0")
+	errorprone("com.uber.nullaway:nullaway:0.12.0")
+
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-flyway")
 	implementation("org.springframework.boot:spring-boot-starter-security")
