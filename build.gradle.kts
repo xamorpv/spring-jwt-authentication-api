@@ -74,6 +74,8 @@ tasks.withType<JavaCompile>().configureEach {
 		option("NullAway:AnnotatedPackages", "ru.ls")
 
 		option("NullAway:TreatGeneratedAsUnannotated", "true")
+
+		option("NullAway:ExternalInitAnnotations", "jakarta.persistence.Entity")
 	}
 }
 
@@ -122,8 +124,8 @@ done
 }
 
 dependencies {
-	errorprone("com.google.errorprone:error_prone_core:2.30.0")
-	errorprone("com.uber.nullaway:nullaway:0.12.0")
+	errorprone("com.google.errorprone:error_prone_core:2.41.0")
+	errorprone("com.uber.nullaway:nullaway:0.13.3")
 
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-flyway")
