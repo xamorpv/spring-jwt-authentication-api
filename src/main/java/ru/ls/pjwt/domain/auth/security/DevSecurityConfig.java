@@ -14,7 +14,8 @@ import ru.ls.pjwt.security.filter.JwtFilter;
 @Configuration
 @Profile("dev")
 public class DevSecurityConfig extends BaseSecurityConfig {
-  /** Injection constructor. */
+
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public DevSecurityConfig(JwtFilter jwtFilter, HttpResponseWriter httpResponseWriter) {
     super(jwtFilter, httpResponseWriter);
   }

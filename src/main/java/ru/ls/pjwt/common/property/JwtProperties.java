@@ -15,7 +15,7 @@ public class JwtProperties {
   private final int accessTokenExpirationMinutes;
   private final int refreshTokenExpirationDays;
 
-  /** Injection constructor. */
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public JwtProperties(
       String secretKeyString,
       String accessToken,
