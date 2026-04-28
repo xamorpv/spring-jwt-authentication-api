@@ -1,5 +1,6 @@
 package ru.ls.pjwt.domain.token.service;
 
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -44,7 +45,7 @@ public class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest 
         jwtTokenFixture
             .getBaseJwtBuilder()
             .claim("type", jwtProperties.getRefreshToken())
-            .claim("uuid", "123456770881adfkajdfskjfa")
+            .claim("uuid", UUID.randomUUID().toString())
             .compact();
 
     mockMvcClient.getProtectedDataExpecting401("Bearer " + accessTokenWithoutSubject);
