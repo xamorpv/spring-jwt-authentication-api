@@ -6,13 +6,14 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+@SuppressWarnings("PMD.UseUtilityClass")
 @ConfigurationPropertiesScan
 @EnableScheduling
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
-public class Main {
+public class PjwtApplication {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public static void main(String[] args) {
-    SpringApplication.run(Main.class, args);
+  public static void main(final String[] args) {
+    SpringApplication.run(PjwtApplication.class, args);
   }
 }
