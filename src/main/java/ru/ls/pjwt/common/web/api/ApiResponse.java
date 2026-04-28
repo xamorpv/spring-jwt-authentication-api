@@ -2,6 +2,7 @@ package ru.ls.pjwt.common.web.api;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,10 @@ public class ApiResponse {
    * @return a {@link ResponseEntity} with a failed {@link StandardResponse} wrapping an {@link
    *     ErrorResponse}
    */
-  public ResponseEntity<StandardResponse<ErrorResponse>> error(HttpStatus status, String message) {
-    return errorInFields(status, message, null);
+  public ResponseEntity<StandardResponse<ErrorResponse>> error(
+      HttpStatus status, @Nullable String message) {
+    String safeMessage = message != null ? message : status.getReasonPhrase();
+    return errorInFields(status, safeMessage, null);
   }
 
   /**
@@ -37,7 +40,7 @@ public class ApiResponse {
    *     ErrorResponse} that carries the given field errors
    */
   public ResponseEntity<StandardResponse<ErrorResponse>> errorInFields(
-      HttpStatus status, String message, List<FieldErrorDto> errors) {
+      HttpStatus status, String message, @Nullable List<FieldErrorDto> errors) {
     return failure(
         new ErrorResponse(status.value(), timeProvider.timestamp(), errors), message, status);
   }

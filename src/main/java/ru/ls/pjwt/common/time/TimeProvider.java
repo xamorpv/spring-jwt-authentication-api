@@ -15,7 +15,10 @@ import ru.ls.pjwt.common.property.FormatProperties;
 public class TimeProvider {
   private final Clock clock;
   private final FormatProperties formatProperties;
-  @Getter private DateTimeFormatter formatter;
+
+  @SuppressWarnings("NullAway.Init")
+  @Getter
+  private DateTimeFormatter formatter;
 
   @PostConstruct
   private void initFormatter() {

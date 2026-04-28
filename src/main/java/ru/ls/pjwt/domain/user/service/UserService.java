@@ -73,9 +73,11 @@ public class UserService {
 
   private User saveNewUser(CreateUserCommand createUserCommand) {
     log.debug("saving user {}", createUserCommand.username());
-    User user =
-        createUserCommandToUserMapper.commandToUser(
-            createUserCommand, passwordEncoder.encode(createUserCommand.rawPassword()));
+    String password = passwordEncoder.encode(createUserCommand.rawPassword());
+    if (password == null) {
+      throw new BadCredentialsException(exceptionsProperties.badCredentials());
+    }
+    User user = createUserCommandToUserMapper.commandToUser(createUserCommand, password);
     authorityService.assignDefaultAuthority(user);
     log.debug("user {} saved", user.getUsername());
     return userRepository.save(user);

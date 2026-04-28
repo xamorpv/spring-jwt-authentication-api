@@ -13,6 +13,7 @@ import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jspecify.annotations.Nullable;
 import ru.ls.pjwt.common.database.entity.TimestampedEntity;
 import ru.ls.pjwt.domain.user.entity.User;
 
@@ -40,6 +41,7 @@ public class RefreshToken extends TimestampedEntity {
   @Column(name = "compromised", nullable = false)
   private boolean compromised = false;
 
+  @Nullable
   @Column(name = "used_at")
   private Instant usedAt;
 
@@ -53,6 +55,7 @@ public class RefreshToken extends TimestampedEntity {
    * @param uuid unique token identifier
    * @param user the user who owns this token
    */
+  @SuppressWarnings("NullAway.Init")
   public RefreshToken(String uuid, User user) {
     this.user = user;
     this.uuid = uuid;
