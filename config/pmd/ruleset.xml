@@ -21,6 +21,8 @@
         <!-- покрыто через spotless -->
         <exclude name="UnnecessaryConstructor"/>
         <exclude name="UselessParentheses"/>
+        <!-- Избыточно -->
+        <exclude name="AtLeastOneConstructor"/>
     </rule>
 
     <rule ref="category/java/design.xml">
