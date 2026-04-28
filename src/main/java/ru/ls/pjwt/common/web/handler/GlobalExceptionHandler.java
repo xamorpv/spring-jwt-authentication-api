@@ -79,7 +79,9 @@ public class GlobalExceptionHandler {
                 errors.add(
                     new FieldErrorDto(
                         fe.getField(),
-                        (fe.getDefaultMessage() != null ? fe.getDefaultMessage() : "error"))));
+                        (fe.getDefaultMessage() != null
+                            ? fe.getDefaultMessage()
+                            : "Invalid value"))));
     log.warn("validation exception: {}. errors: {}", e.getMessage(), errors);
     return apiResponse.errorInFields(
         HttpStatus.BAD_REQUEST, exceptionsProperties.validationFailed(), errors);
