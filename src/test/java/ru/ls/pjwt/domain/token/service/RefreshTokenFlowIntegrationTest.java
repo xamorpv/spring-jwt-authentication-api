@@ -35,13 +35,12 @@ public class RefreshTokenFlowIntegrationTest extends WebIntegrationTest {
     accessTokenSteps.assertUserTokenIsValid(loginResponse.accessToken());
 
     LoginResponse refreshResponse =
-        refreshTokenSteps.refreshTokensSuccessfully(loginResponse.refreshToken()).data();
+        refreshTokenSteps.refreshTokensSuccessfully(loginResponse.refreshToken());
     accessTokenSteps.assertUserTokenIsValid(refreshResponse.accessToken());
 
     LoginResponse refreshResponse2 =
-        refreshTokenSteps
-            .refreshTokensSuccessfully(refreshResponse.refreshToken())
-            .data(); // проверяем, что повторный refresh также работает
+        refreshTokenSteps.refreshTokensSuccessfully(
+            refreshResponse.refreshToken()); // проверяем, что повторный refresh также работает
     accessTokenSteps.assertUserTokenIsValid(refreshResponse2.accessToken());
 
     refreshTokenSteps.invalidateRefreshToken(refreshResponse2.refreshToken());

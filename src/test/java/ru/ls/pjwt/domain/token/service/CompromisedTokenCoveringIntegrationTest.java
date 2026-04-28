@@ -54,9 +54,8 @@ public class CompromisedTokenCoveringIntegrationTest extends WebIntegrationTest 
     LoginResponse refreshTokenA =
         authenticationSteps.loginAsFixtureUser(); // 1. пользователь получает токен А
     LoginResponse refreshTokenB =
-        refreshTokenSteps
-            .refreshTokensSuccessfully(refreshTokenA.refreshToken())
-            .data(); // 2. пользователь обновляет токен А, получает токен Б
+        refreshTokenSteps.refreshTokensSuccessfully(
+            refreshTokenA.refreshToken()); // 2. пользователь обновляет токен А, получает токен Б
 
     doAnswer(
             invocation -> {

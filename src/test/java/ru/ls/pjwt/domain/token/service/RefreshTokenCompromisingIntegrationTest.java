@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import ru.ls.pjwt.base.WebIntegrationTest;
-import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
@@ -40,10 +39,10 @@ public class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest 
     LoginResponse user1Login2 = authenticationSteps.login(user1LoginRequest);
     LoginResponse user1Login3 = authenticationSteps.login(user1LoginRequest);
 
-    StandardResponse<LoginResponse> user1Refresh =
+    LoginResponse user1Refresh =
         refreshTokenSteps.refreshTokensSuccessfully(user1Login1.refreshToken());
-    StandardResponse<LoginResponse> user1RefreshChain =
-        refreshTokenSteps.refreshTokensSuccessfully(user1Refresh.data().refreshToken());
+    LoginResponse user1RefreshChain =
+        refreshTokenSteps.refreshTokensSuccessfully(user1Refresh.refreshToken());
 
     LoginResponse user2Login = authenticationSteps.login(user2LoginRequest);
 
@@ -52,7 +51,7 @@ public class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest 
     LoginResponse loginResponse2 = authenticationSteps.loginAsFixtureUser();
     LoginResponse loginResponse3 = authenticationSteps.loginAsFixtureUser();
 
-    StandardResponse<LoginResponse> refreshLoginSuccess =
+    LoginResponse refreshLoginSuccess =
         refreshTokenSteps.refreshTokensSuccessfully(loginResponse1.refreshToken()); // успех
     refreshTokenSteps.expectTokenCompromised(
         loginResponse1.refreshToken()); // компроментация всех токенов пользователя: loginResponse1,
@@ -66,21 +65,21 @@ public class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest 
     refreshTokenSteps.expectTokenCompromised(
         loginResponse1.refreshToken()); // злоумышленник пытается сбросить сессию
 
-    StandardResponse<LoginResponse> refreshLoginSuccessAfterCompromising =
+    LoginResponse refreshLoginSuccessAfterCompromising =
         refreshTokenSteps.refreshTokensSuccessfully(
             loginResponseSuccess
                 .refreshToken()); // успех - компроментированный токен ни на что не влияет
     // попытки использовать другие токены. везде неудача
     refreshTokenSteps.expectTokenCompromised(loginResponse3.refreshToken());
-    refreshTokenSteps.expectTokenCompromised(refreshLoginSuccess.data().refreshToken());
+    refreshTokenSteps.expectTokenCompromised(refreshLoginSuccess.refreshToken());
     // пользователь может продолжать цепочку обновлений
     refreshTokenSteps.refreshTokensSuccessfully(
-        refreshLoginSuccessAfterCompromising.data().refreshToken());
+        refreshLoginSuccessAfterCompromising.refreshToken());
 
     // другие пользователи могут продолжать цепочку обновлений
     refreshTokenSteps.refreshTokensSuccessfully(user2Login.refreshToken());
     refreshTokenSteps.refreshTokensSuccessfully(user1Login2.refreshToken());
     refreshTokenSteps.refreshTokensSuccessfully(user1Login3.refreshToken());
-    refreshTokenSteps.refreshTokensSuccessfully(user1RefreshChain.data().refreshToken());
+    refreshTokenSteps.refreshTokensSuccessfully(user1RefreshChain.refreshToken());
   }
 }

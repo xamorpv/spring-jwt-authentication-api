@@ -79,6 +79,9 @@ public class ValidationIntegrationTest extends WebIntegrationTest {
                 new RegisterRequest(username, email, password), HttpStatus.BAD_REQUEST.value())
             .data();
 
+    assertNotNull(errorResponse, "error response");
+    assertNotNull(errorResponse.errors(), "invalid request should contain errors list");
+
     log.info("errors list: {}", errorResponse.errors());
 
     return errorResponse.errors();

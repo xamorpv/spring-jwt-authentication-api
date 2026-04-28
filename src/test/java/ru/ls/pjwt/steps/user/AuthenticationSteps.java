@@ -3,6 +3,7 @@ package ru.ls.pjwt.steps.user;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -53,17 +54,21 @@ public class AuthenticationSteps {
         objectMapper.readValue(
             mockMvcClient.post(ENDPOINT, loginRequest), new TypeReference<>() {});
 
+    assertNotNull(loginResponse.data(), "loginResponse data");
     return loginResponse.data();
   }
 
   public void expectLoginFailure(LoginRequest loginRequest, int expectedStatusCode)
       throws Exception {
-    StandardResponse<ErrorResponse> errorResponse =
+    StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(ENDPOINT, loginRequest, "Authentication");
+
+    ErrorResponse errorResponse = standardResponse.data();
+    assertNotNull(errorResponse, "error response");
 
     assertAll(
         "Authentication should fail",
-        () -> assertFalse(errorResponse.success(), "Success flag must be false"),
-        () -> assertEquals(expectedStatusCode, errorResponse.data().statusCode()));
+        () -> assertFalse(standardResponse.success(), "Success flag must be false"),
+        () -> assertEquals(expectedStatusCode, errorResponse.statusCode()));
   }
 }

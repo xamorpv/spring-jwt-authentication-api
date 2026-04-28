@@ -1,6 +1,7 @@
 package ru.ls.pjwt.domain.token.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -100,6 +101,10 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest
 
     StandardResponse<LoginResponse> refreshResponse =
         objectMapper.readValue(tokenBody, new TypeReference<>() {});
-    refreshTokenSteps.expectTokenCompromised(refreshResponse.data().refreshToken());
+
+    LoginResponse refreshLoginResponse = refreshResponse.data();
+    assertNotNull(refreshLoginResponse, "refresh response data");
+
+    refreshTokenSteps.expectTokenCompromised(refreshLoginResponse.refreshToken());
   }
 }

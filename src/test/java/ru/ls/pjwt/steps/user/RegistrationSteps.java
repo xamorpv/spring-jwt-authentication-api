@@ -3,6 +3,7 @@ package ru.ls.pjwt.steps.user;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -34,30 +35,34 @@ public class RegistrationSteps {
     StandardResponse<RegisterResponse> registerResponse =
         objectMapper.readValue(
             mockMvcClient.post(ENDPOINT, registerRequest), new TypeReference<>() {});
+    RegisterResponse data = registerResponse.data();
+    assertNotNull(data, "successful register response data");
     assertAll(
         "Registration properties should be correct",
-        () -> assertEquals(registerRequest.username(), registerResponse.data().username()),
-        () -> assertEquals(registerRequest.email(), registerResponse.data().email()),
+        () -> assertEquals(registerRequest.username(), data.username()),
+        () -> assertEquals(registerRequest.email(), data.email()),
         () ->
             assertAll(
                 "New user should have only USER authority",
-                () -> assertEquals(1, registerResponse.data().authorities().size()),
+                () -> assertEquals(1, data.authorities().size()),
                 () ->
                     assertEquals(
                         authoritiesProperties.user(),
-                        registerResponse.data().authorities().stream().findFirst().orElseThrow())));
+                        data.authorities().stream().findFirst().orElseThrow())));
   }
 
   public StandardResponse<ErrorResponse> expectRegistrationFailure(
       RegisterRequest registerRequest, int expectedStatusCode) throws Exception {
-    StandardResponse<ErrorResponse> errorResponse =
+    StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(ENDPOINT, registerRequest, "Registration");
 
+    ErrorResponse errorResponse = standardResponse.data();
+    assertNotNull(errorResponse, "errorResponse data");
     assertAll(
         "Registration should fail",
-        () -> assertFalse(errorResponse.success(), "Success flag"),
-        () -> assertEquals(expectedStatusCode, errorResponse.data().statusCode()));
+        () -> assertFalse(standardResponse.success(), "Success flag"),
+        () -> assertEquals(expectedStatusCode, errorResponse.statusCode()));
 
-    return errorResponse;
+    return standardResponse;
   }
 }

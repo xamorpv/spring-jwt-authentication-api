@@ -3,6 +3,7 @@ package ru.ls.pjwt.steps.token;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,36 +33,43 @@ public class RefreshTokenSteps {
 
   @Autowired private MockMvcClient mockMvcClient;
 
-  public StandardResponse<LoginResponse> refreshTokensSuccessfully(String refreshToken)
-      throws Exception {
+  public LoginResponse refreshTokensSuccessfully(String refreshToken) throws Exception {
     StandardResponse<LoginResponse> loginResponseStandardResponse =
         objectMapper.readValue(refreshReturningStringBody(refreshToken), new TypeReference<>() {});
     assertTrue(loginResponseStandardResponse.success(), "Token refresh should succeed");
-    return loginResponseStandardResponse;
+    LoginResponse loginResponse = loginResponseStandardResponse.data();
+    assertNotNull(loginResponse, "login response after success refresh");
+    return loginResponse;
   }
 
   public void refreshExpectingError(String refreshToken, HttpStatus expectedStatus)
       throws Exception {
-    StandardResponse<ErrorResponse> errorResponse =
+    StandardResponse<ErrorResponse> standardRespose =
         mockMvcClient.postExpectingError(
             ENDPOINT, new RefreshTokenRequest(refreshToken), "Refresh");
 
-    assertEquals(expectedStatus.value(), errorResponse.data().statusCode(), "status code");
+    ErrorResponse errorResponse = standardRespose.data();
+    assertNotNull(errorResponse, "error response");
+
+    assertEquals(expectedStatus.value(), errorResponse.statusCode(), "status code");
   }
 
   public void expectTokenCompromised(String refreshToken) throws Exception {
-    StandardResponse<ErrorResponse> errorResponse =
+    StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(
             ENDPOINT, new RefreshTokenRequest(refreshToken), "Refresh");
+
+    ErrorResponse errorResponse = standardResponse.data();
+    assertNotNull(errorResponse, "error response");
 
     assertAll(
         "Token refresh should fail",
         () ->
             assertTrue(
-                errorResponse.message().contains("compromise"),
+                standardResponse.message().contains("compromise"),
                 "Message missing 'compromise' keyword"),
-        () -> assertFalse(errorResponse.success(), "Success flag must be false"),
-        () -> assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.data().statusCode()));
+        () -> assertFalse(standardResponse.success(), "Success flag must be false"),
+        () -> assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.statusCode()));
   }
 
   public String refreshReturningStringBody(String refreshToken) throws Exception {

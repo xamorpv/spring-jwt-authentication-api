@@ -1,6 +1,7 @@
 package ru.ls.pjwt.domain.token.service.jwt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import ru.ls.pjwt.base.WebIntegrationTest;
 import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
-import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
 import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
@@ -28,12 +28,16 @@ public class JwtTokenConfusionIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn401WhenUsingAccessTokenInsteadOfRefreshToken() throws Exception {
-    StandardResponse<ErrorResponse> error =
-        mockMvcClient.postExpectingError(
-            RefreshTokenSteps.ENDPOINT,
-            new RefreshTokenRequest(authenticationSteps.loginAsDevUser().accessToken()),
-            "Refresh");
+    ErrorResponse errorResponse =
+        mockMvcClient
+            .postExpectingError(
+                RefreshTokenSteps.ENDPOINT,
+                new RefreshTokenRequest(authenticationSteps.loginAsDevUser().accessToken()),
+                "Refresh")
+            .data();
 
-    assertEquals(HttpStatus.UNAUTHORIZED.value(), error.data().statusCode());
+    assertNotNull(errorResponse, "error response");
+
+    assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.statusCode());
   }
 }
