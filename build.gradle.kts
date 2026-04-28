@@ -97,6 +97,7 @@ tasks.register("codeQualityCheck") {
 		"checkstyleMain",
 		"checkstyleTest",
 		"compileJava",
+		"compileTest",
 		"pmdMain",
 		"pmdTest",
 		"cpdCheck",
