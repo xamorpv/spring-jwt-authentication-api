@@ -23,6 +23,8 @@
         <exclude name="UselessParentheses"/>
         <!-- Избыточно -->
         <exclude name="AtLeastOneConstructor"/>
+        <!-- Исключаем правила, которые будем настраивать отдельно -->
+        <exclude name="LongVariable"/>
     </rule>
 
     <rule ref="category/java/design.xml">
@@ -64,6 +66,11 @@
         </properties>
     </rule>
 
+    <rule ref="category/java/codestyle.xml/LongVariable">
+        <properties>
+            <property name="minimum" value="30" />
+        </properties>
+    </rule>
 
     <exclude-pattern>.*/generated/.*</exclude-pattern>
 </ruleset>
