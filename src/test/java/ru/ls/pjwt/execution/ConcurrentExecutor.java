@@ -6,8 +6,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.springframework.stereotype.Component;
 
+/**
+ * Utility for running tasks asynchronously and waiting for their completion in integration tests.
+ *
+ * <p>Useful for simulating concurrent requests (e.g., race conditions) without spawning platform
+ * threads manually.
+ */
 @Component
 public class ConcurrentExecutor {
+  /**
+   * Executes the given runnable in a separate thread and waits at most 10 seconds for its
+   * completion.
+   *
+   * @param runnable the task to execute concurrently
+   * @throws RuntimeException if the task throws an exception or the waiting time elapses
+   */
   public void runAsyncAndWait(ThrowingRunnable runnable) {
     CompletableFuture<Void> future =
         CompletableFuture.runAsync(
@@ -26,7 +39,13 @@ public class ConcurrentExecutor {
     }
   }
 
+  /** A {@link Runnable}-like interface that allows throwing checked exceptions. */
   public interface ThrowingRunnable {
+    /**
+     * Executes the task, potentially throwing a checked exception.
+     *
+     * @throws Exception if the task fails
+     */
     void run() throws Exception;
   }
 }

@@ -9,12 +9,25 @@ import org.springframework.boot.test.context.TestComponent;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 
+/**
+ * Test utility for asserting access token permissions against test endpoints.
+ *
+ * <p>Provides reusable steps for verifying that a given token grants authenticated access, allows
+ * user-specific access, and denies admin access.
+ */
 @TestComponent
 public class AccessTokenSteps {
   @Autowired private MockMvc mockMvc;
 
   @Autowired private ControllerDevProperties controllerDevProperties;
 
+  /**
+   * Asserts that the given token is valid for a non-admin user: it grants access to both the
+   * protected and user-only endpoints, but not to the admin-only endpoint.
+   *
+   * @param token the access token (without "Bearer " prefix)
+   * @throws Exception if any MockMvc assertion fails
+   */
   public void assertUserTokenIsValid(String token) throws Exception {
     assertTokenGrantsUserAccess(token);
     assertTokenGrantsAccess(token);

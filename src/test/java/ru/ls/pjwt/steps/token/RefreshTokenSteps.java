@@ -22,6 +22,12 @@ import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
+/**
+ * Test steps for refresh token operations.
+ *
+ * <p>Encapsulates common assertions and request building for the {@code /api/v1/auth/refresh} and
+ * invalidation endpoints.
+ */
 @Slf4j
 @TestComponent
 public class RefreshTokenSteps {
@@ -33,6 +39,14 @@ public class RefreshTokenSteps {
 
   @Autowired private MockMvcClient mockMvcClient;
 
+  /**
+   * Refreshes tokens using the given refresh token and expects a successful response containing a
+   * new token pair.
+   *
+   * @param refreshToken the current refresh token string
+   * @return the {@link LoginResponse} with the new access and refresh tokens
+   * @throws Exception if the request fails or the response does not indicate success
+   */
   public LoginResponse refreshTokensSuccessfully(String refreshToken) throws Exception {
     StandardResponse<LoginResponse> loginResponseStandardResponse =
         objectMapper.readValue(refreshReturningStringBody(refreshToken), new TypeReference<>() {});
@@ -42,6 +56,13 @@ public class RefreshTokenSteps {
     return loginResponse;
   }
 
+  /**
+   * Attempts to refresh tokens and expects a failed response with a specific HTTP status.
+   *
+   * @param refreshToken the refresh token string
+   * @param expectedStatus the expected {@link HttpStatus} of the response
+   * @throws Exception if the request fails or the status code does not match
+   */
   public void refreshExpectingError(String refreshToken, HttpStatus expectedStatus)
       throws Exception {
     StandardResponse<ErrorResponse> standardRespose =
@@ -54,6 +75,15 @@ public class RefreshTokenSteps {
     assertEquals(expectedStatus.value(), errorResponse.statusCode(), "status code");
   }
 
+  /**
+   * Attempts to refresh tokens and expects that the token has been compromised.
+   *
+   * <p>The assertion verifies that the response indicates a failure with {@code UNAUTHORIZED}
+   * status and that the error message contains the word "compromise".
+   *
+   * @param refreshToken the refresh token string
+   * @throws Exception if the request fails or the response does not signal a compromised token
+   */
   public void expectTokenCompromised(String refreshToken) throws Exception {
     StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(
@@ -72,10 +102,23 @@ public class RefreshTokenSteps {
         () -> assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.statusCode()));
   }
 
+  /**
+   * Calls the refresh endpoint and returns the raw JSON response body.
+   *
+   * @param refreshToken the refresh token string
+   * @return the JSON response body as a {@code String}
+   * @throws Exception if the request fails
+   */
   public String refreshReturningStringBody(String refreshToken) throws Exception {
     return mockMvcClient.post(ENDPOINT, new RefreshTokenRequest(refreshToken));
   }
 
+  /**
+   * Invalidates the given refresh token by marking it as used.
+   *
+   * @param refreshToken the refresh token string to invalidate
+   * @throws Exception if the request fails
+   */
   public void invalidateRefreshToken(String refreshToken) throws Exception {
     mockMvc
         .perform(

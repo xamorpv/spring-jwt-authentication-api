@@ -17,6 +17,12 @@ import ru.ls.pjwt.fixture.StandardUserFixture;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
+/**
+ * Reusable test steps for user registration.
+ *
+ * <p>Provides convenience methods that perform registration requests and assert the expected
+ * outcomes (success or failure).
+ */
 @TestComponent
 public class RegistrationSteps {
   private final String ENDPOINT = "/api/v1/auth/register";
@@ -27,10 +33,20 @@ public class RegistrationSteps {
 
   @Autowired private AuthoritiesProperties authoritiesProperties;
 
+  /**
+   * Registers the default fixture user and expects a successful response with the {@code USER}
+   * authority.
+   */
   public void registerSuccessfully() throws Exception {
     registerSuccessfully(StandardUserFixture.getDefaultRegisterRequest());
   }
 
+  /**
+   * Registers a user with the given data and expects a successful response.
+   *
+   * @param registerRequest the registration details
+   * @throws Exception if the request or assertions fail
+   */
   public void registerSuccessfully(RegisterRequest registerRequest) throws Exception {
     StandardResponse<RegisterResponse> registerResponse =
         objectMapper.readValue(
@@ -51,6 +67,14 @@ public class RegistrationSteps {
                         data.authorities().stream().findFirst().orElseThrow())));
   }
 
+  /**
+   * Attempts to register a user and expects a failure response with the given HTTP status code.
+   *
+   * @param registerRequest the registration details
+   * @param expectedStatusCode the expected HTTP status code (e.g. 409 for conflict)
+   * @return the parsed {@code StandardResponse<ErrorResponse>} for further assertions
+   * @throws Exception if the request or assertions fail
+   */
   public StandardResponse<ErrorResponse> expectRegistrationFailure(
       RegisterRequest registerRequest, int expectedStatusCode) throws Exception {
     StandardResponse<ErrorResponse> standardResponse =

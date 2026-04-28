@@ -20,12 +20,30 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
+/**
+ * Utility component for sending HTTP requests through {@link MockMvc} and extracting responses,
+ * designed for integration tests.
+ *
+ * <p>All methods throw {@code Exception} if the underlying MockMvc request fails; such exceptions
+ * are treated as test failures and should not be caught.
+ */
 @TestComponent
 public class MockMvcClient {
   @Autowired private MockMvc mockMvc;
 
   @Autowired private ObjectMapper objectMapper;
 
+  /**
+   * Performs a POST request and expects a failed {@link StandardResponse} with an {@link
+   * ErrorResponse} body.
+   *
+   * @param endpoint the URL to send the POST request to
+   * @param body the request body object (will be serialized to JSON)
+   * @param operation a human‑readable name for the operation (used in the assertion error message
+   *     if the response cannot be parsed)
+   * @return the parsed {@code StandardResponse<ErrorResponse>}
+   * @throws Exception if the request fails or the response is unparseable
+   */
   public StandardResponse<ErrorResponse> postExpectingError(
       String endpoint, Object body, String operation) throws Exception {
     String content = post(endpoint, body);
@@ -37,6 +55,14 @@ public class MockMvcClient {
     }
   }
 
+  /**
+   * Performs a POST request and returns the raw {@link MockHttpServletResponse}.
+   *
+   * @param endpoint the URL to send the POST request to
+   * @param body the request body object (will be serialized to JSON)
+   * @return the raw servlet response
+   * @throws Exception if the request fails
+   */
   public MockHttpServletResponse postReturningStatus(String endpoint, Object body)
       throws Exception {
     return mockMvc
@@ -48,6 +74,14 @@ public class MockMvcClient {
         .getResponse();
   }
 
+  /**
+   * Performs a POST request and returns the response content as a JSON string.
+   *
+   * @param endpoint the URL to send the POST request to
+   * @param body the request body object (will be serialized to JSON)
+   * @return the JSON response body as a String
+   * @throws Exception if the request fails
+   */
   public String post(String endpoint, Object body) throws Exception {
     MvcResult registerResult =
         mockMvc
@@ -60,6 +94,13 @@ public class MockMvcClient {
     return registerResult.getResponse().getContentAsString();
   }
 
+  /**
+   * Sends a GET request to the protected test endpoint and asserts that the response status is 401
+   * (Unauthorized) with the expected error structure.
+   *
+   * @param headerValue the value of the {@code Authorization} header (e.g. {@code "Bearer token"})
+   * @throws Exception if the request or assertions fail
+   */
   public void getProtectedDataExpecting401(String headerValue) throws Exception {
     getProtectedData(headerValue)
         .andExpect(status().isUnauthorized())
@@ -67,6 +108,13 @@ public class MockMvcClient {
         .andExpect(jsonPath("$.data.statusCode").value(HttpStatus.UNAUTHORIZED.value()));
   }
 
+  /**
+   * Sends a GET request to the protected test endpoint and asserts that the response status is 500
+   * (Internal Server Error) with the expected error structure.
+   *
+   * @param headerValue the value of the {@code Authorization} header
+   * @throws Exception if the request or assertions fail
+   */
   public void getProtectedDataExpecting500(String headerValue) throws Exception {
     getProtectedData(headerValue)
         .andExpect(status().isInternalServerError())
