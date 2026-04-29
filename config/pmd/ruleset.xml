@@ -2,7 +2,10 @@
 <ruleset name="Project Rules">
     <description>Полный набор правил PMD</description>
 
-    <rule ref="category/java/bestpractices.xml"/>
+    <rule ref="category/java/bestpractices.xml">
+        <!-- Избыточно -->
+        <exclude name="GuardLogStatement"/>
+    </rule>
 
     <rule ref="category/java/performance.xml"/>
 
