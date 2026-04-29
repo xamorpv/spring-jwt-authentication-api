@@ -5,6 +5,8 @@
     <rule ref="category/java/bestpractices.xml">
         <!-- Избыточно -->
         <exclude name="GuardLogStatement"/>
+        <!-- Исключаем правила, которые будем настраивать отдельно -->
+        <exclude name="ImplicitFunctionalInterface"/>
     </rule>
 
     <rule ref="category/java/performance.xml"/>
@@ -32,6 +34,7 @@
         <exclude name="OnlyOneReturn"/>
         <!-- Исключаем правила, которые будем настраивать отдельно -->
         <exclude name="LongVariable"/>
+        <exclude name="ShortVariable"/>
     </rule>
 
     <rule ref="category/java/design.xml">
@@ -44,6 +47,8 @@
         <exclude name="TooManyMethods"/>
         <exclude name="TooManyFields"/>
         <exclude name="NcssCount"/>
+        <exclude name="UseUtilityClass"/>
+        <exclude name="DataClass"/>
     </rule>
 
     <!-- Отдельные правила с кастомными настройками -->
@@ -76,6 +81,39 @@
     <rule ref="category/java/codestyle.xml/LongVariable">
         <properties>
             <property name="minimum" value="30" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/design.xml/UseUtilityClass">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value=".[pmd-java:hasAnnotation('SpringBootApplication') or pmd-java:hasAnnotation('org.springframework.boot.autoconfigure.SpringBootApplication')]" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml/ShortVariable">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="
+                        self::VariableId[@Name = 'id']
+                          [ancestor::FieldDeclaration/
+                             ModifierList/
+                             Annotation[@SimpleName = 'Id']]
+                      "/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/bestpractices.xml/ImplicitFunctionalInterface">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value=".[pmd-java:hasAnnotation('Mapper') or pmd-java:hasAnnotation('org.mapstruct.Mapper')]" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/design.xml/DataClass">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value=".[pmd-java:hasAnnotation('UtilityClass') or pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]" />
         </properties>
     </rule>
 
