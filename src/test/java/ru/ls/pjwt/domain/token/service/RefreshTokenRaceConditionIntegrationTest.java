@@ -52,22 +52,22 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest
   @Test
   void givenRefreshToken_whenConcurrentRotation_thenCompromiseAllTokens() throws Exception {
     registrationSteps.registerSuccessfully();
-    LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
+    final LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
 
-    CountDownLatch countDownLatch = new CountDownLatch(1);
+    final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    Callable<MockHttpServletResponse> refreshRequest =
+    final Callable<MockHttpServletResponse> refreshRequest =
         () -> {
           countDownLatch.await();
           return mockMvcClient.postReturningStatus(RefreshTokenSteps.ENDPOINT, loginResponse);
         };
 
-    MockHttpServletResponse result1;
-    MockHttpServletResponse result2;
+    final MockHttpServletResponse result1;
+    final MockHttpServletResponse result2;
 
     try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
-      Future<MockHttpServletResponse> future1 = executorService.submit(refreshRequest);
-      Future<MockHttpServletResponse> future2 = executorService.submit(refreshRequest);
+      final Future<MockHttpServletResponse> future1 = executorService.submit(refreshRequest);
+      final Future<MockHttpServletResponse> future2 = executorService.submit(refreshRequest);
 
       countDownLatch.countDown();
 
@@ -83,8 +83,8 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest
     log.info("result 1: {}", result1);
     log.info("result 2: {}", result2);
 
-    boolean success1 = result1.getStatus() == 200;
-    boolean success2 = result2.getStatus() == 200;
+    final boolean success1 = result1.getStatus() == 200;
+    final boolean success2 = result2.getStatus() == 200;
 
     assertNotEquals(
         success1,
@@ -99,10 +99,10 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest
       tokenBody = result2.getContentAsString();
     }
 
-    StandardResponse<LoginResponse> refreshResponse =
+    final StandardResponse<LoginResponse> refreshResponse =
         objectMapper.readValue(tokenBody, new TypeReference<>() {});
 
-    LoginResponse refreshLoginResponse = refreshResponse.data();
+    final LoginResponse refreshLoginResponse = refreshResponse.data();
     assertNotNull(refreshLoginResponse, "refresh response data");
 
     refreshTokenSteps.expectTokenCompromised(refreshLoginResponse.refreshToken());

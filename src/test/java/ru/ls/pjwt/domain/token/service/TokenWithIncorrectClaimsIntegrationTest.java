@@ -22,7 +22,7 @@ public class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest 
 
   @Test
   void shouldReturn401WhenGivenRefreshTokenWithoutUUID() throws Exception {
-    String refreshTokenWithoutUUID =
+    final String refreshTokenWithoutUUID =
         jwtTokenFixture
             .getBaseJwtBuilder()
             .subject(devUsernamesProperties.user())
@@ -33,7 +33,7 @@ public class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest 
 
   @Test
   void shouldReturn401WhenGivenAccessTokenWithoutSubject() throws Exception {
-    String accessTokenWithoutSubject =
+    final String accessTokenWithoutSubject =
         jwtTokenFixture.getBaseJwtBuilder().claim("type", jwtProperties.getAccessToken()).compact();
 
     mockMvcClient.getProtectedDataExpecting401("Bearer " + accessTokenWithoutSubject);
@@ -41,7 +41,7 @@ public class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest 
 
   @Test
   void shouldReturn401WhenGivenRefreshTokenWithoutSubject() throws Exception {
-    String accessTokenWithoutSubject =
+    final String accessTokenWithoutSubject =
         jwtTokenFixture
             .getBaseJwtBuilder()
             .claim("type", jwtProperties.getRefreshToken())

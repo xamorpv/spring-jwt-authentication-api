@@ -45,18 +45,18 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
   @Test
   @Transactional // чтобы сущности обновлялись при save
   void tokenClearingFlow() {
-    User user = userService.findUserByUsername(devUsernamesProperties.user());
-    User moder = userService.findUserByUsername(devUsernamesProperties.moderator());
-    User admin = userService.findUserByUsername(devUsernamesProperties.admin());
+    final User user = userService.findUserByUsername(devUsernamesProperties.user());
+    final User moder = userService.findUserByUsername(devUsernamesProperties.moderator());
+    final User admin = userService.findUserByUsername(devUsernamesProperties.admin());
 
-    RefreshToken adminRefreshToken = createRefreshToken(admin);
-    RefreshToken moderRefreshToken1 = createRefreshToken(moder);
-    RefreshToken moderRefreshToken2 = createRefreshToken(moder);
-    RefreshToken moderRefreshToken3 = createRefreshToken(moder);
-    RefreshToken userRefreshToken1 = createRefreshToken(user);
-    RefreshToken userRefreshToken2 = createRefreshToken(user);
-    RefreshToken userRefreshToken3 = createRefreshToken(user);
-    RefreshToken userRefreshToken4 = createRefreshToken(user);
+    final RefreshToken adminRefreshToken = createRefreshToken(admin);
+    final RefreshToken moderRefreshToken1 = createRefreshToken(moder);
+    final RefreshToken moderRefreshToken2 = createRefreshToken(moder);
+    final RefreshToken moderRefreshToken3 = createRefreshToken(moder);
+    final RefreshToken userRefreshToken1 = createRefreshToken(user);
+    final RefreshToken userRefreshToken2 = createRefreshToken(user);
+    final RefreshToken userRefreshToken3 = createRefreshToken(user);
+    final RefreshToken userRefreshToken4 = createRefreshToken(user);
 
     putAll(
         adminRefreshToken,
@@ -107,7 +107,7 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
     clearAndCheck();
   }
 
-  private RefreshToken createRefreshToken(User user) {
+  private RefreshToken createRefreshToken(final User user) {
     return refreshTokenRepository.saveAndFlush(
         new RefreshToken(UUID.randomUUID().toString(), user));
   }
@@ -150,25 +150,25 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
             });
   }
 
-  private void expireByCreatedAtAndSave(RefreshToken refreshToken) {
+  private void expireByCreatedAtAndSave(final RefreshToken refreshToken) {
     expireByCreatedAt(refreshToken);
     setTokenNonExistent(refreshToken);
     refreshTokenRepository.saveAndFlush(refreshToken);
   }
 
-  private void expireByUsedAtAndSave(RefreshToken refreshToken) {
+  private void expireByUsedAtAndSave(final RefreshToken refreshToken) {
     use(refreshToken);
 
     setTokenNonExistent(refreshToken);
     refreshTokenRepository.saveAndFlush(refreshToken);
   }
 
-  private void setTokenNonExistent(RefreshToken refreshToken) {
+  private void setTokenNonExistent(final RefreshToken refreshToken) {
     existingRefreshTokens.remove(refreshToken.getUuid());
     nonExistingRefreshTokens.put(refreshToken.getUuid(), refreshToken);
   }
 
-  private void expireByCreatedAt(RefreshToken refreshToken) {
+  private void expireByCreatedAt(final RefreshToken refreshToken) {
     Field createdAt = null;
     try {
       createdAt = TimestampedEntity.class.getDeclaredField("createdAt");
@@ -176,7 +176,7 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
       fail("refreshToken don't have 'createdAt' field");
     }
     createdAt.setAccessible(true);
-    Instant expiredInstant = createExpiredInstant();
+    final Instant expiredInstant = createExpiredInstant();
     try {
       createdAt.set(refreshToken, expiredInstant);
     } catch (IllegalAccessException e) {
@@ -189,7 +189,7 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
         refreshToken.getId());
   }
 
-  private void use(RefreshToken refreshToken) {
+  private void use(final RefreshToken refreshToken) {
     refreshToken.setUsed(true);
     refreshToken.setUsedAt(createExpiredInstant());
   }
@@ -198,7 +198,7 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
     return Instant.now(clock).minus(44, ChronoUnit.DAYS).minus(1, ChronoUnit.MINUTES);
   }
 
-  private void putAll(RefreshToken... refreshTokens) {
+  private void putAll(final RefreshToken... refreshTokens) {
     for (RefreshToken refreshToken : refreshTokens) {
       existingRefreshTokens.put(refreshToken.getUuid(), refreshToken);
     }

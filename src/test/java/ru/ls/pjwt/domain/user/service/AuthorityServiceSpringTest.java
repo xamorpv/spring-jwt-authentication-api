@@ -17,7 +17,7 @@ public class AuthorityServiceSpringTest extends DatabaseIntegrationTest {
 
   @Test
   void shouldAssignUserRoleWhenAssigningDefaultAuthority() {
-    User user = new User();
+    final User user = new User();
     authorityService.assignDefaultAuthority(user);
     assertEquals(1, user.getAuthorities().size(), "default authorities size");
     assertEquals(

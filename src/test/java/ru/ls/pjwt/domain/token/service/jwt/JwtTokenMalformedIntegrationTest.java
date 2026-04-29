@@ -20,14 +20,14 @@ public class JwtTokenMalformedIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn401WhenGivenTokenWithWrongSignature() throws Exception {
-    String accessToken = authenticationSteps.loginAsDevUser().accessToken();
-    String invalidToken = accessToken.substring(0, accessToken.lastIndexOf('.'));
+    final String accessToken = authenticationSteps.loginAsDevUser().accessToken();
+    final String invalidToken = accessToken.substring(0, accessToken.lastIndexOf('.'));
 
     registrationSteps.registerSuccessfully();
-    String otherAccessToken = authenticationSteps.loginAsFixtureUser().accessToken();
-    String invalidSignature = otherAccessToken.substring(accessToken.lastIndexOf('.'));
+    final String otherAccessToken = authenticationSteps.loginAsFixtureUser().accessToken();
+    final String invalidSignature = otherAccessToken.substring(accessToken.lastIndexOf('.'));
 
-    String malformedToken =
+    final String malformedToken =
         invalidToken
             + invalidSignature; // получился токен с payload одного пользователя и signature другого
     // пользователя
@@ -37,13 +37,13 @@ public class JwtTokenMalformedIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn401WhenNoneAttack() throws Exception {
-    String adminAccessToken = authenticationSteps.loginAsDevAdmin().accessToken();
-    String adminPayload =
+    final String adminAccessToken = authenticationSteps.loginAsDevAdmin().accessToken();
+    final String adminPayload =
         adminAccessToken.substring(
             adminAccessToken.indexOf(".") + 1, adminAccessToken.lastIndexOf("."));
-    String headerWithNoneAlgorithm = "eyJhbGciOiAibm9uZSIsICJ0eXAiOiAiSldUIn0";
+    final String headerWithNoneAlgorithm = "eyJhbGciOiAibm9uZSIsICJ0eXAiOiAiSldUIn0";
 
-    String fakeAccessToken = headerWithNoneAlgorithm + "." + adminPayload + ".";
+    final String fakeAccessToken = headerWithNoneAlgorithm + "." + adminPayload + ".";
 
     mockMvcClient.getProtectedDataExpecting401("Bearer " + fakeAccessToken);
   }

@@ -22,7 +22,7 @@ public class RefreshTokenNotFoundIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn401WhenGivenNonExistentRefreshToken() throws Exception {
-    String refreshTokenWithoutUUID =
+    final String refreshTokenWithoutUUID =
         jwtTokenFixture
             .getBaseJwtBuilder()
             .subject(devUsernamesProperties.user())

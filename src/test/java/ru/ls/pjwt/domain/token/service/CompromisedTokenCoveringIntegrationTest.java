@@ -51,9 +51,9 @@ public class CompromisedTokenCoveringIntegrationTest extends WebIntegrationTest 
   void givenRefreshToken_whenConcurrentRefreshAndReuse_thenTokenRemainsCompromised()
       throws Exception {
     registrationSteps.registerSuccessfully();
-    LoginResponse refreshTokenA =
+    final LoginResponse refreshTokenA =
         authenticationSteps.loginAsFixtureUser(); // 1. пользователь получает токен А
-    LoginResponse refreshTokenB =
+    final LoginResponse refreshTokenB =
         refreshTokenSteps.refreshTokensSuccessfully(
             refreshTokenA.refreshToken()); // 2. пользователь обновляет токен А, получает токен Б
 

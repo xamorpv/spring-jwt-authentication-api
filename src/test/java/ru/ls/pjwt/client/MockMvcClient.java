@@ -45,8 +45,8 @@ public class MockMvcClient {
    * @throws Exception if the request fails or the response is unparseable
    */
   public StandardResponse<ErrorResponse> postExpectingError(
-      String endpoint, Object body, String operation) throws Exception {
-    String content = post(endpoint, body);
+      final String endpoint, final Object body, final String operation) throws Exception {
+    final String content = post(endpoint, body);
 
     try {
       return objectMapper.readValue(content, new TypeReference<>() {});
@@ -63,7 +63,7 @@ public class MockMvcClient {
    * @return the raw servlet response
    * @throws Exception if the request fails
    */
-  public MockHttpServletResponse postReturningStatus(String endpoint, Object body)
+  public MockHttpServletResponse postReturningStatus(final String endpoint, final Object body)
       throws Exception {
     return mockMvc
         .perform(
@@ -82,8 +82,8 @@ public class MockMvcClient {
    * @return the JSON response body as a String
    * @throws Exception if the request fails
    */
-  public String post(String endpoint, Object body) throws Exception {
-    MvcResult registerResult =
+  public String post(final String endpoint, final Object body) throws Exception {
+    final MvcResult registerResult =
         mockMvc
             .perform(
                 MockMvcRequestBuilders.post(endpoint)
@@ -101,7 +101,7 @@ public class MockMvcClient {
    * @param headerValue the value of the {@code Authorization} header (e.g. {@code "Bearer token"})
    * @throws Exception if the request or assertions fail
    */
-  public void getProtectedDataExpecting401(String headerValue) throws Exception {
+  public void getProtectedDataExpecting401(final String headerValue) throws Exception {
     getProtectedData(headerValue)
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.success").value(false))
@@ -115,14 +115,14 @@ public class MockMvcClient {
    * @param headerValue the value of the {@code Authorization} header
    * @throws Exception if the request or assertions fail
    */
-  public void getProtectedDataExpecting500(String headerValue) throws Exception {
+  public void getProtectedDataExpecting500(final String headerValue) throws Exception {
     getProtectedData(headerValue)
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.data.statusCode").value(HttpStatus.INTERNAL_SERVER_ERROR.value()));
   }
 
-  private ResultActions getProtectedData(String headerValue) throws Exception {
+  private ResultActions getProtectedData(final String headerValue) throws Exception {
     return mockMvc.perform(get("/api/v1/test/protected").header("Authorization", headerValue));
   }
 }

@@ -34,7 +34,7 @@ public class AuthorizationIntegrationTest extends WebIntegrationTest {
         "/api/v1/test/protected", "/api/v1/test/user-only",
         "/api/v1/test/moder-only", "/api/v1/test/admin-only"
       })
-  void shouldReturn401WhenRequestingProtectedEndpointWithoutToken(String endpoint)
+  void shouldReturn401WhenRequestingProtectedEndpointWithoutToken(final String endpoint)
       throws Exception {
     mockMvc.perform(get(endpoint)).andExpect(status().isUnauthorized());
   }
@@ -63,32 +63,33 @@ public class AuthorizationIntegrationTest extends WebIntegrationTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"/api/v1/test/user-only", "/api/v1/test/admin-only"})
-  void shouldReturn403WhenModeratorRequestsOtherAuthorityEndpoints(String endpoint)
+  void shouldReturn403WhenModeratorRequestsOtherAuthorityEndpoints(final String endpoint)
       throws Exception {
     perform403(endpoint, authenticationSteps.loginAsDevModer().accessToken());
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"/api/v1/test/user-only", "/api/v1/test/moder-only"})
-  void shouldReturn403WhenAdminRequestsOtherAuthorityEndpoints(String endpoint) throws Exception {
+  void shouldReturn403WhenAdminRequestsOtherAuthorityEndpoints(final String endpoint)
+      throws Exception {
     perform403(endpoint, authenticationSteps.loginAsDevAdmin().accessToken());
   }
 
-  void performOk(String endpoint, String message) throws Exception {
+  void performOk(final String endpoint, final String message) throws Exception {
     mockMvc
         .perform(get(endpoint))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value(message));
   }
 
-  void performOk(String endpoint, String message, String token) throws Exception {
+  void performOk(final String endpoint, final String message, final String token) throws Exception {
     mockMvc
         .perform(get(endpoint).header("Authorization", "Bearer " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value(message));
   }
 
-  void perform403(String endpoint, String token) throws Exception {
+  void perform403(final String endpoint, final String token) throws Exception {
     mockMvc
         .perform(get(endpoint).header("Authorization", "Bearer " + token))
         .andExpect(status().isForbidden());

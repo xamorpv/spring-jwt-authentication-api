@@ -22,7 +22,7 @@ public class RefreshTokenRotationIntegrationTest extends WebIntegrationTest {
   @Test
   void testSuccessfulTokenRotationFlow() throws Exception {
     registrationSteps.registerSuccessfully();
-    LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
+    final LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
     refreshTokenSteps.refreshTokensSuccessfully(loginResponse.refreshToken());
     refreshTokenSteps.expectTokenCompromised(
         loginResponse

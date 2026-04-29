@@ -14,7 +14,7 @@ public class DataIntegrityIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn409WhenUsernameConflict() throws Exception {
-    String notUniqueUsername = "user123456";
+    final String notUniqueUsername = "user123456";
     registrationSteps.registerSuccessfully(
         new RegisterRequest(notUniqueUsername, "email_unique_qwerty@gmail.com", "password"));
     registrationSteps.expectRegistrationFailure(
@@ -24,7 +24,7 @@ public class DataIntegrityIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn409WhenEmailConflict() throws Exception {
-    String notUniqueEmail = "not_unique_email@gmail.com";
+    final String notUniqueEmail = "not_unique_email@gmail.com";
     registrationSteps.registerSuccessfully(
         new RegisterRequest("unique_username_qwerty", notUniqueEmail, "password"));
     registrationSteps.expectRegistrationFailure(

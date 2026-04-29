@@ -21,8 +21,8 @@ public class ConcurrentExecutor {
    * @param runnable the task to execute concurrently
    * @throws RuntimeException if the task throws an exception or the waiting time elapses
    */
-  public void runAsyncAndWait(ThrowingRunnable runnable) {
-    CompletableFuture<Void> future =
+  public void runAsyncAndWait(final ThrowingRunnable runnable) {
+    final CompletableFuture<Void> future =
         CompletableFuture.runAsync(
             () -> {
               try {

@@ -26,32 +26,32 @@ public class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest 
   @Test
   void testTokenCompromisingFlow() throws Exception {
     // сторонние пользователи
-    RegisterRequest user1 = new RegisterRequest("test1", "test1@example.com", "12345677890");
-    RegisterRequest user2 = new RegisterRequest("test2", "test2@example.com", "12345677890");
+    final RegisterRequest user1 = new RegisterRequest("test1", "test1@example.com", "12345677890");
+    final RegisterRequest user2 = new RegisterRequest("test2", "test2@example.com", "12345677890");
 
-    LoginRequest user1LoginRequest = new LoginRequest(user1.username(), user1.rawPassword());
-    LoginRequest user2LoginRequest = new LoginRequest(user2.username(), user2.rawPassword());
+    final LoginRequest user1LoginRequest = new LoginRequest(user1.username(), user1.rawPassword());
+    final LoginRequest user2LoginRequest = new LoginRequest(user2.username(), user2.rawPassword());
 
     registrationSteps.registerSuccessfully(user1);
     registrationSteps.registerSuccessfully(user2);
 
-    LoginResponse user1Login1 = authenticationSteps.login(user1LoginRequest);
-    LoginResponse user1Login2 = authenticationSteps.login(user1LoginRequest);
-    LoginResponse user1Login3 = authenticationSteps.login(user1LoginRequest);
+    final LoginResponse user1Login1 = authenticationSteps.login(user1LoginRequest);
+    final LoginResponse user1Login2 = authenticationSteps.login(user1LoginRequest);
+    final LoginResponse user1Login3 = authenticationSteps.login(user1LoginRequest);
 
-    LoginResponse user1Refresh =
+    final LoginResponse user1Refresh =
         refreshTokenSteps.refreshTokensSuccessfully(user1Login1.refreshToken());
-    LoginResponse user1RefreshChain =
+    final LoginResponse user1RefreshChain =
         refreshTokenSteps.refreshTokensSuccessfully(user1Refresh.refreshToken());
 
-    LoginResponse user2Login = authenticationSteps.login(user2LoginRequest);
+    final LoginResponse user2Login = authenticationSteps.login(user2LoginRequest);
 
     registrationSteps.registerSuccessfully();
-    LoginResponse loginResponse1 = authenticationSteps.loginAsFixtureUser();
-    LoginResponse loginResponse2 = authenticationSteps.loginAsFixtureUser();
-    LoginResponse loginResponse3 = authenticationSteps.loginAsFixtureUser();
+    final LoginResponse loginResponse1 = authenticationSteps.loginAsFixtureUser();
+    final LoginResponse loginResponse2 = authenticationSteps.loginAsFixtureUser();
+    final LoginResponse loginResponse3 = authenticationSteps.loginAsFixtureUser();
 
-    LoginResponse refreshLoginSuccess =
+    final LoginResponse refreshLoginSuccess =
         refreshTokenSteps.refreshTokensSuccessfully(loginResponse1.refreshToken()); // успех
     refreshTokenSteps.expectTokenCompromised(
         loginResponse1.refreshToken()); // компроментация всех токенов пользователя: loginResponse1,
@@ -59,13 +59,13 @@ public class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest 
     refreshTokenSteps.expectTokenCompromised(
         loginResponse2.refreshToken()); // неудача, но по сути ничего не происходит
 
-    LoginResponse loginResponseSuccess =
+    final LoginResponse loginResponseSuccess =
         authenticationSteps.loginAsFixtureUser(); // новый вход легитимного пользователя
 
     refreshTokenSteps.expectTokenCompromised(
         loginResponse1.refreshToken()); // злоумышленник пытается сбросить сессию
 
-    LoginResponse refreshLoginSuccessAfterCompromising =
+    final LoginResponse refreshLoginSuccessAfterCompromising =
         refreshTokenSteps.refreshTokensSuccessfully(
             loginResponseSuccess
                 .refreshToken()); // успех - компроментированный токен ни на что не влияет

@@ -28,27 +28,27 @@ public class AccessTokenSteps {
    * @param token the access token (without "Bearer " prefix)
    * @throws Exception if any MockMvc assertion fails
    */
-  public void assertUserTokenIsValid(String token) throws Exception {
+  public void assertUserTokenIsValid(final String token) throws Exception {
     assertTokenGrantsUserAccess(token);
     assertTokenGrantsAccess(token);
     assertTokenNotGrantsAdminAccess(token);
   }
 
-  private void assertTokenGrantsAccess(String token) throws Exception {
+  private void assertTokenGrantsAccess(final String token) throws Exception {
     mockMvc
         .perform(get("/api/v1/test/protected").header("Authorization", "Bearer " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value(controllerDevProperties.protectedResponse()));
   }
 
-  private void assertTokenGrantsUserAccess(String token) throws Exception {
+  private void assertTokenGrantsUserAccess(final String token) throws Exception {
     mockMvc
         .perform(get("/api/v1/test/user-only").header("Authorization", "Bearer " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value(controllerDevProperties.userOnlyResponse()));
   }
 
-  private void assertTokenNotGrantsAdminAccess(String token) throws Exception {
+  private void assertTokenNotGrantsAdminAccess(final String token) throws Exception {
     mockMvc
         .perform(get("/api/v1/test/admin-only").header("Authorization", "Bearer " + token))
         .andExpect(status().isForbidden());

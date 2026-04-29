@@ -20,7 +20,7 @@ public abstract class DatabaseIntegrationTest extends IntegrationTest {
   }
 
   @DynamicPropertySource
-  static void configureProperties(DynamicPropertyRegistry registry) {
+  static void configureProperties(final DynamicPropertyRegistry registry) {
     registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
     registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
     registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);

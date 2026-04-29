@@ -86,12 +86,12 @@ public class AuthenticationSteps {
    * @return the {@code LoginResponse} with access and refresh tokens
    * @throws Exception if the request fails or the response is not a valid success response
    */
-  public LoginResponse login(LoginRequest loginRequest) throws Exception {
-    StandardResponse<LoginResponse> standardResponse =
+  public LoginResponse login(final LoginRequest loginRequest) throws Exception {
+    final StandardResponse<LoginResponse> standardResponse =
         objectMapper.readValue(
             mockMvcClient.post(ENDPOINT, loginRequest), new TypeReference<>() {});
 
-    LoginResponse loginResponse = standardResponse.data();
+    final LoginResponse loginResponse = standardResponse.data();
     assertNotNull(loginResponse, "loginResponse data");
     return loginResponse;
   }
@@ -104,12 +104,12 @@ public class AuthenticationSteps {
    * @throws Exception if the request fails or the response does not match the expected failure
    *     structure
    */
-  public void expectLoginFailure(LoginRequest loginRequest, int expectedStatusCode)
+  public void expectLoginFailure(final LoginRequest loginRequest, final int expectedStatusCode)
       throws Exception {
-    StandardResponse<ErrorResponse> standardResponse =
+    final StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(ENDPOINT, loginRequest, "Authentication");
 
-    ErrorResponse errorResponse = standardResponse.data();
+    final ErrorResponse errorResponse = standardResponse.data();
     assertNotNull(errorResponse, "error response");
 
     assertAll(

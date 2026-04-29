@@ -28,7 +28,7 @@ public class JwtTokenConfusionIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn401WhenUsingAccessTokenInsteadOfRefreshToken() throws Exception {
-    ErrorResponse errorResponse =
+    final ErrorResponse errorResponse =
         mockMvcClient
             .postExpectingError(
                 RefreshTokenSteps.ENDPOINT,

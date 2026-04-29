@@ -47,11 +47,11 @@ public class RefreshTokenSteps {
    * @return the {@link LoginResponse} with the new access and refresh tokens
    * @throws Exception if the request fails or the response does not indicate success
    */
-  public LoginResponse refreshTokensSuccessfully(String refreshToken) throws Exception {
-    StandardResponse<LoginResponse> loginResponseStandardResponse =
+  public LoginResponse refreshTokensSuccessfully(final String refreshToken) throws Exception {
+    final StandardResponse<LoginResponse> loginResponseStandardResponse =
         objectMapper.readValue(refreshReturningStringBody(refreshToken), new TypeReference<>() {});
     assertTrue(loginResponseStandardResponse.success(), "Token refresh should succeed");
-    LoginResponse loginResponse = loginResponseStandardResponse.data();
+    final LoginResponse loginResponse = loginResponseStandardResponse.data();
     assertNotNull(loginResponse, "login response after success refresh");
     return loginResponse;
   }
@@ -63,13 +63,13 @@ public class RefreshTokenSteps {
    * @param expectedStatus the expected {@link HttpStatus} of the response
    * @throws Exception if the request fails or the status code does not match
    */
-  public void refreshExpectingError(String refreshToken, HttpStatus expectedStatus)
+  public void refreshExpectingError(final String refreshToken, final HttpStatus expectedStatus)
       throws Exception {
-    StandardResponse<ErrorResponse> standardResponse =
+    final StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(
             ENDPOINT, new RefreshTokenRequest(refreshToken), "Refresh");
 
-    ErrorResponse errorResponse = standardResponse.data();
+    final ErrorResponse errorResponse = standardResponse.data();
     assertNotNull(errorResponse, "error response");
 
     assertEquals(expectedStatus.value(), errorResponse.statusCode(), "status code");
@@ -84,12 +84,12 @@ public class RefreshTokenSteps {
    * @param refreshToken the refresh token string
    * @throws Exception if the request fails or the response does not signal a compromised token
    */
-  public void expectTokenCompromised(String refreshToken) throws Exception {
-    StandardResponse<ErrorResponse> standardResponse =
+  public void expectTokenCompromised(final String refreshToken) throws Exception {
+    final StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(
             ENDPOINT, new RefreshTokenRequest(refreshToken), "Refresh");
 
-    ErrorResponse errorResponse = standardResponse.data();
+    final ErrorResponse errorResponse = standardResponse.data();
     assertNotNull(errorResponse, "error response");
 
     assertAll(
@@ -109,7 +109,7 @@ public class RefreshTokenSteps {
    * @return the JSON response body as a {@code String}
    * @throws Exception if the request fails
    */
-  public String refreshReturningStringBody(String refreshToken) throws Exception {
+  public String refreshReturningStringBody(final String refreshToken) throws Exception {
     return mockMvcClient.post(ENDPOINT, new RefreshTokenRequest(refreshToken));
   }
 
@@ -119,7 +119,7 @@ public class RefreshTokenSteps {
    * @param refreshToken the refresh token string to invalidate
    * @throws Exception if the request fails
    */
-  public void invalidateRefreshToken(String refreshToken) throws Exception {
+  public void invalidateRefreshToken(final String refreshToken) throws Exception {
     mockMvc
         .perform(
             post("/api/v1/auth/invalidate-refresh-token")

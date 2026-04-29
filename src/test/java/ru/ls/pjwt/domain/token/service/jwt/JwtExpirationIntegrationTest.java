@@ -27,10 +27,10 @@ public class JwtExpirationIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn401WhenGivenExpiredAccessToken() throws Exception {
-    Instant now = Instant.now();
+    final Instant now = Instant.now();
     when(clock.instant()).thenReturn(now);
 
-    LoginResponse loginResponse = authenticationSteps.loginAsDevUser();
+    final LoginResponse loginResponse = authenticationSteps.loginAsDevUser();
 
     when(clock.instant())
         .thenReturn(

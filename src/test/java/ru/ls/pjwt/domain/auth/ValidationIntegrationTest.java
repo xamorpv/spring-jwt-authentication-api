@@ -30,7 +30,7 @@ public class ValidationIntegrationTest extends WebIntegrationTest {
   @DisplayName("Complex validation test for RegisterRequest")
   @Test
   void shouldReturn400andErrorsListWhenRegisterRequestInvalid() throws Exception {
-    List<FieldErrorDto> errors = sendInvalidRequest("sh", "invalidEmail", "short");
+    final List<FieldErrorDto> errors = sendInvalidRequest("sh", "invalidEmail", "short");
     assertNotNull(errors, "errors list");
     assertEquals(3, errors.size(), "errors size");
 
@@ -42,9 +42,9 @@ public class ValidationIntegrationTest extends WebIntegrationTest {
 
   @ParameterizedTest
   @MethodSource("getInvalidUsernames")
-  void shouldReturn400andErrorsListWhenUsernameIsInvalid(String username, long times)
+  void shouldReturn400andErrorsListWhenUsernameIsInvalid(final String username, final long times)
       throws Exception {
-    List<FieldErrorDto> errors =
+    final List<FieldErrorDto> errors =
         sendInvalidRequest(username, "valid_email@exaple.com", "validPassword");
 
     assertEquals(times, errors.size(), "errors size");
@@ -53,9 +53,9 @@ public class ValidationIntegrationTest extends WebIntegrationTest {
 
   @ParameterizedTest
   @MethodSource("getInvalidPasswords")
-  void shouldReturn400andErrorsListWhenPasswordIsInvalid(String password, long times)
+  void shouldReturn400andErrorsListWhenPasswordIsInvalid(final String password, final long times)
       throws Exception {
-    List<FieldErrorDto> errors =
+    final List<FieldErrorDto> errors =
         sendInvalidRequest("validUsername", "valid_email@example.com", password);
 
     assertEquals(times, errors.size(), "errors size");
@@ -64,16 +64,17 @@ public class ValidationIntegrationTest extends WebIntegrationTest {
 
   @ParameterizedTest
   @MethodSource("getInvalidEmails")
-  void shouldReturn400andErrorsListWhenEmailIsInvalid(String email, long times) throws Exception {
-    List<FieldErrorDto> errors = sendInvalidRequest("validUsername", email, "validPassword");
+  void shouldReturn400andErrorsListWhenEmailIsInvalid(final String email, final long times)
+      throws Exception {
+    final List<FieldErrorDto> errors = sendInvalidRequest("validUsername", email, "validPassword");
 
     assertEquals(times, errors.size(), "errors size");
     expectResponseContainsField(errors, "email", times);
   }
 
-  private List<FieldErrorDto> sendInvalidRequest(String username, String email, String password)
-      throws Exception {
-    ErrorResponse errorResponse =
+  private List<FieldErrorDto> sendInvalidRequest(
+      final String username, final String email, final String password) throws Exception {
+    final ErrorResponse errorResponse =
         registrationSteps
             .expectRegistrationFailure(
                 new RegisterRequest(username, email, password), HttpStatus.BAD_REQUEST.value())
@@ -87,7 +88,8 @@ public class ValidationIntegrationTest extends WebIntegrationTest {
     return errorResponse.errors();
   }
 
-  void expectResponseContainsField(List<FieldErrorDto> errors, String fieldName, long times) {
+  void expectResponseContainsField(
+      final List<FieldErrorDto> errors, final String fieldName, final long times) {
     assertEquals(
         errors.stream().filter(f -> f.field().equals(fieldName)).count(),
         times,

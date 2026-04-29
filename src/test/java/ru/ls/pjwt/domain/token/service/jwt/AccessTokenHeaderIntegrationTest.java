@@ -16,7 +16,7 @@ public class AccessTokenHeaderIntegrationTest extends WebIntegrationTest {
         "Bearer ",
         "Basic " + StandardUserFixture.DEFAULT_USERNAME + ":" + StandardUserFixture.DEFAULT_PASSWORD
       })
-  void shouldReturn401WhenGivenWrongHeader(String headerValue) throws Exception {
+  void shouldReturn401WhenGivenWrongHeader(final String headerValue) throws Exception {
     mockMvcClient.getProtectedDataExpecting401(headerValue);
   }
 }

@@ -38,7 +38,8 @@ public class AuthenticationIntegrationTest extends WebIntegrationTest {
   @Test
   void shouldReturn401WhenGivenLockedAccount() throws Exception {
     registrationSteps.registerSuccessfully();
-    User user = userRepository.findByUsername(StandardUserFixture.DEFAULT_USERNAME).orElseThrow();
+    final User user =
+        userRepository.findByUsername(StandardUserFixture.DEFAULT_USERNAME).orElseThrow();
     user.setAccountNonLocked(false);
     userRepository.saveAndFlush(user);
     authenticationSteps.expectLoginFailure(

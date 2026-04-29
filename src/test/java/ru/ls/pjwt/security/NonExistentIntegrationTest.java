@@ -27,7 +27,7 @@ public class NonExistentIntegrationTest extends WebIntegrationTest {
 
   @Test
   void shouldReturn404WhenRequestingNonExistentEndpointWithAccessToken() throws Exception {
-    String accessToken = authenticationSteps.loginAsDevUser().accessToken();
+    final String accessToken = authenticationSteps.loginAsDevUser().accessToken();
     mockMvc
         .perform(get("/nonexistent").header("Authorization", "Bearer " + accessToken))
         .andExpect(jsonPath("$.success").value(false))

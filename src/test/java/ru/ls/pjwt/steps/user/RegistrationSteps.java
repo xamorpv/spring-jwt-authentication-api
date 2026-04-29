@@ -47,11 +47,11 @@ public class RegistrationSteps {
    * @param registerRequest the registration details
    * @throws Exception if the request or assertions fail
    */
-  public void registerSuccessfully(RegisterRequest registerRequest) throws Exception {
-    StandardResponse<RegisterResponse> registerResponse =
+  public void registerSuccessfully(final RegisterRequest registerRequest) throws Exception {
+    final StandardResponse<RegisterResponse> registerResponse =
         objectMapper.readValue(
             mockMvcClient.post(ENDPOINT, registerRequest), new TypeReference<>() {});
-    RegisterResponse data = registerResponse.data();
+    final RegisterResponse data = registerResponse.data();
     assertNotNull(data, "successful register response data");
     assertAll(
         "Registration properties should be correct",
@@ -76,11 +76,11 @@ public class RegistrationSteps {
    * @throws Exception if the request or assertions fail
    */
   public StandardResponse<ErrorResponse> expectRegistrationFailure(
-      RegisterRequest registerRequest, int expectedStatusCode) throws Exception {
-    StandardResponse<ErrorResponse> standardResponse =
+      final RegisterRequest registerRequest, final int expectedStatusCode) throws Exception {
+    final StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(ENDPOINT, registerRequest, "Registration");
 
-    ErrorResponse errorResponse = standardResponse.data();
+    final ErrorResponse errorResponse = standardResponse.data();
     assertNotNull(errorResponse, "errorResponse data");
     assertAll(
         "Registration should fail",

@@ -31,14 +31,14 @@ public class RefreshTokenFlowIntegrationTest extends WebIntegrationTest {
   void testSuccessfulTokenFlow() throws Exception {
     registrationSteps.registerSuccessfully();
 
-    LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
+    final LoginResponse loginResponse = authenticationSteps.loginAsFixtureUser();
     accessTokenSteps.assertUserTokenIsValid(loginResponse.accessToken());
 
-    LoginResponse refreshResponse =
+    final LoginResponse refreshResponse =
         refreshTokenSteps.refreshTokensSuccessfully(loginResponse.refreshToken());
     accessTokenSteps.assertUserTokenIsValid(refreshResponse.accessToken());
 
-    LoginResponse refreshResponse2 =
+    final LoginResponse refreshResponse2 =
         refreshTokenSteps.refreshTokensSuccessfully(
             refreshResponse.refreshToken()); // проверяем, что повторный refresh также работает
     accessTokenSteps.assertUserTokenIsValid(refreshResponse2.accessToken());
