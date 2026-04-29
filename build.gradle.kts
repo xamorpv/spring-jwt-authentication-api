@@ -10,6 +10,7 @@ plugins {
 	id("pmd")
 	id("de.aaschmid.cpd") version "3.5"
 	id("net.ltgt.errorprone") version "5.1.0"
+	id("org.openrewrite.rewrite") version "7.32.0"
 }
 
 group = "ru.ls"
@@ -63,6 +64,11 @@ pmd {
 cpd {
 	language = "java"
 	minimumTokenCount = 100
+}
+
+rewrite {
+	configFile = file("config/rewrite/finalize-variables.yaml")
+	activeRecipe("ru.ls.FinalizeVariables")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -125,6 +131,8 @@ done
 }
 
 dependencies {
+	rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.34.0")
+
 	errorprone("com.google.errorprone:error_prone_core:2.41.0")
 	errorprone("com.uber.nullaway:nullaway:0.13.3")
 
