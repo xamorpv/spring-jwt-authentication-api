@@ -6,13 +6,15 @@ import jakarta.persistence.MappedSuperclass;
 import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-public abstract class TimestampedEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class TimestampedEntity {
   @SuppressWarnings("NullAway.Init")
   @CreatedDate
   @Setter(AccessLevel.NONE)

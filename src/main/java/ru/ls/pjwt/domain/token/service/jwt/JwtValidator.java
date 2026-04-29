@@ -23,9 +23,9 @@ public class JwtValidator {
    * @throws ServerError if the token does not contain the 'type' claim
    * @throws JwtTokenRequestException if the token type does not match the expected value
    */
-  public void validateType(String type, JwtClaims claims) {
+  public void validateType(final String type, final JwtClaims claims) {
     log.debug("check token type for user={}, expected type={}", claims.username(), type);
-    String tokenType = claims.claims().get("type", String.class);
+    final String tokenType = claims.claims().get("type", String.class);
     if (tokenType == null) {
       // токен не подделать, значит это какая-то ошибка разработчиков, т.е server error
       throw new ServerError("The token does not contain the 'type' claim");

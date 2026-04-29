@@ -36,7 +36,7 @@ public class RefreshTokenValidator {
   @Transactional(
       propagation = Propagation.REQUIRES_NEW,
       noRollbackFor = JwtTokenRequestException.class)
-  public void checkUsed(RefreshToken refreshToken) {
+  public void checkUsed(final RefreshToken refreshToken) {
     // Logic explanation:
     // If the token was used, we check if it was already compromised.
     // If not compromised yet, it means this is the first token replay attempt.

@@ -36,10 +36,10 @@ public class RefreshToken extends TimestampedEntity {
   private User user;
 
   @Column(name = "used", nullable = false)
-  private boolean used = false;
+  private boolean used;
 
   @Column(name = "compromised", nullable = false)
-  private boolean compromised = false;
+  private boolean compromised;
 
   @Nullable
   @Column(name = "used_at")
@@ -56,7 +56,7 @@ public class RefreshToken extends TimestampedEntity {
    * @param user the user who owns this token
    */
   @SuppressWarnings("NullAway.Init")
-  public RefreshToken(String uuid, User user) {
+  public RefreshToken(final String uuid, final User user) {
     this.user = user;
     this.uuid = uuid;
   }

@@ -27,10 +27,10 @@ public interface CreateUserCommandToUserMapper {
    */
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "authorities", ignore = true)
-  @Mapping(target = "accountNonExpired", constant = "true")
-  @Mapping(target = "accountNonLocked", constant = "true")
-  @Mapping(target = "credentialsNonExpired", constant = "true")
-  @Mapping(target = "enabled", constant = "true")
+  @Mapping(target = "accountNonExpired", constant = BooleanConstants.TRUE)
+  @Mapping(target = "accountNonLocked", constant = BooleanConstants.TRUE)
+  @Mapping(target = "credentialsNonExpired", constant = BooleanConstants.TRUE)
+  @Mapping(target = "enabled", constant = BooleanConstants.TRUE)
   @Mapping(target = "passwordHash", source = "passwordHash")
   User commandToUser(CreateUserCommand command, String passwordHash);
 }

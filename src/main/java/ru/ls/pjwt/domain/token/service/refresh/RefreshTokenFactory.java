@@ -34,10 +34,11 @@ public class RefreshTokenFactory {
    * @param user the user for whom the refresh token is created
    * @return the compact refresh token string
    */
-  public String createAndSaveToken(User user) {
+  public String createAndSaveToken(final User user) {
     log.debug("saving token for user: {}", user.getUsername());
-    CreatedRefreshToken createdRefreshToken = jwtFactory.createRefreshToken(user.getUsername());
-    RefreshToken refreshToken = refreshTokenService.save(createdRefreshToken, user);
+    final CreatedRefreshToken createdRefreshToken =
+        jwtFactory.createRefreshToken(user.getUsername());
+    final RefreshToken refreshToken = refreshTokenService.save(createdRefreshToken, user);
     log.debug(
         "refresh token saved for username {}, token: {}",
         user.getUsername(),
@@ -57,15 +58,15 @@ public class RefreshTokenFactory {
    * @throws RefreshTokenRaceConditionException if a concurrent rotation is detected
    */
   @Transactional
-  public String rotateRefreshToken(JwtClaims token, User user) {
+  public String rotateRefreshToken(final JwtClaims token, final User user) {
     // todo grace period
     // если прошло меньше 30 секунд, то делаем вид, что этот токен работает (не создавать новый, а
     // вернуть тот, что был выдан меньше 30 секунд назад)
 
     log.debug("updating token with uuid={} for username={}", token.uuid(), user.getUsername());
     refreshTokenManager.use(refreshTokenService.getToken(token));
-    CreatedRefreshToken newToken = jwtFactory.updateRefreshToken(token);
-    RefreshToken refreshToken = refreshTokenService.save(newToken, user);
+    final CreatedRefreshToken newToken = jwtFactory.updateRefreshToken(token);
+    final RefreshToken refreshToken = refreshTokenService.save(newToken, user);
     log.debug("refresh token updated: {}", refreshToken.getUuid());
     return newToken.token();
   }

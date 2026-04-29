@@ -22,7 +22,7 @@ public class AuthorityServiceSpringTest extends DatabaseIntegrationTest {
     assertEquals(1, user.getAuthorities().size(), "default authorities size");
     assertEquals(
         authoritiesProperties.user(),
-        user.getAuthorities().stream().findFirst().orElseThrow().getAuthority(),
+        user.getAuthorities().stream().findFirst().orElseThrow().getName(),
         "default authority");
   }
 }

@@ -23,7 +23,7 @@ public class UserValidator {
    * @param user the user to validate
    * @throws AccountStatusException if the user account is locked, disabled, or expired
    */
-  public void validateAccountStatus(User user) {
+  public void validateAccountStatus(final User user) {
     if (!user.isAccountNonExpired()) {
       throw new AccountExpiredException(exceptionsProperties.accountExpired());
     }

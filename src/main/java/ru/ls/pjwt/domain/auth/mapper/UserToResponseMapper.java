@@ -28,7 +28,7 @@ public interface UserToResponseMapper {
 java(
   user.getAuthorities()
   .stream()
-  .map(Authority::getAuthority)
+  .map(Authority::getName)
   .collect(Collectors.toSet())
 )""")
   RegisterResponse userToResponse(User user);

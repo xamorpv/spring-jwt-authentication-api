@@ -44,8 +44,8 @@ public class JwtParser {
    * @throws JwtTokenRequestException if the token is invalid, expired, or has an incorrect type
    * @throws ServerError if the token type claim is missing
    */
-  public JwtClaims parseRefreshToken(String token) {
-    JwtClaims jwtClaims = parseToken(token);
+  public JwtClaims parseRefreshToken(final String token) {
+    final JwtClaims jwtClaims = parseToken(token);
     jwtValidator.validateType(jwtProperties.getRefreshToken(), jwtClaims);
     return jwtClaims;
   }
@@ -58,21 +58,22 @@ public class JwtParser {
    * @throws JwtTokenRequestException if the token is invalid, expired, or has an incorrect type
    * @throws ServerError if the token type claim is missing
    */
-  public JwtClaims parseAccessToken(String token) {
-    JwtClaims jwtClaims = parseToken(token);
+  public JwtClaims parseAccessToken(final String token) {
+    final JwtClaims jwtClaims = parseToken(token);
     jwtValidator.validateType(jwtProperties.getAccessToken(), jwtClaims);
     return jwtClaims;
   }
 
-  private JwtClaims parseToken(String token) {
-    Claims claims = getClaims(token);
-    UserDetails userDetails = extractUserDetails(claims);
-    String uuid = getUuid(claims);
+  private JwtClaims parseToken(final String token) {
+    final Claims claims = getClaims(token);
+    final UserDetails userDetails = extractUserDetails(claims);
+    final String uuid = getUuid(claims);
     log.debug("token parsed successfully with uuid: {}", uuid);
     return new JwtClaims(claims, userDetails, uuid, userDetails.getUsername(), token);
   }
 
-  private Claims getClaims(String token) {
+  @SuppressWarnings("PMD.PreserveStackTrace")
+  private Claims getClaims(final String token) {
     try {
       return Jwts.parser()
           .clock(() -> Date.from(Instant.now(clock)))
@@ -93,8 +94,8 @@ public class JwtParser {
     }
   }
 
-  private UserDetails extractUserDetails(Claims claims) {
-    String username = claims.getSubject();
+  private UserDetails extractUserDetails(final Claims claims) {
+    final String username = claims.getSubject();
     if (username == null) {
       log.warn("username not found");
       throw new JwtTokenRequestException(
@@ -103,7 +104,7 @@ public class JwtParser {
     }
 
     @SuppressWarnings("unchecked")
-    List<String> authorities = claims.get("authorities", List.class);
+    final List<String> authorities = claims.get("authorities", List.class);
 
     return new User(
         username,
@@ -113,7 +114,7 @@ public class JwtParser {
             : authorities.stream().map(SimpleGrantedAuthority::new).toList());
   }
 
-  private String getUuid(Claims claims) {
+  private String getUuid(final Claims claims) {
     return claims.get("uuid", String.class);
   }
 }

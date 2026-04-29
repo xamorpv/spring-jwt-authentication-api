@@ -31,8 +31,9 @@ public class RefreshTokenManager {
    * @param refreshToken the token to mark as used
    * @throws RefreshTokenRaceConditionException if an optimistic locking conflict occurs
    */
+  @SuppressWarnings("PMD.PreserveStackTrace")
   @Transactional
-  public void use(RefreshToken refreshToken) {
+  public void use(final RefreshToken refreshToken) {
     try {
       log.debug("using token {}", refreshToken.getUuid());
       refreshToken.setUsed(true);
@@ -53,7 +54,7 @@ public class RefreshTokenManager {
    *     the token is still unused
    */
   @Transactional
-  public boolean compromiseIfUsed(RefreshToken refreshToken) {
+  public boolean compromiseIfUsed(final RefreshToken refreshToken) {
     if (refreshToken.isUsed()) {
       log.warn("token already used: {}", refreshToken.getUuid());
       if (refreshToken.isCompromised()) {

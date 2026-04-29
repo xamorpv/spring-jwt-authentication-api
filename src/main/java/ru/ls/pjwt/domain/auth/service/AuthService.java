@@ -36,8 +36,8 @@ public class AuthService {
    * @throws BadCredentialsException if the username is not found or the password does not match
    * @throws AccountStatusException if the user account is locked, disabled, or expired
    */
-  public User authenticate(String username, String password) {
-    User user = userService.findUserByUsername(username);
+  public User authenticate(final String username, final String password) {
+    final User user = userService.findUserByUsername(username);
     if (!passwordEncoder.matches(password, user.getPasswordHash())) {
       throw new BadCredentialsException(exceptionsProperties.badCredentials());
     }
@@ -54,8 +54,8 @@ public class AuthService {
    * @throws NotUniqueDataException if the username or email already exists, including due to a
    *     concurrent registration conflict
    */
-  public RegisterResponse register(RegisterRequest registerRequest) {
-    RegisterResponse registerResponse =
+  public RegisterResponse register(final RegisterRequest registerRequest) {
+    final RegisterResponse registerResponse =
         userToResponseMapper.userToResponse(
             userService.registerNewUser(commandMapper.registerRequestToCommand(registerRequest)));
     log.info("user registered successfully: {}", registerResponse);

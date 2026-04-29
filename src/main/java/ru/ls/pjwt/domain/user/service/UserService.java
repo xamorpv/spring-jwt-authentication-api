@@ -32,7 +32,7 @@ public class UserService {
    * @throws BadCredentialsException if no user with the given username exists
    */
   @Transactional(readOnly = true)
-  public User findUserByUsername(String username) {
+  public User findUserByUsername(final String username) {
     log.debug("loading user {}...", username);
     return userRepository
         .findByUsername(username)
@@ -47,8 +47,9 @@ public class UserService {
    * @throws NotUniqueDataException if the username or email already exists, including in the case
    *     of a concurrent registration conflict
    */
+  @SuppressWarnings("PMD.PreserveStackTrace")
   @Transactional
-  public User registerNewUser(CreateUserCommand createUserCommand) {
+  public User registerNewUser(final CreateUserCommand createUserCommand) {
     if (userRepository.existsByEmail(createUserCommand.email())) {
       throw new NotUniqueDataException(exceptionsProperties.emailExists());
     }
@@ -71,13 +72,13 @@ public class UserService {
     }
   }
 
-  private User saveNewUser(CreateUserCommand createUserCommand) {
+  private User saveNewUser(final CreateUserCommand createUserCommand) {
     log.debug("saving user {}", createUserCommand.username());
-    String password = passwordEncoder.encode(createUserCommand.rawPassword());
+    final String password = passwordEncoder.encode(createUserCommand.rawPassword());
     if (password == null) {
       throw new BadCredentialsException(exceptionsProperties.badCredentials());
     }
-    User user = createUserCommandToUserMapper.commandToUser(createUserCommand, password);
+    final User user = createUserCommandToUserMapper.commandToUser(createUserCommand, password);
     authorityService.assignDefaultAuthority(user);
     log.debug("user {} saved", user.getUsername());
     return userRepository.save(user);

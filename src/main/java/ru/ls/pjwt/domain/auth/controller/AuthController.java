@@ -31,7 +31,7 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<StandardResponse<LoginResponse>> login(
-      @RequestBody @Valid LoginRequest loginRequest) {
+      @RequestBody @Valid final LoginRequest loginRequest) {
     log.info("handling login request {}", loginRequest.username());
     return apiResponse.success(
         tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.OK);
@@ -40,7 +40,7 @@ public class AuthController {
   // пока что для простоты через dto
   @PostMapping("/refresh")
   public ResponseEntity<StandardResponse<LoginResponse>> refresh(
-      @RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
+      @RequestBody @Valid final RefreshTokenRequest refreshTokenRequest) {
     log.info("handling refresh request");
     return apiResponse.success(
         tokenService.refreshTokens(refreshTokenRequest.refreshToken()),
@@ -50,7 +50,7 @@ public class AuthController {
 
   @PostMapping("/invalidate-refresh-token")
   public ResponseEntity<StandardResponse<Void>> invalidateRefreshToken(
-      @RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
+      @RequestBody @Valid final RefreshTokenRequest refreshTokenRequest) {
     log.info("invalidating token");
     tokenService.invalidateRefreshToken(refreshTokenRequest.refreshToken());
     return apiResponse.success("token deleted successfully", HttpStatus.OK);
@@ -58,7 +58,7 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<StandardResponse<RegisterResponse>> register(
-      @RequestBody @Valid RegisterRequest registerRequest) {
+      @RequestBody @Valid final RegisterRequest registerRequest) {
     log.info(
         "handling register request {} - {}", registerRequest.username(), registerRequest.email());
     return apiResponse.success(

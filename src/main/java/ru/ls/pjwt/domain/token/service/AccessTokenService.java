@@ -30,7 +30,7 @@ public class AccessTokenService {
    * @throws JwtTokenRequestException if the token type is invalid
    * @throws ServerError if the token type claim is missing (unrecoverable configuration error)
    */
-  public String createAccessToken(JwtClaims refreshTokenClaims, User user) {
+  public String createAccessToken(final JwtClaims refreshTokenClaims, final User user) {
     jwtValidator.validateType(jwtProperties.getRefreshToken(), refreshTokenClaims);
     return jwtFactory.createAccessToken(userToDetailsMapper.userEntityToUserDetails(user));
   }

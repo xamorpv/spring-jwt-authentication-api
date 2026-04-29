@@ -17,11 +17,11 @@ public class JwtProperties {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public JwtProperties(
-      String secretKeyString,
-      String accessToken,
-      String refreshToken,
-      int accessTokenExpirationMinutes,
-      int refreshTokenExpirationDays) {
+      final String secretKeyString,
+      final String accessToken,
+      final String refreshToken,
+      final int accessTokenExpirationMinutes,
+      final int refreshTokenExpirationDays) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.accessTokenExpirationMinutes = accessTokenExpirationMinutes;

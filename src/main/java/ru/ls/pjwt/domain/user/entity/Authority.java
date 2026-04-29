@@ -21,7 +21,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = "authority")
+@EqualsAndHashCode(of = "name")
 public class Authority {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Authority {
   private Long id;
 
   @Column(name = "authority", unique = true, nullable = false)
-  private String authority;
+  private String name;
 
   @ToString.Exclude
   @ManyToMany(mappedBy = "authorities")

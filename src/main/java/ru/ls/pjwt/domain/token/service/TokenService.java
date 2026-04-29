@@ -50,13 +50,13 @@ public class TokenService {
    * @throws RefreshTokenRaceConditionException if a concurrent token rotation is detected
    */
   @Transactional
-  public LoginResponse refreshTokens(String token) {
-    JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
+  public LoginResponse refreshTokens(final String token) {
+    final JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
     log.debug("refreshing tokens for username={}", jwtClaims.username());
-    User user = userService.findUserByUsername(jwtClaims.username());
+    final User user = userService.findUserByUsername(jwtClaims.username());
     userValidator.validateAccountStatus(user);
-    String accessToken = accessTokenService.createAccessToken(jwtClaims, user);
-    String refreshToken = refreshTokenFactory.rotateRefreshToken(jwtClaims, user);
+    final String accessToken = accessTokenService.createAccessToken(jwtClaims, user);
+    final String refreshToken = refreshTokenFactory.rotateRefreshToken(jwtClaims, user);
     log.debug("successful refresh for {}", jwtClaims.username());
     return new LoginResponse(refreshToken, accessToken);
   }
@@ -70,12 +70,12 @@ public class TokenService {
    * @throws AccountStatusException if the user account is locked, disabled, or expired
    */
   @Transactional
-  public LoginResponse createTokens(LoginRequest loginRequest) {
+  public LoginResponse createTokens(final LoginRequest loginRequest) {
     log.info("creating tokens for login request {}", loginRequest.username());
-    User user = authService.authenticate(loginRequest.username(), loginRequest.password());
-    String accessToken =
+    final User user = authService.authenticate(loginRequest.username(), loginRequest.password());
+    final String accessToken =
         jwtFactory.createAccessToken(userToDetailsMapper.userEntityToUserDetails(user));
-    String refreshToken = refreshTokenFactory.createAndSaveToken(user);
+    final String refreshToken = refreshTokenFactory.createAndSaveToken(user);
     return new LoginResponse(refreshToken, accessToken);
   }
 
@@ -87,8 +87,8 @@ public class TokenService {
    * @throws BadCredentialsException if the token UUID is missing (legacy token)
    */
   @Transactional
-  public void invalidateRefreshToken(String token) {
-    JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
+  public void invalidateRefreshToken(final String token) {
+    final JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
     log.info("invalidating refresh token: {}", jwtClaims.uuid());
     refreshTokenService.markTokenAsUsed(jwtClaims);
   }

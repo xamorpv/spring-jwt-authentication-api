@@ -23,9 +23,9 @@ public class JwtFilterService {
    * @throws JwtTokenRequestException if the token is invalid or expired
    * @throws ServerError if the token type claim is missing (unrecoverable configuration error)
    */
-  public UserDetails getUserDetails(String jwt) {
+  public UserDetails getUserDetails(final String jwt) {
     // todo check fingerprint (add in future)
-    JwtClaims jwtClaims = jwtParser.parseAccessToken(jwt);
+    final JwtClaims jwtClaims = jwtParser.parseAccessToken(jwt);
     jwtValidator.validateType(jwtProperties.getAccessToken(), jwtClaims);
     return jwtClaims.userDetails();
   }

@@ -65,11 +65,11 @@ public class RefreshTokenSteps {
    */
   public void refreshExpectingError(String refreshToken, HttpStatus expectedStatus)
       throws Exception {
-    StandardResponse<ErrorResponse> standardRespose =
+    StandardResponse<ErrorResponse> standardResponse =
         mockMvcClient.postExpectingError(
             ENDPOINT, new RefreshTokenRequest(refreshToken), "Refresh");
 
-    ErrorResponse errorResponse = standardRespose.data();
+    ErrorResponse errorResponse = standardResponse.data();
     assertNotNull(errorResponse, "error response");
 
     assertEquals(expectedStatus.value(), errorResponse.statusCode(), "status code");

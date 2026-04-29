@@ -21,19 +21,24 @@ import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 @RequiredArgsConstructor
 public class TokenExceptionHandler {
   private final ApiResponse apiResponse;
+
+  @SuppressWarnings("PMD.LongVariable")
   private final RefreshTokenRaceConditionExceptionHandler refreshTokenRaceConditionExceptionHandler;
+
   private final ExceptionsProperties exceptionsProperties;
 
   @ExceptionHandler(JwtTokenRequestException.class)
-  public ResponseEntity<StandardResponse<ErrorResponse>> jwtException(JwtTokenRequestException e) {
-    log.warn("jwt token failure: {}", e.getMessage());
-    return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
+  public ResponseEntity<StandardResponse<ErrorResponse>> jwtException(
+      final JwtTokenRequestException jwtTokenRequestException) {
+    log.warn("jwt token failure: {}", jwtTokenRequestException.getMessage());
+    return apiResponse.error(HttpStatus.UNAUTHORIZED, jwtTokenRequestException.getMessage());
   }
 
+  @SuppressWarnings("PMD.LongVariable")
   @ExceptionHandler(RefreshTokenRaceConditionException.class)
   public ResponseEntity<StandardResponse<ErrorResponse>> onTokenRaceCondition(
-      RefreshTokenRaceConditionException e) {
-    refreshTokenRaceConditionExceptionHandler.handleException(e);
+      final RefreshTokenRaceConditionException refreshTokenRaceConditionException) {
+    refreshTokenRaceConditionExceptionHandler.handleException(refreshTokenRaceConditionException);
     return apiResponse.error(
         HttpStatus.UNAUTHORIZED, exceptionsProperties.refreshTokenCompromised());
   }

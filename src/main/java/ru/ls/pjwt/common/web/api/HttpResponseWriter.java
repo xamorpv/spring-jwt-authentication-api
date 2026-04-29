@@ -29,7 +29,8 @@ public class HttpResponseWriter {
    * @param message a human-readable error message
    * @throws IOException if an I/O error occurs while writing the response
    */
-  public void writeError(HttpServletResponse response, HttpStatus status, String message)
+  public void writeError(
+      final HttpServletResponse response, final HttpStatus status, final String message)
       throws IOException {
     writeValue(
         response,
@@ -38,7 +39,8 @@ public class HttpResponseWriter {
         status.value());
   }
 
-  private void writeValue(HttpServletResponse response, Object body, int statusCode)
+  private void writeValue(
+      final HttpServletResponse response, final Object body, final int statusCode)
       throws IOException {
     response.setStatus(statusCode);
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);

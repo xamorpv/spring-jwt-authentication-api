@@ -46,8 +46,8 @@ public class JwtFactory {
    * @param userDetails the authenticated user's details (used to extract username and authorities)
    * @return a compact access token string
    */
-  public String createAccessToken(UserDetails userDetails) {
-    Map<String, Object> claims = new HashMap<>();
+  public String createAccessToken(final UserDetails userDetails) {
+    final Map<String, Object> claims = new HashMap<>();
     claims.put("type", jwtProperties.getAccessToken());
     claims.put(
         "authorities",
@@ -65,9 +65,9 @@ public class JwtFactory {
    * @param username the subject for which the refresh token is issued
    * @return a {@link CreatedRefreshToken} containing the token UUID and the compact token string
    */
-  public CreatedRefreshToken createRefreshToken(String username) {
-    String uuid = uuidGenerator.random();
-    Map<String, Object> claims = new HashMap<>();
+  public CreatedRefreshToken createRefreshToken(final String username) {
+    final String uuid = uuidGenerator.random();
+    final Map<String, Object> claims = new HashMap<>();
     claims.put("type", jwtProperties.getRefreshToken());
     claims.put("uuid", uuid);
     return new CreatedRefreshToken(
@@ -85,18 +85,19 @@ public class JwtFactory {
    * @return a {@link CreatedRefreshToken} with a new UUID and token, but with the same expiration
    *     as the original token
    */
-  public CreatedRefreshToken updateRefreshToken(JwtClaims jwtClaims) {
-    Claims oldClaims = jwtClaims.claims();
-    Instant time = oldClaims.getExpiration().toInstant();
-    String username = oldClaims.getSubject();
-    Map<String, Object> newClaims = new HashMap<>();
-    String uuid = uuidGenerator.random();
+  public CreatedRefreshToken updateRefreshToken(final JwtClaims jwtClaims) {
+    final Claims oldClaims = jwtClaims.claims();
+    final Instant time = oldClaims.getExpiration().toInstant();
+    final String username = oldClaims.getSubject();
+    final Map<String, Object> newClaims = new HashMap<>();
+    final String uuid = uuidGenerator.random();
     newClaims.put("type", jwtProperties.getRefreshToken());
     newClaims.put("uuid", uuid);
     return new CreatedRefreshToken(uuid, buildToken(username, time, newClaims));
   }
 
-  private String buildToken(String username, Instant time, Map<String, Object> claims) {
+  private String buildToken(
+      final String username, final Instant time, final Map<String, Object> claims) {
     log.debug(
         "creating token: username={}, time={}, claims={}",
         username,

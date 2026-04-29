@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@SuppressWarnings("PMD.ShortClassName")
 @Entity
 @Table(name = "users")
 @Getter

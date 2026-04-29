@@ -25,8 +25,8 @@ public class ApiResponse {
    *     ErrorResponse}
    */
   public ResponseEntity<StandardResponse<ErrorResponse>> error(
-      HttpStatus status, @Nullable String message) {
-    String safeMessage = message != null ? message : status.getReasonPhrase();
+      final HttpStatus status, @Nullable final String message) {
+    final String safeMessage = message != null ? message : status.getReasonPhrase();
     return errorInFields(status, safeMessage, null);
   }
 
@@ -40,7 +40,7 @@ public class ApiResponse {
    *     ErrorResponse} that carries the given field errors
    */
   public ResponseEntity<StandardResponse<ErrorResponse>> errorInFields(
-      HttpStatus status, String message, @Nullable List<FieldErrorDto> errors) {
+      final HttpStatus status, final String message, @Nullable final List<FieldErrorDto> errors) {
     return failure(
         new ErrorResponse(status.value(), timeProvider.timestamp(), errors), message, status);
   }
@@ -56,7 +56,7 @@ public class ApiResponse {
    *     {@code data}
    */
   public <T> ResponseEntity<StandardResponse<T>> failure(
-      T data, String message, HttpStatus status) {
+      final T data, final String message, final HttpStatus status) {
     return ResponseEntity.status(status).body(new StandardResponse<>(data, message, false));
   }
 
@@ -71,7 +71,7 @@ public class ApiResponse {
    *     provided {@code data}
    */
   public <T> ResponseEntity<StandardResponse<T>> success(
-      T data, String message, HttpStatus status) {
+      final T data, final String message, final HttpStatus status) {
     return ResponseEntity.status(status).body(new StandardResponse<>(data, message, true));
   }
 
@@ -83,7 +83,8 @@ public class ApiResponse {
    * @return a {@link ResponseEntity} with a successful {@link StandardResponse} that carries no
    *     body data (Void)
    */
-  public ResponseEntity<StandardResponse<Void>> success(String message, HttpStatus status) {
+  public ResponseEntity<StandardResponse<Void>> success(
+      final String message, final HttpStatus status) {
     return ResponseEntity.status(status).body(new StandardResponse<>(null, message, true));
   }
 }

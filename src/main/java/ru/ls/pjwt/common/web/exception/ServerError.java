@@ -6,7 +6,7 @@ package ru.ls.pjwt.common.web.exception;
  */
 public class ServerError extends RuntimeException {
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public ServerError(String message) {
+  public ServerError(final String message) {
     super(message);
   }
 }

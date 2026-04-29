@@ -6,8 +6,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.ls.pjwt.common.web.api.HttpResponseWriter;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import ru.ls.pjwt.security.config.BaseSecurityConfig;
 import ru.ls.pjwt.security.filter.JwtFilter;
 
@@ -16,13 +17,16 @@ import ru.ls.pjwt.security.filter.JwtFilter;
 public class DevSecurityConfig extends BaseSecurityConfig {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public DevSecurityConfig(JwtFilter jwtFilter, HttpResponseWriter httpResponseWriter) {
-    super(jwtFilter, httpResponseWriter);
+  protected DevSecurityConfig(
+      final JwtFilter jwtFilter,
+      final AuthenticationEntryPoint authenticationEntryPoint,
+      final AccessDeniedHandler accessDeniedHandler) {
+    super(jwtFilter, authenticationEntryPoint, accessDeniedHandler);
   }
 
   @Bean
   @Order(1)
-  public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) {
+  public SecurityFilterChain devSecurityFilterChain(final HttpSecurity http) {
     return chain(http)
         .securityMatcher("/api/v1/test/**")
         .authorizeHttpRequests(

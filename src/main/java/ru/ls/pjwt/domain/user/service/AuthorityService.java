@@ -37,10 +37,10 @@ public class AuthorityService {
    * @param user the user to whom the default authority will be assigned
    */
   @Transactional
-  public void assignDefaultAuthority(User user) {
+  public void assignDefaultAuthority(final User user) {
     log.debug("add user authority for user with username={}", user.getUsername());
 
-    Authority authority = authorityRepository.getReferenceById(userAuthorityId);
+    final Authority authority = authorityRepository.getReferenceById(userAuthorityId);
     user.getAuthorities().add(authority);
     log.debug("authority saved for username: {}", user.getUsername());
   }

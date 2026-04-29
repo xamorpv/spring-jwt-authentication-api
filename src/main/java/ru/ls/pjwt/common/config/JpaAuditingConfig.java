@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class JpaAuditingConfig {
 
   @Bean
-  public DateTimeProvider dateTimeProvider(Clock clock) {
+  public DateTimeProvider dateTimeProvider(final Clock clock) {
     return () -> Optional.of(Instant.now(clock));
   }
 }

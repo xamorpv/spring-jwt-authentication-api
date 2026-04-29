@@ -37,43 +37,48 @@ public class GlobalExceptionHandler {
   private final ExceptionsProperties exceptionsProperties;
 
   @ExceptionHandler(BadCredentialsException.class)
-  public ResponseEntity<StandardResponse<ErrorResponse>> badCredentials(BadCredentialsException e) {
-    log.warn("bad credentials: {}", e.getMessage());
-    return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
+  public ResponseEntity<StandardResponse<ErrorResponse>> badCredentials(
+      final BadCredentialsException badCredentialsException) {
+    log.warn("bad credentials: {}", badCredentialsException.getMessage());
+    return apiResponse.error(HttpStatus.UNAUTHORIZED, badCredentialsException.getMessage());
   }
 
   @ExceptionHandler(AccountStatusException.class)
-  public ResponseEntity<StandardResponse<ErrorResponse>> accountStatus(AccountStatusException e) {
-    log.warn("account status exception: {}", e.getMessage());
-    return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
+  public ResponseEntity<StandardResponse<ErrorResponse>> accountStatus(
+      final AccountStatusException accountStatusException) {
+    log.warn("account status exception: {}", accountStatusException.getMessage());
+    return apiResponse.error(HttpStatus.UNAUTHORIZED, accountStatusException.getMessage());
   }
 
   @ExceptionHandler(NotUniqueDataException.class)
-  public ResponseEntity<StandardResponse<ErrorResponse>> notUniqueData(NotUniqueDataException e) {
-    log.warn("not unique data exception: {}", e.getMessage());
-    return apiResponse.error(HttpStatus.CONFLICT, e.getMessage());
+  public ResponseEntity<StandardResponse<ErrorResponse>> notUniqueData(
+      final NotUniqueDataException notUniqueDataException) {
+    log.warn("not unique data exception: {}", notUniqueDataException.getMessage());
+    return apiResponse.error(HttpStatus.CONFLICT, notUniqueDataException.getMessage());
   }
 
   @ExceptionHandler(NoResourceFoundException.class)
   public ResponseEntity<StandardResponse<ErrorResponse>> noResourceFound(
-      NoResourceFoundException e) {
-    log.warn("resource not found: {}", e.getMessage());
-    return apiResponse.error(HttpStatus.NOT_FOUND, e.getMessage());
+      final NoResourceFoundException noResourceFoundException) {
+    log.warn("resource not found: {}", noResourceFoundException.getMessage());
+    return apiResponse.error(HttpStatus.NOT_FOUND, noResourceFoundException.getMessage());
   }
 
   @ExceptionHandler({ServerError.class, Exception.class})
-  public ResponseEntity<StandardResponse<ErrorResponse>> serverError(Exception e) {
-    log.error("internal server error: {}", e.getMessage(), e);
+  public ResponseEntity<StandardResponse<ErrorResponse>> serverError(final Exception exception) {
+    log.error("internal server error: {}", exception.getMessage(), exception);
     return apiResponse.error(
         HttpStatus.INTERNAL_SERVER_ERROR,
         "something went wrong... contact with a support to fix it");
   }
 
+  @SuppressWarnings("PMD.LongVariable")
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<StandardResponse<ErrorResponse>> validationException(
-      MethodArgumentNotValidException e) {
-    List<FieldErrorDto> errors = new ArrayList<>();
-    e.getFieldErrors()
+      final MethodArgumentNotValidException methodArgumentNotValidException) {
+    final List<FieldErrorDto> errors = new ArrayList<>();
+    methodArgumentNotValidException
+        .getFieldErrors()
         .forEach(
             fe ->
                 errors.add(
@@ -82,7 +87,10 @@ public class GlobalExceptionHandler {
                         (fe.getDefaultMessage() != null
                             ? fe.getDefaultMessage()
                             : "Invalid value"))));
-    log.warn("validation exception: {}. errors: {}", e.getMessage(), errors);
+    log.warn(
+        "validation exception: {}. errors: {}",
+        methodArgumentNotValidException.getMessage(),
+        errors);
     return apiResponse.errorInFields(
         HttpStatus.BAD_REQUEST, exceptionsProperties.validationFailed(), errors);
   }
@@ -90,7 +98,7 @@ public class GlobalExceptionHandler {
   // Пробрасываем ошибки безопасности дальше, чтобы их обработал AccessDeniedHandler из
   // SecurityConfig
   @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
-  public void handleAccessDenied(RuntimeException e) {
-    throw e;
+  public void handleAccessDenied(final RuntimeException runtimeException) {
+    throw runtimeException;
   }
 }

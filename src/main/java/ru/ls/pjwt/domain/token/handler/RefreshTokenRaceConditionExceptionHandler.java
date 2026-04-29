@@ -24,13 +24,16 @@ public class RefreshTokenRaceConditionExceptionHandler {
    * <p>The method is invoked from the token exception handler when a race condition is detected
    * during concurrent token rotations.
    *
-   * @param e the exception carrying the ID of the refresh token that triggered the race condition
+   * @param refreshTokenRaceConditionException the exception carrying the ID of the refresh token
+   *     that triggered the race condition
    */
+  @SuppressWarnings("PMD.LongVariable")
   @Transactional
-  public void handleException(RefreshTokenRaceConditionException e) {
-    RefreshToken compromisedRefreshToken =
+  public void handleException(
+      final RefreshTokenRaceConditionException refreshTokenRaceConditionException) {
+    final RefreshToken compromisedRefreshToken =
         refreshTokenRepository
-            .findById(e.getTokenId())
+            .findById(refreshTokenRaceConditionException.getTokenId())
             .orElseThrow(() -> new JwtTokenRequestException("token not found"));
     log.warn("RefreshToken race condition with {}", compromisedRefreshToken.getUuid());
     refreshTokenManager.compromiseIfUsed(compromisedRefreshToken);

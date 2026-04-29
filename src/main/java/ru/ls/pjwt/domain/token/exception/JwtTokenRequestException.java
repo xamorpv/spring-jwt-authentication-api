@@ -7,7 +7,7 @@ public class JwtTokenRequestException extends RuntimeException {
    * @param message the detail message (which is saved for retrieval by the {@link #getMessage()}
    *     method)
    */
-  public JwtTokenRequestException(String message) {
+  public JwtTokenRequestException(final String message) {
     super(message);
   }
 }

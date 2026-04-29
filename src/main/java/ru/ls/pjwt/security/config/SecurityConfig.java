@@ -4,8 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.ls.pjwt.common.web.api.HttpResponseWriter;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import ru.ls.pjwt.security.filter.JwtFilter;
 
 @Configuration
@@ -13,12 +14,15 @@ import ru.ls.pjwt.security.filter.JwtFilter;
 public class SecurityConfig extends BaseSecurityConfig {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public SecurityConfig(JwtFilter jwtFilter, HttpResponseWriter httpResponseWriter) {
-    super(jwtFilter, httpResponseWriter);
+  protected SecurityConfig(
+      final JwtFilter jwtFilter,
+      final AuthenticationEntryPoint authenticationEntryPoint,
+      final AccessDeniedHandler accessDeniedHandler) {
+    super(jwtFilter, authenticationEntryPoint, accessDeniedHandler);
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+  public SecurityFilterChain securityFilterChain(final HttpSecurity http) {
     return chain(http)
         .authorizeHttpRequests(
             request ->

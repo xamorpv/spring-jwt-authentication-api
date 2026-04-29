@@ -6,7 +6,7 @@ package ru.ls.pjwt.common.web.exception;
  */
 public class NotUniqueDataException extends RuntimeException {
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public NotUniqueDataException(String message) {
+  public NotUniqueDataException(final String message) {
     super(message);
   }
 }

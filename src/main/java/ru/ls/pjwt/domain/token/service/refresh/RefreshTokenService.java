@@ -30,8 +30,8 @@ public class RefreshTokenService {
    * @throws JwtTokenRequestException if the token is not found
    */
   @Transactional
-  public void markTokenAsUsed(JwtClaims claims) {
-    RefreshToken refreshToken = getToken(claims);
+  public void markTokenAsUsed(final JwtClaims claims) {
+    final RefreshToken refreshToken = getToken(claims);
     log.debug("marking token as used: {}", refreshToken.getUuid());
     refreshTokenManager.use(refreshToken);
   }
@@ -45,13 +45,13 @@ public class RefreshTokenService {
    * @throws JwtTokenRequestException if the token is not found or has already been used
    */
   @Transactional
-  public RefreshToken getToken(JwtClaims jwtClaims) {
-    String uuid = jwtClaims.uuid();
+  public RefreshToken getToken(final JwtClaims jwtClaims) {
+    final String uuid = jwtClaims.uuid();
     if (uuid == null) {
       log.warn("jwt token without uuid, may be deprecated");
       throw new BadCredentialsException(exceptionsProperties.badCredentials());
     }
-    RefreshToken refreshToken =
+    final RefreshToken refreshToken =
         refreshTokenRepository
             .findByUuid(uuid)
             .orElseThrow(() -> new JwtTokenRequestException("token not found"));
@@ -68,7 +68,7 @@ public class RefreshTokenService {
    * @return the persisted {@link RefreshToken} entity
    */
   @Transactional
-  public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
+  public RefreshToken save(final CreatedRefreshToken createdRefreshToken, final User user) {
     return refreshTokenRepository.save(new RefreshToken(createdRefreshToken.uuid(), user));
   }
 }

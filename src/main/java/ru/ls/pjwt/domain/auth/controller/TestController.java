@@ -17,6 +17,7 @@ import ru.ls.pjwt.domain.auth.authorization.ModeratorAccess;
 import ru.ls.pjwt.domain.auth.authorization.UserAccess;
 import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
 @Profile("dev")
 @Slf4j
 @RestController
@@ -34,7 +35,7 @@ public class TestController {
 
   @GetMapping("/protected")
   public ResponseEntity<StandardResponse<UserDetails>> getProtectedData(
-      @AuthenticationPrincipal UserDetails userDetails) {
+      @AuthenticationPrincipal final UserDetails userDetails) {
     log.info("request to protected endpoint {}", userDetails.getUsername());
     return apiResponse.success(
         userDetails, controllerDevProperties.protectedResponse(), HttpStatus.OK);

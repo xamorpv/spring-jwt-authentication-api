@@ -33,11 +33,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
   private final HandlerExceptionResolver handlerExceptionResolver;
 
+  @SuppressWarnings(
+      "PMD.AvoidCatchingGenericException") // Фильтр передает все ошибки в HandlerExceptionResolver
   @Override
   protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      final HttpServletRequest request,
+      final HttpServletResponse response,
+      final FilterChain filterChain)
       throws ServletException, IOException {
-    SecurityContext context = SecurityContextHolder.getContext();
+    final SecurityContext context = SecurityContextHolder.getContext();
     // если по какой-то причине пользователь уже аутентифицирован
     if (context.getAuthentication() != null) {
       log.warn(
@@ -49,28 +53,33 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     try {
-      String header = request.getHeader("Authorization");
-      if (header == null || !header.startsWith("Bearer ") || header.equals("Bearer ")) {
+      final String header = request.getHeader("Authorization");
+      if (header == null || !header.startsWith("Bearer ") || "Bearer ".equals(header)) {
         log.debug("no Bearer token in request, skipping authentication");
         filterChain.doFilter(request, response);
         return;
       }
 
-      String jwt = header.substring(7);
+      final String jwt = header.substring(7);
 
-      UserDetails userDetails = jwtFilterService.getUserDetails(jwt);
-      UsernamePasswordAuthenticationToken token =
-          new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-      token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+      authenticateWithToken(jwt, context, request);
 
-      context.setAuthentication(token);
-
-      log.info("user {} authenticated with token", userDetails.getUsername());
       filterChain.doFilter(request, response);
     } catch (Exception e) {
       SecurityContextHolder.clearContext(); // стандарт безопасности
       log.warn("exception in filter: {}", e.getMessage());
       handlerExceptionResolver.resolveException(request, response, null, e);
     }
+  }
+
+  private void authenticateWithToken(
+      final String jwt, final SecurityContext context, final HttpServletRequest request) {
+    final UserDetails userDetails = jwtFilterService.getUserDetails(jwt);
+    final UsernamePasswordAuthenticationToken token =
+        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+    context.setAuthentication(token);
+    log.info("user {} authenticated with token", userDetails.getUsername());
   }
 }
