@@ -28,6 +28,7 @@
         <exclude name="UselessParentheses"/>
         <!-- Избыточно -->
         <exclude name="AtLeastOneConstructor"/>
+        <exclude name="CallSuperInConstructor"/>
         <!-- Исключаем правила, которые будем настраивать отдельно -->
         <exclude name="LongVariable"/>
     </rule>
