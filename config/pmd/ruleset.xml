@@ -29,6 +29,7 @@
         <!-- Избыточно -->
         <exclude name="AtLeastOneConstructor"/>
         <exclude name="CallSuperInConstructor"/>
+        <exclude name="OnlyOneReturn"/>
         <!-- Исключаем правила, которые будем настраивать отдельно -->
         <exclude name="LongVariable"/>
     </rule>
