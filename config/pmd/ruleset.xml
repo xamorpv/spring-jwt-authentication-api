@@ -18,6 +18,8 @@
     <rule ref="category/java/errorprone.xml">
         <!-- Избыточно -->
         <exclude name="ConstructorCallsOverridableMethod"/>
+        <!-- Не используется в проекте -->
+        <exclude name="MissingSerialVersionUID"/>
     </rule>
 
     <rule ref="category/java/codestyle.xml">
