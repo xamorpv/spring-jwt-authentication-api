@@ -8,6 +8,8 @@
         <!-- Исключаем правила, которые будем настраивать отдельно -->
         <exclude name="ImplicitFunctionalInterface"/>
         <exclude name="UnusedPrivateMethod"/>
+        <exclude name="UnitTestShouldIncludeAssert"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
     </rule>
 
     <rule ref="category/java/performance.xml"/>
