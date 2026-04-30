@@ -7,6 +7,7 @@
         <exclude name="GuardLogStatement"/>
         <!-- Исключаем правила, которые будем настраивать отдельно -->
         <exclude name="ImplicitFunctionalInterface"/>
+        <exclude name="UnusedPrivateMethod"/>
     </rule>
 
     <rule ref="category/java/performance.xml"/>
@@ -117,5 +118,11 @@
         </properties>
     </rule>
 
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod">
+        <properties>
+            <property name="ignoredAnnotations"
+                      value="org.springframework.test.context.DynamicPropertySource" />
+        </properties>
+    </rule>
     <exclude-pattern>.*/generated/.*</exclude-pattern>
 </ruleset>
