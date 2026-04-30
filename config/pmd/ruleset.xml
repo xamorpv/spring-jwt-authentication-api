@@ -21,6 +21,7 @@
     <rule ref="category/java/errorprone.xml">
         <!-- Избыточно -->
         <exclude name="ConstructorCallsOverridableMethod"/>
+        <exclude name="TestClassWithoutTestCases"/>
         <!-- Не используется в проекте -->
         <exclude name="MissingSerialVersionUID"/>
     </rule>
