@@ -17,10 +17,57 @@ group = "ru.ls"
 version = "0.0.1-SNAPSHOT"
 description = "first jwt project"
 
+
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
+}
+
+dependencies {
+	rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.34.0")
+
+	errorprone("com.google.errorprone:error_prone_core:2.41.0")
+	errorprone("com.uber.nullaway:nullaway:0.13.3")
+
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-flyway")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-webmvc")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+	implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
+
+	implementation("org.flywaydb:flyway-database-postgresql")
+	runtimeOnly("org.postgresql:postgresql")
+
+	testImplementation("org.springframework.boot:spring-boot-testcontainers")
+	testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.8"))
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:postgresql")
+
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
+
+	implementation("org.mapstruct:mapstruct:1.6.3")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+
+	implementation("org.bouncycastle:bcprov-jdk18on:1.78")
+
+	testCompileOnly("org.projectlombok:lombok")
+	testAnnotationProcessor("org.projectlombok:lombok")
+
+	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.jar {
@@ -130,49 +177,47 @@ done
 	}
 }
 
-dependencies {
-	rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.34.0")
+val generatePmdTestRuleset by tasks.registering {
+	group = "pmd"
+	description = "Generates ruleset-test.xml based on ruleset.xml with test-specific suppressions"
 
-	errorprone("com.google.errorprone:error_prone_core:2.41.0")
-	errorprone("com.uber.nullaway:nullaway:0.13.3")
+	val mainRuleset = file("${rootDir}/config/pmd/ruleset.xml")
+	val testRuleset = file("${rootDir}/config/pmd/ruleset-test.xml")
+	val suppressionsFile = file("${rootDir}/config/pmd/ruleset-test-suppressions.xml")
 
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-flyway")
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-webmvc")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	inputs.file(mainRuleset)
+	inputs.file(suppressionsFile)
+	outputs.file(testRuleset)
 
-    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
+	doLast {
+		val mainContent = mainRuleset.readText()
 
-	implementation("org.flywaydb:flyway-database-postgresql")
-    runtimeOnly("org.postgresql:postgresql")
+		if (!suppressionsFile.exists()) {
+			suppressionsFile.parentFile.mkdirs()
+			suppressionsFile.writeText("""<?xml version="1.0"?>
+<rule ref="category/java/design.xml/SignatureDeclareThrowsException">
+    <properties>
+        <property name="violationSuppressXPath" value=".[true()]" />
+    </properties>
+</rule>
+<!-- Add more rule suppressions here -->
+""")
+			logger.lifecycle("Created example suppressions file at ${suppressionsFile}")
+		}
 
-	testImplementation("org.springframework.boot:spring-boot-testcontainers")
-	testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.8"))
-	testImplementation("org.testcontainers:junit-jupiter")
-	testImplementation("org.testcontainers:postgresql")
+		val suppressionBlock = suppressionsFile.readText()
+		val updatedContent = mainContent.replace("</ruleset>", "\n$suppressionBlock\n</ruleset>")
+		testRuleset.writeText(updatedContent)
+	}
+}
 
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
+tasks.pmdTest {
+	dependsOn(generatePmdTestRuleset)
+	ruleSetFiles = files(generatePmdTestRuleset.get().outputs.files.singleFile)
+}
 
-	implementation("org.mapstruct:mapstruct:1.6.3")
-	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
-	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
-
-    implementation("org.bouncycastle:bcprov-jdk18on:1.78")
-
-	testCompileOnly("org.projectlombok:lombok")
-	testAnnotationProcessor("org.projectlombok:lombok")
-
-	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
-	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
-	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
-	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+tasks.pmdMain {
+	ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
 tasks.withType<Test> {

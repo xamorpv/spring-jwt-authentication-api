@@ -1,0 +1,6 @@
+<rule ref="category/java/design.xml/SignatureDeclareThrowsException">
+    <properties>
+        <property name="violationSuppressXPath" value=".[true()]" />
+    </properties>
+</rule>
+
