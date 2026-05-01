@@ -23,7 +23,7 @@ public class AuthorityService {
   private void loadUserAuthority() {
     userAuthorityId =
         authorityRepository
-            .findByAuthority(authoritiesProperties.user())
+            .findByName(authoritiesProperties.user())
             .map(Authority::getId)
             .orElseThrow(() -> new ServerError("authority USER not found!"));
   }
