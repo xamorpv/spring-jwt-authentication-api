@@ -12,7 +12,7 @@ import ru.ls.pjwt.base.WebIntegrationTest;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 @Import(AuthenticationSteps.class)
-public class NonExistentIntegrationTest extends WebIntegrationTest {
+class NonExistentIntegrationTest extends WebIntegrationTest {
   @Autowired private MockMvc mockMvc;
 
   @Autowired private AuthenticationSteps authenticationSteps;

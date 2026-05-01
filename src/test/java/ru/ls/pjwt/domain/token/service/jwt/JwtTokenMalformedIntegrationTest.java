@@ -11,7 +11,7 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Slf4j
 @Import({AuthenticationSteps.class, RegistrationSteps.class})
-public class JwtTokenMalformedIntegrationTest extends WebIntegrationTest {
+class JwtTokenMalformedIntegrationTest extends WebIntegrationTest {
   @Autowired private MockMvcClient mockMvcClient;
 
   @Autowired private AuthenticationSteps authenticationSteps;
@@ -32,7 +32,7 @@ public class JwtTokenMalformedIntegrationTest extends WebIntegrationTest {
             + invalidSignature; // получился токен с payload одного пользователя и signature другого
     // пользователя
 
-    mockMvcClient.getProtectedDataExpecting401("Bearer " + malformedToken);
+    mockMvcClient.assertProtectedEndpointReturns401("Bearer " + malformedToken);
   }
 
   @Test
@@ -40,11 +40,11 @@ public class JwtTokenMalformedIntegrationTest extends WebIntegrationTest {
     final String adminAccessToken = authenticationSteps.loginAsDevAdmin().accessToken();
     final String adminPayload =
         adminAccessToken.substring(
-            adminAccessToken.indexOf(".") + 1, adminAccessToken.lastIndexOf("."));
+            adminAccessToken.indexOf('.') + 1, adminAccessToken.lastIndexOf('.'));
     final String headerWithNoneAlgorithm = "eyJhbGciOiAibm9uZSIsICJ0eXAiOiAiSldUIn0";
 
     final String fakeAccessToken = headerWithNoneAlgorithm + "." + adminPayload + ".";
 
-    mockMvcClient.getProtectedDataExpecting401("Bearer " + fakeAccessToken);
+    mockMvcClient.assertProtectedEndpointReturns401("Bearer " + fakeAccessToken);
   }
 }

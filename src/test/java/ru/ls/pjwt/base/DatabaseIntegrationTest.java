@@ -9,18 +9,20 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 public abstract class DatabaseIntegrationTest extends IntegrationTest {
   @SuppressWarnings("resource")
-  static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
+  private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
       new PostgreSQLContainer<>("postgres:18-alpine")
           .withDatabaseName("testdb")
           .withUsername("test")
           .withPassword("test");
+
+  @Autowired private Flyway flyway;
 
   static {
     POSTGRESQL_CONTAINER.start(); // запускается ровно один раз
   }
 
   @DynamicPropertySource
-  static void configureProperties(final DynamicPropertyRegistry registry) {
+  private static void configureProperties(final DynamicPropertyRegistry registry) {
     registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
     registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
     registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);
@@ -28,8 +30,6 @@ public abstract class DatabaseIntegrationTest extends IntegrationTest {
     registry.add("spring.flyway.user", POSTGRESQL_CONTAINER::getUsername);
     registry.add("spring.flyway.password", POSTGRESQL_CONTAINER::getPassword);
   }
-
-  @Autowired private Flyway flyway;
 
   @BeforeEach
   void setUpDatabase() {

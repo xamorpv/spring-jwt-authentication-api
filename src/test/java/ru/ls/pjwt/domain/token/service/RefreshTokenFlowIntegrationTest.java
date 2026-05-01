@@ -17,7 +17,7 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
   RefreshTokenSteps.class,
   AccessTokenSteps.class
 })
-public class RefreshTokenFlowIntegrationTest extends WebIntegrationTest {
+class RefreshTokenFlowIntegrationTest extends WebIntegrationTest {
   @Autowired private RegistrationSteps registrationSteps;
 
   @Autowired private AuthenticationSteps authenticationSteps;

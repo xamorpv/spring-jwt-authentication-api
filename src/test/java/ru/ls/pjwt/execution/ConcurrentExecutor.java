@@ -21,6 +21,7 @@ public class ConcurrentExecutor {
    * @param runnable the task to execute concurrently
    * @throws RuntimeException if the task throws an exception or the waiting time elapses
    */
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void runAsyncAndWait(final ThrowingRunnable runnable) {
     final CompletableFuture<Void> future =
         CompletableFuture.runAsync(
@@ -28,24 +29,17 @@ public class ConcurrentExecutor {
               try {
                 runnable.run();
               } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new ConcurrentExecutionException("Task execution failed", e);
               }
             });
 
     try {
       future.get(10, TimeUnit.SECONDS);
-    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      throw new RuntimeException(e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new ConcurrentExecutionException("Task interrupted", e);
+    } catch (ExecutionException | TimeoutException e) {
+      throw new ConcurrentExecutionException("Task failed or timed out", e);
     }
-  }
-
-  /** A {@link Runnable}-like interface that allows throwing checked exceptions. */
-  public interface ThrowingRunnable {
-    /**
-     * Executes the task, potentially throwing a checked exception.
-     *
-     * @throws Exception if the task fails
-     */
-    void run() throws Exception;
   }
 }

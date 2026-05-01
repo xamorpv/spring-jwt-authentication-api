@@ -15,14 +15,14 @@ import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 @Import(AuthenticationSteps.class)
-public class JwtTokenConfusionIntegrationTest extends WebIntegrationTest {
+class JwtTokenConfusionIntegrationTest extends WebIntegrationTest {
   @Autowired private AuthenticationSteps authenticationSteps;
 
   @Autowired private MockMvcClient mockMvcClient;
 
   @Test
   void shouldReturn401WhenUsingRefreshTokenInsteadOfAccessToken() throws Exception {
-    mockMvcClient.getProtectedDataExpecting401(
+    mockMvcClient.assertProtectedEndpointReturns401(
         "Bearer " + authenticationSteps.loginAsDevUser().refreshToken());
   }
 
@@ -38,6 +38,6 @@ public class JwtTokenConfusionIntegrationTest extends WebIntegrationTest {
 
     assertNotNull(errorResponse, "error response");
 
-    assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.statusCode());
+    assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.statusCode(), "status code");
   }
 }

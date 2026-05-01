@@ -26,7 +26,7 @@ import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.service.UserService;
 
 @Slf4j
-public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
+class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
   @Autowired private RefreshTokenScheduler refreshTokenScheduler;
 
   @Autowired private RefreshTokenRepository refreshTokenRepository;
@@ -44,7 +44,7 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
 
   @Test
   @Transactional // чтобы сущности обновлялись при save
-  void tokenClearingFlow() {
+  void tokenClearingFlow() throws IllegalAccessException {
     final User user = userService.findUserByUsername(devUsernamesProperties.user());
     final User moder = userService.findUserByUsername(devUsernamesProperties.moderator());
     final User admin = userService.findUserByUsername(devUsernamesProperties.admin());
@@ -87,6 +87,16 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
     clearAndCheck();
     clearAndCheck();
 
+    expireAllExistingByUse();
+
+    nonExistingRefreshTokens.putAll(existingRefreshTokens);
+    existingRefreshTokens.clear();
+
+    clearAndCheck();
+    clearAndCheck();
+  }
+
+  private void expireAllExistingByUse() {
     existingRefreshTokens
         .values()
         .forEach(
@@ -99,12 +109,6 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
               use(refreshToken);
               refreshTokenRepository.saveAndFlush(refreshToken);
             });
-
-    nonExistingRefreshTokens.putAll(existingRefreshTokens);
-    existingRefreshTokens.clear();
-
-    clearAndCheck();
-    clearAndCheck();
   }
 
   private RefreshToken createRefreshToken(final User user) {
@@ -150,7 +154,8 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
             });
   }
 
-  private void expireByCreatedAtAndSave(final RefreshToken refreshToken) {
+  private void expireByCreatedAtAndSave(final RefreshToken refreshToken)
+      throws IllegalAccessException {
     expireByCreatedAt(refreshToken);
     setTokenNonExistent(refreshToken);
     refreshTokenRepository.saveAndFlush(refreshToken);
@@ -168,7 +173,8 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
     nonExistingRefreshTokens.put(refreshToken.getUuid(), refreshToken);
   }
 
-  private void expireByCreatedAt(final RefreshToken refreshToken) {
+  @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+  private void expireByCreatedAt(final RefreshToken refreshToken) throws IllegalAccessException {
     Field createdAt = null;
     try {
       createdAt = TimestampedEntity.class.getDeclaredField("createdAt");
@@ -177,11 +183,7 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
     }
     createdAt.setAccessible(true);
     final Instant expiredInstant = createExpiredInstant();
-    try {
-      createdAt.set(refreshToken, expiredInstant);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
+    createdAt.set(refreshToken, expiredInstant);
 
     jdbcTemplate.update(
         "update refresh_tokens set created_at = ? where id = ?",
@@ -199,7 +201,7 @@ public class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
   }
 
   private void putAll(final RefreshToken... refreshTokens) {
-    for (RefreshToken refreshToken : refreshTokens) {
+    for (final RefreshToken refreshToken : refreshTokens) {
       existingRefreshTokens.put(refreshToken.getUuid(), refreshToken);
     }
   }

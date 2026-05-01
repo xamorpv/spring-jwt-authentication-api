@@ -13,7 +13,7 @@ import ru.ls.pjwt.steps.user.AuthenticationSteps;
 import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Import({RegistrationSteps.class, AuthenticationSteps.class})
-public class AuthenticationIntegrationTest extends WebIntegrationTest {
+class AuthenticationIntegrationTest extends WebIntegrationTest {
   @Autowired private RegistrationSteps registrationSteps;
 
   @Autowired private AuthenticationSteps authenticationSteps;

@@ -37,7 +37,7 @@ import tools.jackson.databind.ObjectMapper;
           + "-c idle_in_transaction_session_timeout=10000"
     })
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
-public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest {
+class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest {
   @Autowired private RegistrationSteps registrationSteps;
 
   @Autowired private AuthenticationSteps authenticationSteps;
@@ -91,7 +91,7 @@ public class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest
         success2,
         "First token should be rotated successfully, second token should be compromised");
 
-    String tokenBody;
+    final String tokenBody;
 
     if (success1) {
       tokenBody = result1.getContentAsString();

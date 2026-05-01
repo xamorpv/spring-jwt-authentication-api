@@ -11,7 +11,7 @@ import ru.ls.pjwt.steps.user.AuthenticationSteps;
 import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
-public class RefreshTokenRotationIntegrationTest extends WebIntegrationTest {
+class RefreshTokenRotationIntegrationTest extends WebIntegrationTest {
   @Autowired private RegistrationSteps registrationSteps;
 
   @Autowired private AuthenticationSteps authenticationSteps;

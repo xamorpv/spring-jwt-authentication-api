@@ -24,9 +24,10 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Slf4j
 @Import(RegistrationSteps.class)
-public class ValidationIntegrationTest extends WebIntegrationTest {
+class ValidationIntegrationTest extends WebIntegrationTest {
   @Autowired private RegistrationSteps registrationSteps;
 
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   @DisplayName("Complex validation test for RegisterRequest")
   @Test
   void shouldReturn400andErrorsListWhenRegisterRequestInvalid() throws Exception {
@@ -88,7 +89,7 @@ public class ValidationIntegrationTest extends WebIntegrationTest {
     return errorResponse.errors();
   }
 
-  void expectResponseContainsField(
+  private void expectResponseContainsField(
       final List<FieldErrorDto> errors, final String fieldName, final long times) {
     assertEquals(
         errors.stream().filter(f -> f.field().equals(fieldName)).count(),
@@ -96,21 +97,21 @@ public class ValidationIntegrationTest extends WebIntegrationTest {
         "error fields containing fieldName: " + fieldName);
   }
 
-  static Stream<Arguments> getInvalidUsernames() {
+  private static Stream<Arguments> getInvalidUsernames() {
     return Stream.of(
         Arguments.of("", 2),
         Arguments.of("1".repeat(ValidationConstants.DEFAULT_MAX_STRING_LENGTH + 1), 1),
         Arguments.of("1".repeat(ValidationConstants.DEFAULT_MIN_STRING_LENGTH - 1), 1));
   }
 
-  static Stream<Arguments> getInvalidPasswords() {
+  private static Stream<Arguments> getInvalidPasswords() {
     return Stream.of(
         Arguments.of("", 2),
         Arguments.of("1".repeat(ValidationConstants.MIN_PASSWORD_LENGTH - 1), 1),
         Arguments.of("1".repeat(ValidationConstants.MAX_PASSWORD_LENGTH + 1), 1));
   }
 
-  static Stream<Arguments> getInvalidEmails() {
+  private static Stream<Arguments> getInvalidEmails() {
     return Stream.of(
         Arguments.of("", 2),
         Arguments.of("1".repeat(ValidationConstants.MAX_EMAIL_LENGTH + 1), 2),

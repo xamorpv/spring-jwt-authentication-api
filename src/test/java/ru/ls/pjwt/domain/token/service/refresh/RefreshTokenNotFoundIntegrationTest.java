@@ -11,7 +11,7 @@ import ru.ls.pjwt.fixture.JwtTokenFixture;
 import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 
 @Import({RefreshTokenSteps.class})
-public class RefreshTokenNotFoundIntegrationTest extends WebIntegrationTest {
+class RefreshTokenNotFoundIntegrationTest extends WebIntegrationTest {
   @Autowired private DevUsernamesProperties devUsernamesProperties;
 
   @Autowired private JwtProperties jwtProperties;

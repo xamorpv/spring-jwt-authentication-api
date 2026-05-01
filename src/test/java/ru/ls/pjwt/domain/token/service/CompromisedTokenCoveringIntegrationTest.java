@@ -20,7 +20,7 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Slf4j
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
-public class CompromisedTokenCoveringIntegrationTest extends WebIntegrationTest {
+class CompromisedTokenCoveringIntegrationTest extends WebIntegrationTest {
   // кейс:
   // 1. пользователь получает токен А
   // 2. пользователь обновляет токен А, получает токен Б

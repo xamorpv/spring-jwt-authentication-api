@@ -17,7 +17,6 @@ import ru.ls.pjwt.domain.auth.authorization.ModeratorAccess;
 import ru.ls.pjwt.domain.auth.authorization.UserAccess;
 import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 
-@SuppressWarnings("PMD.TestClassWithoutTestCases")
 @Profile("dev")
 @Slf4j
 @RestController

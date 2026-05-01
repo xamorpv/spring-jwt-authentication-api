@@ -10,7 +10,7 @@ import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import ru.ls.pjwt.domain.user.entity.User;
 
 @SpringBootTest
-public class AuthorityServiceSpringTest extends DatabaseIntegrationTest {
+class AuthorityServiceSpringTest extends DatabaseIntegrationTest {
   @Autowired private AuthorityService authorityService;
 
   @Autowired private AuthoritiesProperties authoritiesProperties;

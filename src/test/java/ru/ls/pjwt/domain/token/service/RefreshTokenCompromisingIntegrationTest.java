@@ -15,7 +15,7 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Slf4j
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
-public class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest {
+class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest {
   @Autowired private RegistrationSteps registrationSteps;
 
   @Autowired private AuthenticationSteps authenticationSteps;
@@ -51,11 +51,11 @@ public class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest 
     final LoginResponse loginResponse2 = authenticationSteps.loginAsFixtureUser();
     final LoginResponse loginResponse3 = authenticationSteps.loginAsFixtureUser();
 
-    final LoginResponse refreshLoginSuccess =
+    final LoginResponse refreshLoginSuccess1 =
         refreshTokenSteps.refreshTokensSuccessfully(loginResponse1.refreshToken()); // успех
     refreshTokenSteps.expectTokenCompromised(
         loginResponse1.refreshToken()); // компроментация всех токенов пользователя: loginResponse1,
-    // loginResponse2, loginResponse3, refreshLoginSuccess
+    // loginResponse2, loginResponse3, refreshLoginSuccess1
     refreshTokenSteps.expectTokenCompromised(
         loginResponse2.refreshToken()); // неудача, но по сути ничего не происходит
 
@@ -65,16 +65,15 @@ public class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest 
     refreshTokenSteps.expectTokenCompromised(
         loginResponse1.refreshToken()); // злоумышленник пытается сбросить сессию
 
-    final LoginResponse refreshLoginSuccessAfterCompromising =
+    final LoginResponse refreshLoginSuccess2 =
         refreshTokenSteps.refreshTokensSuccessfully(
             loginResponseSuccess
                 .refreshToken()); // успех - компроментированный токен ни на что не влияет
     // попытки использовать другие токены. везде неудача
     refreshTokenSteps.expectTokenCompromised(loginResponse3.refreshToken());
-    refreshTokenSteps.expectTokenCompromised(refreshLoginSuccess.refreshToken());
+    refreshTokenSteps.expectTokenCompromised(refreshLoginSuccess1.refreshToken());
     // пользователь может продолжать цепочку обновлений
-    refreshTokenSteps.refreshTokensSuccessfully(
-        refreshLoginSuccessAfterCompromising.refreshToken());
+    refreshTokenSteps.refreshTokensSuccessfully(refreshLoginSuccess2.refreshToken());
 
     // другие пользователи могут продолжать цепочку обновлений
     refreshTokenSteps.refreshTokensSuccessfully(user2Login.refreshToken());

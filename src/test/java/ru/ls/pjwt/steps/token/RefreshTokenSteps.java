@@ -99,7 +99,9 @@ public class RefreshTokenSteps {
                 standardResponse.message().contains("compromise"),
                 "Message missing 'compromise' keyword"),
         () -> assertFalse(standardResponse.success(), "Success flag must be false"),
-        () -> assertEquals(HttpStatus.UNAUTHORIZED.value(), errorResponse.statusCode()));
+        () ->
+            assertEquals(
+                HttpStatus.UNAUTHORIZED.value(), errorResponse.statusCode(), "status code"));
   }
 
   /**

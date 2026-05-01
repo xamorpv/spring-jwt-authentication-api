@@ -7,7 +7,7 @@ import ru.ls.pjwt.base.WebIntegrationTest;
 import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.fixture.StandardUserFixture;
 
-public class AccessTokenHeaderIntegrationTest extends WebIntegrationTest {
+class AccessTokenHeaderIntegrationTest extends WebIntegrationTest {
   @Autowired private MockMvcClient mockMvcClient;
 
   @ParameterizedTest
@@ -17,6 +17,6 @@ public class AccessTokenHeaderIntegrationTest extends WebIntegrationTest {
         "Basic " + StandardUserFixture.DEFAULT_USERNAME + ":" + StandardUserFixture.DEFAULT_PASSWORD
       })
   void shouldReturn401WhenGivenWrongHeader(final String headerValue) throws Exception {
-    mockMvcClient.getProtectedDataExpecting401(headerValue);
+    mockMvcClient.assertProtectedEndpointReturns401(headerValue);
   }
 }

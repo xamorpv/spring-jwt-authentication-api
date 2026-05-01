@@ -16,7 +16,7 @@ import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 @Import(AuthenticationSteps.class)
-public class AuthorizationIntegrationTest extends WebIntegrationTest {
+class AuthorizationIntegrationTest extends WebIntegrationTest {
   @Autowired private AuthenticationSteps authenticationSteps;
 
   @Autowired private MockMvc mockMvc;
@@ -75,21 +75,22 @@ public class AuthorizationIntegrationTest extends WebIntegrationTest {
     perform403(endpoint, authenticationSteps.loginAsDevAdmin().accessToken());
   }
 
-  void performOk(final String endpoint, final String message) throws Exception {
+  private void performOk(final String endpoint, final String message) throws Exception {
     mockMvc
         .perform(get(endpoint))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value(message));
   }
 
-  void performOk(final String endpoint, final String message, final String token) throws Exception {
+  private void performOk(final String endpoint, final String message, final String token)
+      throws Exception {
     mockMvc
         .perform(get(endpoint).header("Authorization", "Bearer " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value(message));
   }
 
-  void perform403(final String endpoint, final String token) throws Exception {
+  private void perform403(final String endpoint, final String token) throws Exception {
     mockMvc
         .perform(get(endpoint).header("Authorization", "Bearer " + token))
         .andExpect(status().isForbidden());

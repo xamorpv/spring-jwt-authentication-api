@@ -11,7 +11,7 @@ import org.springframework.security.authentication.LockedException;
 import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.domain.user.entity.User;
 
-public class UserValidatorUnitTest {
+class UserValidatorUnitTest {
   private final ExceptionsProperties exceptionsProperties = mock(ExceptionsProperties.class);
   private final UserValidator userValidator = new UserValidator(exceptionsProperties);
   private final User user = new User();

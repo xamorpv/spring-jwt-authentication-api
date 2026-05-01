@@ -26,7 +26,7 @@ import tools.jackson.databind.ObjectMapper;
  */
 @TestComponent
 public class AuthenticationSteps {
-  private final String ENDPOINT = "/api/v1/auth/login";
+  public static final String ENDPOINT = "/api/v1/auth/login";
 
   @Autowired private ObjectMapper objectMapper;
 
@@ -115,6 +115,6 @@ public class AuthenticationSteps {
     assertAll(
         "Authentication should fail",
         () -> assertFalse(standardResponse.success(), "Success flag must be false"),
-        () -> assertEquals(expectedStatusCode, errorResponse.statusCode()));
+        () -> assertEquals(expectedStatusCode, errorResponse.statusCode(), "status code"));
   }
 }

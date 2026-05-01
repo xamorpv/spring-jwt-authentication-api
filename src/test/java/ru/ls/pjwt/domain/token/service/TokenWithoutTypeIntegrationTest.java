@@ -12,7 +12,7 @@ import ru.ls.pjwt.fixture.JwtTokenFixture;
 import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 
 @Import(RefreshTokenSteps.class)
-public class TokenWithoutTypeIntegrationTest extends WebIntegrationTest {
+class TokenWithoutTypeIntegrationTest extends WebIntegrationTest {
   @Autowired private MockMvcClient mockMvcClient;
 
   @Autowired private AuthoritiesProperties authoritiesProperties;
@@ -30,7 +30,7 @@ public class TokenWithoutTypeIntegrationTest extends WebIntegrationTest {
             .claim("authorities", List.of(authoritiesProperties.user()))
             .compact();
 
-    mockMvcClient.getProtectedDataExpecting500("Bearer " + jwtWithoutType);
+    mockMvcClient.assertProtectedEndpointReturns500("Bearer " + jwtWithoutType);
   }
 
   @Test

@@ -16,7 +16,7 @@ import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 @Import(AuthenticationSteps.class)
-public class JwtExpirationIntegrationTest extends WebIntegrationTest {
+class JwtExpirationIntegrationTest extends WebIntegrationTest {
   @MockitoBean private Clock clock;
 
   @Autowired private AuthenticationSteps authenticationSteps;
@@ -36,6 +36,6 @@ public class JwtExpirationIntegrationTest extends WebIntegrationTest {
         .thenReturn(
             now.plus(jwtProperties.getAccessTokenExpirationMinutes() + 1, ChronoUnit.MINUTES));
 
-    mockMvcClient.getProtectedDataExpecting401("Bearer " + loginResponse.accessToken());
+    mockMvcClient.assertProtectedEndpointReturns401("Bearer " + loginResponse.accessToken());
   }
 }

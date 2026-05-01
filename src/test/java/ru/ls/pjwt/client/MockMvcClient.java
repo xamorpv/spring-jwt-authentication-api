@@ -101,7 +101,7 @@ public class MockMvcClient {
    * @param headerValue the value of the {@code Authorization} header (e.g. {@code "Bearer token"})
    * @throws Exception if the request or assertions fail
    */
-  public void getProtectedDataExpecting401(final String headerValue) throws Exception {
+  public void assertProtectedEndpointReturns401(final String headerValue) throws Exception {
     getProtectedData(headerValue)
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.success").value(false))
@@ -115,7 +115,7 @@ public class MockMvcClient {
    * @param headerValue the value of the {@code Authorization} header
    * @throws Exception if the request or assertions fail
    */
-  public void getProtectedDataExpecting500(final String headerValue) throws Exception {
+  public void assertProtectedEndpointReturns500(final String headerValue) throws Exception {
     getProtectedData(headerValue)
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$.success").value(false))

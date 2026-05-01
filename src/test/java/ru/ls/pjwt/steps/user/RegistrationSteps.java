@@ -25,7 +25,7 @@ import tools.jackson.databind.ObjectMapper;
  */
 @TestComponent
 public class RegistrationSteps {
-  private final String ENDPOINT = "/api/v1/auth/register";
+  public static final String ENDPOINT = "/api/v1/auth/register";
 
   @Autowired private ObjectMapper objectMapper;
 
@@ -55,16 +55,17 @@ public class RegistrationSteps {
     assertNotNull(data, "successful register response data");
     assertAll(
         "Registration properties should be correct",
-        () -> assertEquals(registerRequest.username(), data.username()),
-        () -> assertEquals(registerRequest.email(), data.email()),
+        () -> assertEquals(registerRequest.username(), data.username(), "username"),
+        () -> assertEquals(registerRequest.email(), data.email(), "email"),
         () ->
             assertAll(
                 "New user should have only USER authority",
-                () -> assertEquals(1, data.authorities().size()),
+                () -> assertEquals(1, data.authorities().size(), "authorities size"),
                 () ->
                     assertEquals(
                         authoritiesProperties.user(),
-                        data.authorities().stream().findFirst().orElseThrow())));
+                        data.authorities().stream().findFirst().orElseThrow(),
+                        "user authority")));
   }
 
   /**
@@ -85,7 +86,7 @@ public class RegistrationSteps {
     assertAll(
         "Registration should fail",
         () -> assertFalse(standardResponse.success(), "Success flag"),
-        () -> assertEquals(expectedStatusCode, errorResponse.statusCode()));
+        () -> assertEquals(expectedStatusCode, errorResponse.statusCode(), "status code"));
 
     return standardResponse;
   }

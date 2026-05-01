@@ -13,7 +13,7 @@ import ru.ls.pjwt.fixture.JwtTokenFixture;
 import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 
 @Import({RefreshTokenSteps.class})
-public class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest {
+class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest {
   @Autowired private JwtTokenFixture jwtTokenFixture;
   @Autowired private JwtProperties jwtProperties;
   @Autowired private RefreshTokenSteps refreshTokenSteps;
@@ -36,7 +36,7 @@ public class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest 
     final String accessTokenWithoutSubject =
         jwtTokenFixture.getBaseJwtBuilder().claim("type", jwtProperties.getAccessToken()).compact();
 
-    mockMvcClient.getProtectedDataExpecting401("Bearer " + accessTokenWithoutSubject);
+    mockMvcClient.assertProtectedEndpointReturns401("Bearer " + accessTokenWithoutSubject);
   }
 
   @Test
@@ -48,6 +48,6 @@ public class TokenWithIncorrectClaimsIntegrationTest extends WebIntegrationTest 
             .claim("uuid", UUID.randomUUID().toString())
             .compact();
 
-    mockMvcClient.getProtectedDataExpecting401("Bearer " + accessTokenWithoutSubject);
+    mockMvcClient.assertProtectedEndpointReturns401("Bearer " + accessTokenWithoutSubject);
   }
 }
