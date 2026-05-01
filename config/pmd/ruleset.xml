@@ -112,7 +112,8 @@
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod">
         <properties>
             <property name="ignoredAnnotations"
-                      value="org.springframework.test.context.DynamicPropertySource" />
+                      value="org.springframework.test.context.DynamicPropertySource,
+                         jakarta.annotation.PostConstruct" />
         </properties>
     </rule>
 
