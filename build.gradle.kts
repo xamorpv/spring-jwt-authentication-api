@@ -11,6 +11,7 @@ plugins {
 	id("de.aaschmid.cpd") version "3.5"
 	id("net.ltgt.errorprone") version "5.1.0"
 	id("org.openrewrite.rewrite") version "7.32.0"
+	id("com.github.spotbugs") version "6.5.1"
 }
 
 group = "ru.ls"
@@ -116,6 +117,14 @@ cpd {
 rewrite {
 	configFile = file("config/rewrite/finalize-variables.yaml")
 	activeRecipe("ru.ls.FinalizeVariables")
+}
+
+spotbugs {
+	effort = com.github.spotbugs.snom.Effort.MAX
+	reportLevel = com.github.spotbugs.snom.Confidence.LOW
+	excludeFilter = file("${rootDir}/config/spotbugs/exclude.xml")
+	ignoreFailures = false
+	showProgress = true
 }
 
 tasks.withType<JavaCompile>().configureEach {
