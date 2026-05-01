@@ -9,3 +9,13 @@
     <property name="maximumStaticImports" value="10" />
 </properties>
 </rule>
+
+<rule ref="category/java/design.xml/NcssCount">
+<properties>
+    <property name="methodReportLevel" value="40" />
+    <property name="classReportLevel" value="150" />
+    <property name="violationSuppressXPath"
+              value=".[pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+                       or pmd-java:hasAnnotation('org.junit.jupiter.params.ParameterizedTest')]" />
+</properties>
+</rule>
