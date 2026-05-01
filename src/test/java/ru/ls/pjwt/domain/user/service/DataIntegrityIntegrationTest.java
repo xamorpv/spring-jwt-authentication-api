@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.fixture.StandardUserFixture;
 import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Import(RegistrationSteps.class)
-class DataIntegrityIntegrationTest extends WebIntegrationTest {
+class DataIntegrityIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private RegistrationSteps registrationSteps;
 
   @Test

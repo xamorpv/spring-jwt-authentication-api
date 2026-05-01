@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.common.database.entity.TimestampedEntity;
 import ru.ls.pjwt.domain.auth.property.DevUsernamesProperties;
 import ru.ls.pjwt.domain.token.entity.RefreshToken;
@@ -26,7 +26,7 @@ import ru.ls.pjwt.domain.user.entity.User;
 import ru.ls.pjwt.domain.user.service.UserService;
 
 @Slf4j
-class RefreshTokenClearingIntegrationTest extends WebIntegrationTest {
+class RefreshTokenClearingIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private RefreshTokenScheduler refreshTokenScheduler;
 
   @Autowired private RefreshTokenRepository refreshTokenRepository;

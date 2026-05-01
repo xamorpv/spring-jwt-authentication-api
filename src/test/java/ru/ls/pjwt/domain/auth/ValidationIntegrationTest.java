@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.exception.FieldErrorDto;
 import ru.ls.pjwt.common.web.validation.ValidationConstants;
@@ -24,7 +24,7 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Slf4j
 @Import(RegistrationSteps.class)
-class ValidationIntegrationTest extends WebIntegrationTest {
+class ValidationIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private RegistrationSteps registrationSteps;
 
   @SuppressWarnings("PMD.AvoidDuplicateLiterals")

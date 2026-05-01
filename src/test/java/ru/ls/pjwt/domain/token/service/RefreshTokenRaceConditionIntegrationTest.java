@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpServletResponse;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
@@ -37,7 +37,7 @@ import tools.jackson.databind.ObjectMapper;
           + "-c idle_in_transaction_session_timeout=10000"
     })
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
-class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationTest {
+class RefreshTokenRaceConditionIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private RegistrationSteps registrationSteps;
 
   @Autowired private AuthenticationSteps authenticationSteps;

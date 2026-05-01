@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
 import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
@@ -15,7 +15,7 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Slf4j
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
-class RefreshTokenCompromisingIntegrationTest extends WebIntegrationTest {
+class RefreshTokenCompromisingIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private RegistrationSteps registrationSteps;
 
   @Autowired private AuthenticationSteps authenticationSteps;

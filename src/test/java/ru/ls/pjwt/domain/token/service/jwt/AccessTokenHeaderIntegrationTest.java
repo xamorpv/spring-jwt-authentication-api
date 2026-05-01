@@ -3,11 +3,11 @@ package ru.ls.pjwt.domain.token.service.jwt;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.fixture.StandardUserFixture;
 
-class AccessTokenHeaderIntegrationTest extends WebIntegrationTest {
+class AccessTokenHeaderIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private MockMvcClient mockMvcClient;
 
   @ParameterizedTest

@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.property.JwtProperties;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 @Import(AuthenticationSteps.class)
-class JwtExpirationIntegrationTest extends WebIntegrationTest {
+class JwtExpirationIntegrationTest extends WebIntegrationEnvironment {
   @MockitoBean private Clock clock;
 
   @Autowired private AuthenticationSteps authenticationSteps;

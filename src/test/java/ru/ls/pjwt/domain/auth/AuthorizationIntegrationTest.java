@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.domain.auth.property.ControllerDevProperties;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 @Import(AuthenticationSteps.class)
-class AuthorizationIntegrationTest extends WebIntegrationTest {
+class AuthorizationIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private AuthenticationSteps authenticationSteps;
 
   @Autowired private MockMvc mockMvc;

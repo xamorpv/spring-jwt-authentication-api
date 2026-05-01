@@ -5,14 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.property.AuthoritiesProperties;
 import ru.ls.pjwt.fixture.JwtTokenFixture;
 import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 
 @Import(RefreshTokenSteps.class)
-class TokenWithoutTypeIntegrationTest extends WebIntegrationTest {
+class TokenWithoutTypeIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private MockMvcClient mockMvcClient;
 
   @Autowired private AuthoritiesProperties authoritiesProperties;

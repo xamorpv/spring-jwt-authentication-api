@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 @Import(AuthenticationSteps.class)
-class NonExistentIntegrationTest extends WebIntegrationTest {
+class NonExistentIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private MockMvc mockMvc;
 
   @Autowired private AuthenticationSteps authenticationSteps;

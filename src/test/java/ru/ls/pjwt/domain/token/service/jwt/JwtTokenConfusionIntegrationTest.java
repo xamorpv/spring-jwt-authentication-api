@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.client.MockMvcClient;
 import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.domain.auth.dto.request.RefreshTokenRequest;
@@ -15,7 +15,7 @@ import ru.ls.pjwt.steps.token.RefreshTokenSteps;
 import ru.ls.pjwt.steps.user.AuthenticationSteps;
 
 @Import(AuthenticationSteps.class)
-class JwtTokenConfusionIntegrationTest extends WebIntegrationTest {
+class JwtTokenConfusionIntegrationTest extends WebIntegrationEnvironment {
   @Autowired private AuthenticationSteps authenticationSteps;
 
   @Autowired private MockMvcClient mockMvcClient;

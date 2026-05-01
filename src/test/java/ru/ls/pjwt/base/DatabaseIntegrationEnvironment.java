@@ -7,7 +7,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-public abstract class DatabaseIntegrationTest extends IntegrationTest {
+public class DatabaseIntegrationEnvironment extends IntegrationEnvironment {
   @SuppressWarnings("resource")
   private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
       new PostgreSQLContainer<>("postgres:18-alpine")
@@ -19,6 +19,10 @@ public abstract class DatabaseIntegrationTest extends IntegrationTest {
 
   static {
     POSTGRESQL_CONTAINER.start(); // запускается ровно один раз
+  }
+
+  protected DatabaseIntegrationEnvironment() {
+    // Constructor to prevent direct instantiation; this class is designed to be subclassed.
   }
 
   @DynamicPropertySource

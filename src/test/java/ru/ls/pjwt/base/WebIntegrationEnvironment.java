@@ -8,4 +8,8 @@ import ru.ls.pjwt.client.MockMvcClient;
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Import(MockMvcClient.class)
-public class WebIntegrationTest extends DatabaseIntegrationTest {}
+public class WebIntegrationEnvironment extends DatabaseIntegrationEnvironment {
+  protected WebIntegrationEnvironment() {
+    // Constructor to prevent direct instantiation; this class is designed to be subclassed.
+  }
+}

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import ru.ls.pjwt.base.WebIntegrationTest;
+import ru.ls.pjwt.base.WebIntegrationEnvironment;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.token.service.jwt.JwtParser;
 import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenValidator;
@@ -20,7 +20,7 @@ import ru.ls.pjwt.steps.user.RegistrationSteps;
 
 @Slf4j
 @Import({RegistrationSteps.class, AuthenticationSteps.class, RefreshTokenSteps.class})
-class CompromisedTokenCoveringIntegrationTest extends WebIntegrationTest {
+class CompromisedTokenCoveringIntegrationTest extends WebIntegrationEnvironment {
   // кейс:
   // 1. пользователь получает токен А
   // 2. пользователь обновляет токен А, получает токен Б
