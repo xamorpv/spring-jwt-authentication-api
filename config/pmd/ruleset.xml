@@ -127,5 +127,14 @@
                       value="org.springframework.test.context.DynamicPropertySource" />
         </properties>
     </rule>
+
+    <rule ref="category/java/codestyle.xml/MethodNamingConventions">
+        <properties>
+            <property name="methodPattern" value="[a-z][a-zA-Z0-9]*" />
+            <property name="junit5TestPattern"
+                      value="[a-z][a-zA-Z0-9]*|given[a-zA-Z0-9]+_when[a-zA-Z0-9]+_then[a-zA-Z0-9]+" />
+        </properties>
+    </rule>
+
     <exclude-pattern>.*/generated/.*</exclude-pattern>
 </ruleset>
