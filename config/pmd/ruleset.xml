@@ -5,9 +5,6 @@
     <rule ref="category/java/bestpractices.xml">
         <!-- Избыточно -->
         <exclude name="GuardLogStatement"/>
-        <!-- Исключаем правила, которые будем настраивать отдельно -->
-        <exclude name="ImplicitFunctionalInterface"/>
-        <exclude name="UnusedPrivateMethod"/>
         <exclude name="UnitTestShouldIncludeAssert"/>
         <exclude name="UnitTestContainsTooManyAsserts"/>
     </rule>
@@ -36,9 +33,6 @@
         <exclude name="AtLeastOneConstructor"/>
         <exclude name="CallSuperInConstructor"/>
         <exclude name="OnlyOneReturn"/>
-        <!-- Исключаем правила, которые будем настраивать отдельно -->
-        <exclude name="LongVariable"/>
-        <exclude name="ShortVariable"/>
     </rule>
 
     <rule ref="category/java/design.xml">
@@ -46,13 +40,6 @@
         <exclude name="LoosePackageCoupling"/>
         <!-- Избыточно -->
         <exclude name="LawOfDemeter"/>
-        <!-- Исключаем правила, которые будем настраивать отдельно -->
-        <exclude name="CyclomaticComplexity"/>
-        <exclude name="TooManyMethods"/>
-        <exclude name="TooManyFields"/>
-        <exclude name="NcssCount"/>
-        <exclude name="UseUtilityClass"/>
-        <exclude name="DataClass"/>
     </rule>
 
     <!-- Отдельные правила с кастомными настройками -->
@@ -88,6 +75,7 @@
         </properties>
     </rule>
 
+    <!-- Отдельные правила с специальными подавлениями -->
     <rule ref="category/java/design.xml/UseUtilityClass">
         <properties>
             <property name="violationSuppressXPath"
