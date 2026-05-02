@@ -3,22 +3,23 @@ import net.ltgt.gradle.errorprone.errorprone
 
 plugins {
 	java
-	id("checkstyle")
-	id("org.springframework.boot") version "4.0.2"
-	id("io.spring.dependency-management") version "1.1.7"
-	id("com.diffplug.spotless") version "8.4.0"
 	id("pmd")
+	id("checkstyle")
+
+	id("com.diffplug.spotless") version "8.4.0"
+
 	id("de.aaschmid.cpd") version "3.5"
 	id("net.ltgt.errorprone") version "5.1.0"
 	id("org.openrewrite.rewrite") version "7.32.0"
 	id("com.github.spotbugs") version "6.5.1"
+
+	id("org.springframework.boot") version "4.0.2"
+	id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "ru.ls"
 version = "0.0.1-SNAPSHOT"
 description = "first jwt project"
-
-
 
 java {
 	toolchain {
@@ -26,14 +27,21 @@ java {
 	}
 }
 
+tasks.jar {
+	enabled = false
+}
+
+configurations {
+	compileOnly {
+		extendsFrom(configurations.annotationProcessor.get())
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
 dependencies {
-	spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
-
-	rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.34.0")
-
-	errorprone("com.google.errorprone:error_prone_core:2.41.0")
-	errorprone("com.uber.nullaway:nullaway:0.13.3")
-
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-flyway")
 	implementation("org.springframework.boot:spring-boot-starter-security")
@@ -71,20 +79,13 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
 
-tasks.jar {
-	enabled = false
-}
+	spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
 
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
+	rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.34.0")
 
-repositories {
-	mavenCentral()
+	errorprone("com.google.errorprone:error_prone_core:2.41.0")
+	errorprone("com.uber.nullaway:nullaway:0.13.3")
 }
 
 spotless {
@@ -129,6 +130,17 @@ spotbugs {
 	showProgress = true
 }
 
+tasks.cpdCheck {
+	source = fileTree("src/main") {
+		exclude("**/generated/**", "**/dto/**")
+	}
+
+	reports {
+		text.required.set(true)
+		xml.required.set(true)
+	}
+}
+
 tasks.withType<JavaCompile>().configureEach {
 	options.errorprone {
 		disableAllChecks.set(true)
@@ -140,17 +152,6 @@ tasks.withType<JavaCompile>().configureEach {
 		option("NullAway:TreatGeneratedAsUnannotated", "true")
 
 		option("NullAway:ExternalInitAnnotations", "jakarta.persistence.Entity")
-	}
-}
-
-tasks.cpdCheck {
-	source = fileTree("src/main") {
-		exclude("**/generated/**", "**/dto/**")
-	}
-
-	reports {
-		text.required.set(true)
-		xml.required.set(true)
 	}
 }
 
