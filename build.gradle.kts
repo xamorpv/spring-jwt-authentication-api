@@ -163,6 +163,8 @@ tasks.register("codeQualityCheck") {
 		"pmdMain",
 		"pmdTest",
 		"cpdCheck",
+		"spotbugsMain",
+		"spotbugsTest",
 		"test"
 	)
 }
