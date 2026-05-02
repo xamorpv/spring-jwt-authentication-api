@@ -1,5 +1,6 @@
 package ru.ls.pjwt.domain.user.mapper;
 
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ public class UserToDetailsMapper {
    * @param user the user entity to convert
    * @return a fully populated {@link UserDetails} instance ready for the security context
    */
+  @SuppressFBWarnings("SECHCP")
   public UserDetails userEntityToUserDetails(final User user) {
     return org.springframework.security.core.userdetails.User.builder()
         .username(user.getUsername())
