@@ -27,6 +27,8 @@ java {
 }
 
 dependencies {
+	spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
+
 	rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.34.0")
 
 	errorprone("com.google.errorprone:error_prone_core:2.41.0")
