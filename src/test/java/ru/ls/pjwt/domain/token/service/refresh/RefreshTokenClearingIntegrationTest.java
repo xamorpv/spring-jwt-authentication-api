@@ -2,9 +2,7 @@ package ru.ls.pjwt.domain.token.service.refresh;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.Instant;
@@ -13,13 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ls.pjwt.base.WebIntegrationEnvironment;
-import ru.ls.pjwt.common.database.entity.TimestampedEntity;
 import ru.ls.pjwt.domain.auth.property.DevUsernamesProperties;
 import ru.ls.pjwt.domain.token.entity.RefreshToken;
 import ru.ls.pjwt.domain.token.repository.RefreshTokenRepository;
@@ -45,7 +42,7 @@ class RefreshTokenClearingIntegrationTest extends WebIntegrationEnvironment {
 
   @Test
   @Transactional // чтобы сущности обновлялись при save
-  void tokenClearingFlow() throws IllegalAccessException {
+  void tokenClearingFlow() {
     final User user = userService.findUserByUsername(devUsernamesProperties.user());
     final User moder = userService.findUserByUsername(devUsernamesProperties.moderator());
     final User admin = userService.findUserByUsername(devUsernamesProperties.admin());
@@ -155,8 +152,7 @@ class RefreshTokenClearingIntegrationTest extends WebIntegrationEnvironment {
             });
   }
 
-  private void expireByCreatedAtAndSave(final RefreshToken refreshToken)
-      throws IllegalAccessException {
+  private void expireByCreatedAtAndSave(final RefreshToken refreshToken) {
     expireByCreatedAt(refreshToken);
     setTokenNonExistent(refreshToken);
     refreshTokenRepository.saveAndFlush(refreshToken);
@@ -174,18 +170,9 @@ class RefreshTokenClearingIntegrationTest extends WebIntegrationEnvironment {
     nonExistingRefreshTokens.put(refreshToken.getUuid(), refreshToken);
   }
 
-  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH")
-  @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
-  private void expireByCreatedAt(final RefreshToken refreshToken) throws IllegalAccessException {
-    Field createdAt = null;
-    try {
-      createdAt = TimestampedEntity.class.getDeclaredField("createdAt");
-    } catch (NoSuchFieldException e) {
-      fail("refreshToken don't have 'createdAt' field");
-    }
-    createdAt.setAccessible(true);
+  private void expireByCreatedAt(final RefreshToken refreshToken) {
     final Instant expiredInstant = createExpiredInstant();
-    createdAt.set(refreshToken, expiredInstant);
+    ReflectionTestUtils.setField(refreshToken, "createdAt", expiredInstant);
 
     jdbcTemplate.update(
         "update refresh_tokens set created_at = ? where id = ?",
