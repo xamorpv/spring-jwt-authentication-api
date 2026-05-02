@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -97,6 +98,7 @@ public class GlobalExceptionHandler {
 
   // Пробрасываем ошибки безопасности дальше, чтобы их обработал AccessDeniedHandler из
   // SecurityConfig
+  @SuppressFBWarnings("THROWS_METHOD_THROWS_RUNTIMEEXCEPTION")
   @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
   public void handleAccessDenied(final RuntimeException runtimeException) {
     throw runtimeException;

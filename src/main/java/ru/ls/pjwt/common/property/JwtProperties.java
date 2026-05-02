@@ -4,6 +4,7 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import javax.crypto.SecretKey;
 import lombok.Getter;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("pjwt.jwt")
@@ -15,6 +16,7 @@ public class JwtProperties {
   private final int accessTokenExpirationMinutes;
   private final int refreshTokenExpirationDays;
 
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public JwtProperties(
       final String secretKeyString,
@@ -22,11 +24,10 @@ public class JwtProperties {
       final String refreshToken,
       final int accessTokenExpirationMinutes,
       final int refreshTokenExpirationDays) {
+    secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.accessTokenExpirationMinutes = accessTokenExpirationMinutes;
     this.refreshTokenExpirationDays = refreshTokenExpirationDays;
-
-    secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
   }
 }

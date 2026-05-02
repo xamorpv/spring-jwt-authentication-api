@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -173,6 +174,7 @@ class RefreshTokenClearingIntegrationTest extends WebIntegrationEnvironment {
     nonExistingRefreshTokens.put(refreshToken.getUuid(), refreshToken);
   }
 
+  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH")
   @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
   private void expireByCreatedAt(final RefreshToken refreshToken) throws IllegalAccessException {
     Field createdAt = null;

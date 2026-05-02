@@ -15,7 +15,7 @@ import tools.jackson.databind.ObjectMapper;
 @RequiredArgsConstructor
 public class HttpResponseWriter {
   private final TimeProvider timeProvider;
-  public final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
   /**
    * Writes an error response directly to the HTTP servlet response.
