@@ -79,6 +79,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
+	testImplementation("com.tngtech.archunit:archunit-junit5:1.4.2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
