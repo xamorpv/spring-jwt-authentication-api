@@ -27,10 +27,10 @@ public class ArchitectureTest {
   private static final ArchRule COMMON_INDEPENDENCE =
       noClasses()
           .that()
-          .resideInAPackage("..common..")
+          .resideInAPackage("ru.ls.pjwt.common..")
           .should()
           .dependOnClassesThat()
-          .resideInAnyPackage("..domain..", "..security..");
+          .resideInAnyPackage("ru.ls.pjwt.domain..", "ru.ls.pjwt.security..");
 
   /**
    * The user domain should not depend on web-related layers like auth or token. This ensures that
@@ -40,20 +40,20 @@ public class ArchitectureTest {
   private static final ArchRule USER_DOMAIN_INDEPENDENCE =
       noClasses()
           .that()
-          .resideInAPackage("..domain.user..")
+          .resideInAPackage("ru.ls.pjwt.domain.user..")
           .should()
           .dependOnClassesThat()
-          .resideInAnyPackage("..domain.auth..", "..domain.token..");
+          .resideInAnyPackage("ru.ls.pjwt.domain.auth..", "ru.ls.pjwt.domain.token..");
 
   /** The token domain handles session mechanics and should not depend on auth web controllers. */
   @ArchTest
   private static final ArchRule TOKEN_DOMAIN_INDEPENDENCE =
       noClasses()
           .that()
-          .resideInAPackage("..domain.token..")
+          .resideInAPackage("ru.ls.pjwt.domain.token..")
           .should()
           .dependOnClassesThat()
-          .resideInAPackage("..domain.auth..");
+          .resideInAPackage("ru.ls.pjwt.domain.auth..");
 
   /** Controllers should not directly access repositories; they should interact through services. */
   @ArchTest
