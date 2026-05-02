@@ -5,6 +5,7 @@ plugins {
 	java
 	id("pmd")
 	id("checkstyle")
+	id("jacoco")
 
 	id("com.diffplug.spotless") version "8.4.0"
 
@@ -138,6 +139,47 @@ tasks.cpdCheck {
 	reports {
 		text.required.set(true)
 		xml.required.set(true)
+	}
+}
+
+jacoco {
+	toolVersion = "0.8.14"
+}
+tasks.test {
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+val jacocoExcludedPackages = setOf("dto", "config", "generated")
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test)
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+	}
+	classDirectories.setFrom(
+		sourceSets.main.get().output.asFileTree.matching {
+			exclude(jacocoExcludedPackages.map { "**/${it}/**" })
+		}
+	)
+}
+
+tasks.jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = "CLASS"
+			excludes = jacocoExcludedPackages.map { "**.${it}.*" }
+			limit {
+				counter = "LINE"
+				value = "COVEREDRATIO"
+				minimum = "0.80".toBigDecimal()
+			}
+			limit {
+				counter = "BRANCH"
+				value = "COVEREDRATIO"
+				minimum = "0.70".toBigDecimal()
+			}
+		}
 	}
 }
 
