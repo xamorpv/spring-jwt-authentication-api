@@ -11,4 +11,9 @@
         <Bug pattern="CRLF_INJECTION_LOGS"/>
         <Description>Log sanitization handled at Logback level</Description>
     </Match>
+
+    <Match>
+        <Bug pattern="SPRING_ENDPOINT"/>
+        <Description>Informational noise</Description>
+    </Match>
 </FindBugsFilter>
