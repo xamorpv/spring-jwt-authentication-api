@@ -14,25 +14,31 @@ import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
+import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenService;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
 public class TokenExceptionHandler {
-    private final ApiResponse apiResponse;
-    private final RefreshTokenRaceConditionExceptionHandler refreshTokenRaceConditionExceptionHandler;
-    private final ExceptionsProperties exceptionsProperties;
+  private final ApiResponse apiResponse;
 
-    @ExceptionHandler(JwtTokenRequestException.class)
-    public ResponseEntity<StandardResponse<ErrorResponse>> jwtException(JwtTokenRequestException e) {
-        log.warn("jwt token failure: {}", e.getMessage());
-        return apiResponse.error(HttpStatus.UNAUTHORIZED, e.getMessage());
-    }
+  private final RefreshTokenService refreshTokenService;
+  private final ExceptionsProperties exceptionsProperties;
 
-    @ExceptionHandler(RefreshTokenRaceConditionException.class)
-    public ResponseEntity<StandardResponse<ErrorResponse>> onTokenRaceCondition(RefreshTokenRaceConditionException e) {
-        refreshTokenRaceConditionExceptionHandler.handleException(e);
-        return apiResponse.error(HttpStatus.UNAUTHORIZED, exceptionsProperties.refreshTokenCompromised());
-    }
+  @ExceptionHandler(JwtTokenRequestException.class)
+  public ResponseEntity<StandardResponse<ErrorResponse>> jwtException(
+      final JwtTokenRequestException jwtTokenRequestException) {
+    log.warn("jwt token failure: {}", jwtTokenRequestException.getMessage());
+    return apiResponse.error(HttpStatus.UNAUTHORIZED, jwtTokenRequestException.getMessage());
+  }
+
+  @SuppressWarnings("PMD.LongVariable")
+  @ExceptionHandler(RefreshTokenRaceConditionException.class)
+  public ResponseEntity<StandardResponse<ErrorResponse>> onTokenRaceCondition(
+      final RefreshTokenRaceConditionException refreshTokenRaceConditionException) {
+    refreshTokenService.handleRaceCondition(refreshTokenRaceConditionException.getTokenId());
+    return apiResponse.error(
+        HttpStatus.UNAUTHORIZED, exceptionsProperties.refreshTokenCompromised());
+  }
 }

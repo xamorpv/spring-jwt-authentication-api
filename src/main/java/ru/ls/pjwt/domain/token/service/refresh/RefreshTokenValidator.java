@@ -5,30 +5,45 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ls.pjwt.common.property.ExceptionsProperties;
 import ru.ls.pjwt.domain.token.entity.RefreshToken;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
-import ru.ls.pjwt.common.property.ExceptionsProperties;
 
+/**
+ * Validates the state of a refresh token before it is used.
+ *
+ * <p>This class checks whether the token has been used and invokes the compromise logic if
+ * necessary, isolating the validation concern from the rest of the refresh token processing.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenValidator {
-    private final ExceptionsProperties exceptionsProperties;
-    private final RefreshTokenManager refreshTokenManager;
+  private final ExceptionsProperties exceptionsProperties;
+  private final RefreshTokenManager refreshTokenManager;
 
-    /*
-     проверяет - был ли использован токен
-     если был использован, то нужно сделать проверку:
-     был ли уже до этого компроментирован:
-     если да, то можно спокойно бросать исключение
-     если нет, то нужно сделать все токены использованными + компроментированными (почему мы отключаем все токены? мы не знаем, кто первый использовал токен:
-     может быть, сейчас залогинился легитимный пользователь, а может - злоумышленник. в любом случае - нужно закрыть доступ к токенам, раз их кто-то использовал.
-     но чтобы злоумышленник не мог каждый раз отправлять один и тот же просроченный токен, который когда-то получил, и сбрасывать все токены пользователю, был введен параметр compromised
-     */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = JwtTokenRequestException.class)
-    public void checkUsed(RefreshToken refreshToken) {
-        if (refreshTokenManager.compromiseIfUsed(refreshToken)) {
-            throw new JwtTokenRequestException(exceptionsProperties.refreshTokenCompromised());
-        }
+  /**
+   * Checks whether the given refresh token has already been used.
+   *
+   * <p><b>Warning:</b> This method produces side effects. If token replay is detected (the token
+   * was already used), it automatically compromises all remaining unused tokens for this user to
+   * prevent session hijacking.
+   *
+   * @param refreshToken the refresh token to check
+   * @throws JwtTokenRequestException if the token has already been used (whether previously
+   *     compromised or just now compromised)
+   */
+  @Transactional(
+      propagation = Propagation.REQUIRES_NEW,
+      noRollbackFor = JwtTokenRequestException.class)
+  public void checkUsed(final RefreshToken refreshToken) {
+    // Logic explanation:
+    // If the token was used, we check if it was already compromised.
+    // If not compromised yet, it means this is the first token replay attempt.
+    // Since we don't know who used it first (the real user or an attacker),
+    // we must securely invalidate ALL tokens for this user.
+    if (refreshTokenManager.compromiseIfUsed(refreshToken)) {
+      throw new JwtTokenRequestException(exceptionsProperties.refreshTokenCompromised());
     }
+  }
 }

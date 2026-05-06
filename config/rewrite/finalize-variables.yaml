@@ -1,0 +1,6 @@
+type: specs.openrewrite.org/v1beta/recipe
+name: ru.ls.FinalizeVariables
+displayName: Finalize variables
+recipeList:
+  - org.openrewrite.staticanalysis.FinalizeLocalVariables
+  - org.openrewrite.staticanalysis.FinalizeMethodArguments

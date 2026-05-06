@@ -4,6 +4,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,77 +17,104 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ls.pjwt.common.property.ApplicationProperties;
 import ru.ls.pjwt.common.property.JwtProperties;
+import ru.ls.pjwt.common.web.exception.ServerError;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
+/**
+ * Parses and validates JWT tokens, extracting claims and user details.
+ *
+ * <p>This class handles the cryptographic verification and structural parsing of access and refresh
+ * tokens. For type validation, it delegates to {@link JwtValidator}.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtParser {
-    private final JwtProperties jwtProperties;
-    private final ApplicationProperties applicationProperties;
-    private final JwtValidator jwtValidator;
-    private final Clock clock;
+  private final JwtProperties jwtProperties;
+  private final ApplicationProperties applicationProperties;
+  private final JwtValidator jwtValidator;
+  private final Clock clock;
 
-    public JwtClaims parseRefreshToken(String token) {
-        JwtClaims jwtClaims = parseToken(token);
-        jwtValidator.validateType(jwtProperties.getRefreshToken(), jwtClaims);
-        return jwtClaims;
+  /**
+   * Parses and validates a refresh token JWT.
+   *
+   * @param token the refresh token string
+   * @return the parsed {@link JwtClaims} with user details and metadata
+   * @throws JwtTokenRequestException if the token is invalid, expired, or has an incorrect type
+   * @throws ServerError if the token type claim is missing
+   */
+  public JwtClaims parseRefreshToken(final String token) {
+    final JwtClaims jwtClaims = parseToken(token);
+    jwtValidator.validateType(jwtProperties.getRefreshToken(), jwtClaims);
+    return jwtClaims;
+  }
+
+  /**
+   * Parses and validates an access token JWT.
+   *
+   * @param token the access token string
+   * @return the parsed {@link JwtClaims} with user details and authorities
+   * @throws JwtTokenRequestException if the token is invalid, expired, or has an incorrect type
+   * @throws ServerError if the token type claim is missing
+   */
+  public JwtClaims parseAccessToken(final String token) {
+    final JwtClaims jwtClaims = parseToken(token);
+    jwtValidator.validateType(jwtProperties.getAccessToken(), jwtClaims);
+    return jwtClaims;
+  }
+
+  private JwtClaims parseToken(final String token) {
+    final Claims claims = getClaims(token);
+    final UserDetails userDetails = extractUserDetails(claims);
+    final String uuid = getUuid(claims);
+    log.debug("token parsed successfully with uuid: {}", uuid);
+    return new JwtClaims(claims, userDetails, uuid, userDetails.getUsername(), token);
+  }
+
+  @SuppressWarnings("PMD.PreserveStackTrace")
+  private Claims getClaims(final String token) {
+    try {
+      return Jwts.parser()
+          .clock(() -> Date.from(Instant.now(clock)))
+          .verifyWith(
+              jwtProperties
+                  .getSecretKey()) // подпись и expiration time уже проверены. username нужно
+          // проверить на null, а его наличие уже проверено
+          .requireIssuer(applicationProperties.name())
+          .build()
+          .parseSignedClaims(token)
+          .getPayload();
+    } catch (ExpiredJwtException e) {
+      log.debug("expired jwt exception {}", e.getMessage(), e);
+      throw new JwtTokenRequestException("jwt token expired");
+    } catch (JwtException e) {
+      log.debug("jwt exception {}", e.getMessage(), e);
+      throw new JwtTokenRequestException("incorrect jwt");
+    }
+  }
+
+  private UserDetails extractUserDetails(final Claims claims) {
+    final String username = claims.getSubject();
+    if (username == null) {
+      log.warn("username not found");
+      throw new JwtTokenRequestException(
+          "incorrect jwt"); // не раскрываем информацию - sub может отсутствовать только если
+      // пользователь пытался изменить токен
     }
 
-    public JwtClaims parseAccessToken(String token) {
-        JwtClaims jwtClaims = parseToken(token);
-        jwtValidator.validateType(jwtProperties.getAccessToken(), jwtClaims);
-        return jwtClaims;
-    }
+    @SuppressWarnings("unchecked")
+    final List<String> authorities = claims.get("authorities", List.class);
 
-    private JwtClaims parseToken(String token) {
-        Claims claims = getClaims(token);
-        UserDetails userDetails = extractUserDetails(claims);
-        String uuid = getUuid(claims);
-        log.debug("token parsed successfully with uuid: {}", uuid);
-        return new JwtClaims(claims, userDetails, uuid, userDetails.getUsername(), token);
-    }
+    return new User(
+        username,
+        "",
+        authorities == null
+            ? new HashSet<>()
+            : authorities.stream().map(SimpleGrantedAuthority::new).toList());
+  }
 
-    private Claims getClaims(String token) {
-        try {
-            return Jwts.parser()
-                    .clock(()-> Date.from(Instant.now(clock)))
-                    .verifyWith(jwtProperties.getSecretKey()) // подпись и expiration time уже проверены. username нужно проверить на null, а его наличие уже проверено
-                    .requireIssuer(applicationProperties.name())
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-        } catch (ExpiredJwtException e) {
-            log.debug("expired jwt exception {}", e.getMessage(), e);
-            throw new JwtTokenRequestException("jwt token expired");
-        } catch (JwtException e) {
-            log.debug("jwt exception {}", e.getMessage(), e);
-            throw new JwtTokenRequestException("incorrect jwt");
-        }
-    }
-
-    private UserDetails extractUserDetails(Claims claims) {
-        String username = claims.getSubject();
-        if (username == null) {
-            log.warn("username not found");
-            throw new JwtTokenRequestException("incorrect jwt"); // не раскрываем информацию - sub может отсутствовать только если пользователь пытался изменить токен
-        }
-
-        @SuppressWarnings("unchecked")
-        List<String> authorities = claims.get("authorities", List.class);
-
-        return new User(username, "", authorities == null ?
-                new HashSet<>() : authorities.stream().map(SimpleGrantedAuthority::new).toList());
-    }
-
-    private String getUuid(Claims claims) {
-        return claims.get("uuid", String.class);
-    }
+  private String getUuid(final Claims claims) {
+    return claims.get("uuid", String.class);
+  }
 }

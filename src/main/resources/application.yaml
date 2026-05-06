@@ -58,3 +58,6 @@ pjwt:
     email-or-user-exists: EMAIL_OR_USER_ALREADY_EXISTS
     validation-failed: VALIDATION_FAILED
     refresh-token-compromised: "refresh token was compromised. you may be get hacked. please re-login"
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %replace(%msg){'[\r\n]', '_'}%n%wEx"

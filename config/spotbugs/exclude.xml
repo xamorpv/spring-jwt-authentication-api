@@ -1,0 +1,19 @@
+<FindBugsFilter>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
+        <Description>Mutable exposure accepted for DTO/Entity classes</Description>
+    </Match>
+    <Match>
+        <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD, THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"/>
+        <Description>Duplicate check, already handled by PMD</Description>
+    </Match>
+    <Match>
+        <Bug pattern="CRLF_INJECTION_LOGS"/>
+        <Description>Log sanitization handled at Logback level</Description>
+    </Match>
+
+    <Match>
+        <Bug pattern="SPRING_ENDPOINT"/>
+        <Description>Informational noise</Description>
+    </Match>
+</FindBugsFilter>

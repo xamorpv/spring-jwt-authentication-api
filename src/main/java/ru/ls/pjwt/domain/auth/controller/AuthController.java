@@ -17,41 +17,49 @@ import ru.ls.pjwt.domain.auth.dto.request.RegisterRequest;
 import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.dto.response.RegisterResponse;
 import ru.ls.pjwt.domain.auth.service.AuthService;
-import ru.ls.pjwt.domain.token.service.TokenService;
 
-//todo токены в httpOnlyCookies, а не в dto, который может посмотреть js
+// todo токены в httpOnlyCookies, а не в dto, который может посмотреть js
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 @RestController
 public class AuthController {
-    private final AuthService authService;
-    private final TokenService tokenService;
-    private final ApiResponse apiResponse;
+  private final AuthService authService;
+  private final ApiResponse apiResponse;
 
-    @PostMapping("/login")
-    public ResponseEntity<StandardResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
-        log.info("handling login request {}", loginRequest.username());
-        return apiResponse.success(tokenService.createTokens(loginRequest), "authenticated successfully", HttpStatus.OK);
-    }
+  @PostMapping("/login")
+  public ResponseEntity<StandardResponse<LoginResponse>> login(
+      @RequestBody @Valid final LoginRequest loginRequest) {
+    log.info("handling login request {}", loginRequest.username());
+    return apiResponse.success(
+        authService.login(loginRequest), "authenticated successfully", HttpStatus.OK);
+  }
 
-    //пока что для простоты через dto
-    @PostMapping("/refresh")
-    public ResponseEntity<StandardResponse<LoginResponse>> refresh(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
-        log.info("handling refresh request");
-        return apiResponse.success(tokenService.refreshTokens(refreshTokenRequest.refreshToken()), "successful refresh", HttpStatus.OK);
-    }
+  // пока что для простоты через dto
+  @PostMapping("/refresh")
+  public ResponseEntity<StandardResponse<LoginResponse>> refresh(
+      @RequestBody @Valid final RefreshTokenRequest refreshTokenRequest) {
+    log.info("handling refresh request");
+    return apiResponse.success(
+        authService.refresh(refreshTokenRequest.refreshToken()),
+        "successful refresh",
+        HttpStatus.OK);
+  }
 
-    @PostMapping("/invalidate-refresh-token")
-    public ResponseEntity<StandardResponse<Void>> invalidateRefreshToken(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
-        log.info("invalidating token");
-        tokenService.invalidateRefreshToken(refreshTokenRequest.refreshToken());
-        return apiResponse.success("token deleted successfully", HttpStatus.OK);
-    }
+  @PostMapping("/invalidate-refresh-token")
+  public ResponseEntity<StandardResponse<Void>> invalidateRefreshToken(
+      @RequestBody @Valid final RefreshTokenRequest refreshTokenRequest) {
+    log.info("invalidating token");
+    authService.logout(refreshTokenRequest.refreshToken());
+    return apiResponse.success("token deleted successfully", HttpStatus.OK);
+  }
 
-    @PostMapping("/register")
-    public ResponseEntity<StandardResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) {
-        log.info("handling register request {} - {}", registerRequest.username(), registerRequest.email());
-        return apiResponse.success(authService.register(registerRequest), "registered successfully", HttpStatus.CREATED);
-    }
+  @PostMapping("/register")
+  public ResponseEntity<StandardResponse<RegisterResponse>> register(
+      @RequestBody @Valid final RegisterRequest registerRequest) {
+    log.info(
+        "handling register request {} - {}", registerRequest.username(), registerRequest.email());
+    return apiResponse.success(
+        authService.register(registerRequest), "registered successfully", HttpStatus.CREATED);
+  }
 }

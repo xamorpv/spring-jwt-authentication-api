@@ -17,34 +17,80 @@ import ru.ls.pjwt.domain.user.entity.User;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-    private final ExceptionsProperties exceptionsProperties;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final RefreshTokenValidator refreshTokenValidator;
-    private final RefreshTokenManager refreshTokenManager;
+  private final ExceptionsProperties exceptionsProperties;
+  private final RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenValidator refreshTokenValidator;
+  private final RefreshTokenManager refreshTokenManager;
 
-    @Transactional
-    public void markTokenAsUsed(JwtClaims claims) {
-        RefreshToken refreshToken = getToken(claims);
-        log.debug("marking token as used: {}", refreshToken.getUuid());
-        refreshTokenManager.use(refreshToken);
+  /**
+   * Marks the refresh token identified by the given claims as used.
+   *
+   * @param claims the parsed JWT claims containing the token UUID
+   * @throws BadCredentialsException if the claims do not contain a UUID
+   * @throws JwtTokenRequestException if the token is not found
+   */
+  @Transactional
+  public void markTokenAsUsed(final JwtClaims claims) {
+    final RefreshToken refreshToken = getToken(claims);
+    log.debug("marking token as used: {}", refreshToken.getUuid());
+    refreshTokenManager.use(refreshToken);
+  }
+
+  /**
+   * Finds and validates a refresh token by UUID from the provided JWT claims.
+   *
+   * @param jwtClaims the parsed JWT claims containing the token UUID
+   * @return the corresponding {@link RefreshToken} entity
+   * @throws BadCredentialsException if the claims do not contain a UUID
+   * @throws JwtTokenRequestException if the token is not found or has already been used
+   */
+  @Transactional
+  public RefreshToken getToken(final JwtClaims jwtClaims) {
+    final String uuid = jwtClaims.uuid();
+    if (uuid == null) {
+      log.warn("jwt token without uuid, may be deprecated");
+      throw new BadCredentialsException(exceptionsProperties.badCredentials());
     }
+    final RefreshToken refreshToken =
+        refreshTokenRepository
+            .findByUuid(uuid)
+            .orElseThrow(() -> new JwtTokenRequestException("token not found"));
 
-    @Transactional
-    public RefreshToken getToken(JwtClaims jwtClaims) {
-        String uuid = jwtClaims.uuid();
-        if (uuid == null) {
-            log.warn("jwt token without uuid, may be deprecated");
-            throw new BadCredentialsException(exceptionsProperties.badCredentials());
-        }
-        RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
-                .orElseThrow(() -> new JwtTokenRequestException("token not found"));
+    refreshTokenValidator.checkUsed(refreshToken);
+    return refreshToken;
+  }
 
-        refreshTokenValidator.checkUsed(refreshToken);
-        return refreshToken;
-    }
+  /**
+   * Saves a new refresh token entity for the specified user.
+   *
+   * @param createdRefreshToken the token data to persist (contains UUID and token string)
+   * @param user the user who owns this token
+   * @return the persisted {@link RefreshToken} entity
+   */
+  @Transactional
+  public RefreshToken save(final CreatedRefreshToken createdRefreshToken, final User user) {
+    return refreshTokenRepository.save(new RefreshToken(createdRefreshToken.uuid(), user));
+  }
 
-    @Transactional
-    public RefreshToken save(CreatedRefreshToken createdRefreshToken, User user) {
-        return refreshTokenRepository.save(new RefreshToken(createdRefreshToken.uuid(), user));
-    }
+  /**
+   * Handles a race condition on the refresh token with the given ID.
+   *
+   * <p>Loads the token and delegates to {@link RefreshTokenManager#compromiseIfUsed(RefreshToken)}
+   * to mark it as compromised if necessary.
+   *
+   * @param tokenId the ID of the refresh token involved in the race condition
+   * @throws JwtTokenRequestException if no refresh token is found for the given ID
+   */
+  @Transactional
+  public void handleRaceCondition(final Long tokenId) {
+    final RefreshToken compromisedRefreshToken =
+        refreshTokenRepository
+            .findById(tokenId)
+            .orElseThrow(() -> new JwtTokenRequestException("token not found"));
+
+    log.warn(
+        "RefreshToken race condition handled for token uuid: {}",
+        compromisedRefreshToken.getUuid());
+    refreshTokenManager.compromiseIfUsed(compromisedRefreshToken);
+  }
 }

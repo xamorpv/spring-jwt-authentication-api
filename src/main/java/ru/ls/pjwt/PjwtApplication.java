@@ -9,10 +9,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConfigurationPropertiesScan
 @EnableScheduling
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
-public class Main {
+public class PjwtApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
-    }
-
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  public static void main(final String[] args) {
+    SpringApplication.run(PjwtApplication.class, args);
+  }
 }

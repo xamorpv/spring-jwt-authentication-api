@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<ruleset name="Project Rules">
+    <description>Полный набор правил PMD</description>
+
+    <rule ref="category/java/bestpractices.xml">
+        <!-- Избыточно -->
+        <exclude name="GuardLogStatement"/>
+        <exclude name="UnitTestShouldIncludeAssert"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
+    </rule>
+
+    <rule ref="category/java/performance.xml"/>
+
+    <rule ref="category/java/documentation.xml">
+        <!-- Покрыто через Checkstyle -->
+        <exclude name="CommentRequired"/>
+        <exclude name="CommentSize"/>
+    </rule>
+
+    <rule ref="category/java/errorprone.xml">
+        <!-- Избыточно -->
+        <exclude name="ConstructorCallsOverridableMethod"/>
+        <exclude name="TestClassWithoutTestCases"/>
+        <!-- Не используется в проекте -->
+        <exclude name="MissingSerialVersionUID"/>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml">
+        <!-- покрыто через spotless -->
+        <exclude name="UnnecessaryConstructor"/>
+        <exclude name="UselessParentheses"/>
+        <!-- Избыточно -->
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="CallSuperInConstructor"/>
+        <exclude name="OnlyOneReturn"/>
+    </rule>
+
+    <rule ref="category/java/design.xml">
+        <!-- Покрыто через ArchUnit -->
+        <exclude name="LoosePackageCoupling"/>
+        <!-- Избыточно -->
+        <exclude name="LawOfDemeter"/>
+    </rule>
+
+    <!-- Отдельные правила с кастомными настройками -->
+    <rule ref="category/java/design.xml/NcssCount">
+        <properties>
+            <property name="methodReportLevel" value="20"/>
+            <property name="classReportLevel" value="150"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/design.xml/CyclomaticComplexity">
+        <properties>
+            <property name="classReportLevel" value="80"/>
+            <property name="methodReportLevel" value="10"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/design.xml/TooManyMethods">
+        <properties>
+            <property name="maxmethods" value="25"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/design.xml/TooManyFields">
+        <properties>
+            <property name="maxfields" value="15"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml/LongVariable">
+        <properties>
+            <property name="minimum" value="30" />
+        </properties>
+    </rule>
+
+    <!-- Отдельные правила с специальными подавлениями -->
+    <rule ref="category/java/design.xml/UseUtilityClass">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value=".[pmd-java:hasAnnotation('SpringBootApplication') or pmd-java:hasAnnotation('org.springframework.boot.autoconfigure.SpringBootApplication')]" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml/ShortVariable">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="
+                        self::VariableId[@Name = 'id']
+                          [ancestor::FieldDeclaration/
+                             ModifierList/
+                             Annotation[@SimpleName = 'Id']]
+                      "/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/bestpractices.xml/ImplicitFunctionalInterface">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value=".[pmd-java:hasAnnotation('Mapper') or pmd-java:hasAnnotation('org.mapstruct.Mapper')]" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/design.xml/DataClass">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value=".[pmd-java:hasAnnotation('UtilityClass') or pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod">
+        <properties>
+            <property name="ignoredAnnotations"
+                      value="org.springframework.test.context.DynamicPropertySource,
+                         jakarta.annotation.PostConstruct" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml/MethodNamingConventions">
+        <properties>
+            <property name="methodPattern" value="[a-z][a-zA-Z0-9]*" />
+            <property name="junit5TestPattern"
+                      value="[a-z][a-zA-Z0-9]*|given[a-zA-Z0-9]+_when[a-zA-Z0-9]+_then[a-zA-Z0-9]+" />
+        </properties>
+    </rule>
+
+    <exclude-pattern>.*/generated/.*</exclude-pattern>
+</ruleset>

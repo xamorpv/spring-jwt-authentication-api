@@ -1,5 +1,10 @@
 package ru.ls.pjwt.steps.user;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import ru.ls.pjwt.client.MockMvcClient;
@@ -12,46 +17,77 @@ import ru.ls.pjwt.fixture.StandardUserFixture;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * Reusable test steps for user registration.
+ *
+ * <p>Provides convenience methods that perform registration requests and assert the expected
+ * outcomes (success or failure).
+ */
 @TestComponent
 public class RegistrationSteps {
-    private final String ENDPOINT = "/api/v1/auth/register";
+  public static final String ENDPOINT = "/api/v1/auth/register";
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    @Autowired
-    private MockMvcClient mockMvcClient;
+  @Autowired private MockMvcClient mockMvcClient;
 
-    @Autowired
-    private AuthoritiesProperties authoritiesProperties;
+  @Autowired private AuthoritiesProperties authoritiesProperties;
 
-    public void registerSuccessfully() throws Exception {
-        registerSuccessfully(StandardUserFixture.getDefaultRegisterRequest());
-    }
+  /**
+   * Registers the default fixture user and expects a successful response with the {@code USER}
+   * authority.
+   */
+  public void registerSuccessfully() throws Exception {
+    registerSuccessfully(StandardUserFixture.getDefaultRegisterRequest());
+  }
 
-    public void registerSuccessfully(RegisterRequest registerRequest) throws Exception {
-        StandardResponse<RegisterResponse> registerResponse = objectMapper.readValue(
-                mockMvcClient.post(ENDPOINT, registerRequest), new TypeReference<>() {});
-        assertAll("Registration properties should be correct",
-                ()->assertEquals(registerRequest.username(), registerResponse.data().username()),
-                ()->assertEquals(registerRequest.email(), registerResponse.data().email()),
-                ()->assertAll("New user should have only USER authority",
-                        ()->assertEquals(1, registerResponse.data().authorities().size()),
-                        ()->assertEquals(authoritiesProperties.user(), registerResponse.data().authorities().stream().findFirst().orElseThrow())
-                )
-        );
-    }
+  /**
+   * Registers a user with the given data and expects a successful response.
+   *
+   * @param registerRequest the registration details
+   * @throws Exception if the request or assertions fail
+   */
+  public void registerSuccessfully(final RegisterRequest registerRequest) throws Exception {
+    final StandardResponse<RegisterResponse> registerResponse =
+        objectMapper.readValue(
+            mockMvcClient.post(ENDPOINT, registerRequest), new TypeReference<>() {});
+    final RegisterResponse data = registerResponse.data();
+    assertNotNull(data, "successful register response data");
+    assertAll(
+        "Registration properties should be correct",
+        () -> assertEquals(registerRequest.username(), data.username(), "username"),
+        () -> assertEquals(registerRequest.email(), data.email(), "email"),
+        () ->
+            assertAll(
+                "New user should have only USER authority",
+                () -> assertEquals(1, data.authorities().size(), "authorities size"),
+                () ->
+                    assertEquals(
+                        authoritiesProperties.user(),
+                        data.authorities().stream().findFirst().orElseThrow(),
+                        "user authority")));
+  }
 
-    public StandardResponse<ErrorResponse> expectRegistrationFailure(RegisterRequest registerRequest, int expectedStatusCode) throws Exception {
-        StandardResponse<ErrorResponse> errorResponse = mockMvcClient.postExpectingError(ENDPOINT, registerRequest, "Registration");
+  /**
+   * Attempts to register a user and expects a failure response with the given HTTP status code.
+   *
+   * @param registerRequest the registration details
+   * @param expectedStatusCode the expected HTTP status code (e.g. 409 for conflict)
+   * @return the parsed {@code StandardResponse<ErrorResponse>} for further assertions
+   * @throws Exception if the request or assertions fail
+   */
+  public StandardResponse<ErrorResponse> expectRegistrationFailure(
+      final RegisterRequest registerRequest, final int expectedStatusCode) throws Exception {
+    final StandardResponse<ErrorResponse> standardResponse =
+        mockMvcClient.postExpectingError(ENDPOINT, registerRequest, "Registration");
 
-        assertAll("Registration should fail",
-                ()->assertFalse(errorResponse.success(), "Success flag"),
-                ()->assertEquals(expectedStatusCode, errorResponse.data().statusCode())
-        );
+    final ErrorResponse errorResponse = standardResponse.data();
+    assertNotNull(errorResponse, "errorResponse data");
+    assertAll(
+        "Registration should fail",
+        () -> assertFalse(standardResponse.success(), "Success flag"),
+        () -> assertEquals(expectedStatusCode, errorResponse.statusCode(), "status code"));
 
-        return errorResponse;
-    }
+    return standardResponse;
+  }
 }
