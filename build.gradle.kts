@@ -88,6 +88,8 @@ dependencies {
 
 	errorprone("com.google.errorprone:error_prone_core:2.41.0")
 	errorprone("com.uber.nullaway:nullaway:0.13.3")
+
+	implementation("com.pinterest.ktlint:ktlint-cli:1.8.0")
 }
 
 spotless {
@@ -95,6 +97,26 @@ spotless {
 		googleJavaFormat()
 		trimTrailingWhitespace()
 		removeUnusedImports()
+		endWithNewline()
+	}
+	format("yaml") {
+		target("**/*.yaml", "**/*.yml")
+		prettier()
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+
+	format("markdown") {
+		target("**/*.md")
+		prettier()
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+
+	format("json") {
+		target("**/*.json")
+		prettier()
+		trimTrailingWhitespace()
 		endWithNewline()
 	}
 }
