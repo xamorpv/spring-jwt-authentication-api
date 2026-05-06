@@ -6,10 +6,9 @@ import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ls.pjwt.domain.auth.dto.request.LoginRequest;
-import ru.ls.pjwt.domain.auth.dto.response.LoginResponse;
 import ru.ls.pjwt.domain.auth.service.AuthService;
 import ru.ls.pjwt.domain.token.dto.JwtClaims;
+import ru.ls.pjwt.domain.token.dto.TokenPair;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 import ru.ls.pjwt.domain.token.service.jwt.JwtFactory;
@@ -27,69 +26,63 @@ import ru.ls.pjwt.domain.user.service.UserValidator;
 public class TokenService {
   private final JwtFactory jwtFactory;
   private final JwtParser jwtParser;
-
   private final AccessTokenService accessTokenService;
-
   private final RefreshTokenFactory refreshTokenFactory;
   private final RefreshTokenService refreshTokenService;
-
-  private final AuthService authService;
-
   private final UserValidator userValidator;
   private final UserService userService;
   private final UserToDetailsMapper userToDetailsMapper;
 
   /**
-   * Refreshes the access and refresh token pair using a valid refresh token.
+   * Refreshes both access and refresh tokens.
    *
-   * @param token the refresh token string
-   * @return a new {@link LoginResponse} containing the rotated access and refresh tokens
-   * @throws JwtTokenRequestException if the token is invalid, expired, or has an incorrect type
-   * @throws BadCredentialsException if the associated user is not found
-   * @throws AccountStatusException if the user account is locked, disabled, or expired
-   * @throws RefreshTokenRaceConditionException if a concurrent token rotation is detected
+   * <p>Parses the refresh token, validates the user status, generates a new access token and
+   * rotates the refresh token.
+   *
+   * @param token the raw refresh token
+   * @return a pair of new access and refresh tokens
+   * @throws JwtTokenRequestException if the refresh token is invalid or expired
+   * @throws BadCredentialsException if the user does not exist
+   * @throws AccountStatusException if the user account is locked/disabled/expired
+   * @throws RefreshTokenRaceConditionException if a concurrent rotation is detected
    */
   @Transactional
-  public LoginResponse refreshTokens(final String token) {
+  public TokenPair refreshTokens(final String token) {
     final JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
     log.debug("refreshing tokens for username={}", jwtClaims.username());
     final User user = userService.findUserByUsername(jwtClaims.username());
     userValidator.validateAccountStatus(user);
     final String accessToken = accessTokenService.createAccessToken(jwtClaims, user);
     final String refreshToken = refreshTokenFactory.rotateRefreshToken(jwtClaims, user);
-    log.debug("successful refresh for {}", jwtClaims.username());
-    return new LoginResponse(refreshToken, accessToken);
+    return new TokenPair(refreshToken, accessToken);
   }
 
   /**
-   * Creates a new access and refresh token pair for an authenticated user.
+   * Creates a new access/refresh token pair for the given user.
    *
-   * @param loginRequest the login credentials (username and password)
-   * @return a {@link LoginResponse} with the fresh access and refresh tokens
-   * @throws BadCredentialsException if the username is not found or the password does not match
-   * @throws AccountStatusException if the user account is locked, disabled, or expired
+   * <p>This method does NOT check passwords – the caller (e.g. {@link AuthService}) must ensure the
+   * user is already authenticated.
+   *
+   * @param user the authenticated user entity (with eagerly loaded authorities)
+   * @return the generated token pair
    */
   @Transactional
-  public LoginResponse createTokens(final LoginRequest loginRequest) {
-    log.info("creating tokens for login request {}", loginRequest.username());
-    final User user = authService.authenticate(loginRequest.username(), loginRequest.password());
+  public TokenPair createTokens(final User user) {
     final String accessToken =
         jwtFactory.createAccessToken(userToDetailsMapper.userEntityToUserDetails(user));
     final String refreshToken = refreshTokenFactory.createAndSaveToken(user);
-    return new LoginResponse(refreshToken, accessToken);
+    return new TokenPair(refreshToken, accessToken);
   }
 
   /**
-   * Invalidates a refresh token by marking it as used.
+   * Marks the refresh token (identified by the raw JWT) as used, so it cannot be used again.
    *
-   * @param token the refresh token string to invalidate
+   * @param token the raw refresh token string
    * @throws JwtTokenRequestException if the token is invalid or its type is incorrect
-   * @throws BadCredentialsException if the token UUID is missing (legacy token)
    */
   @Transactional
   public void invalidateRefreshToken(final String token) {
     final JwtClaims jwtClaims = jwtParser.parseRefreshToken(token);
-    log.info("invalidating refresh token: {}", jwtClaims.uuid());
     refreshTokenService.markTokenAsUsed(jwtClaims);
   }
 }

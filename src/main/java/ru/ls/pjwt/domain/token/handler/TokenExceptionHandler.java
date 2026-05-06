@@ -14,6 +14,7 @@ import ru.ls.pjwt.common.web.dto.api.ErrorResponse;
 import ru.ls.pjwt.common.web.dto.api.StandardResponse;
 import ru.ls.pjwt.domain.token.exception.JwtTokenRequestException;
 import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
+import ru.ls.pjwt.domain.token.service.refresh.RefreshTokenService;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
@@ -22,9 +23,7 @@ import ru.ls.pjwt.domain.token.exception.RefreshTokenRaceConditionException;
 public class TokenExceptionHandler {
   private final ApiResponse apiResponse;
 
-  @SuppressWarnings("PMD.LongVariable")
-  private final RefreshTokenRaceConditionExceptionHandler refreshTokenRaceConditionExceptionHandler;
-
+  private final RefreshTokenService refreshTokenService;
   private final ExceptionsProperties exceptionsProperties;
 
   @ExceptionHandler(JwtTokenRequestException.class)
@@ -38,7 +37,7 @@ public class TokenExceptionHandler {
   @ExceptionHandler(RefreshTokenRaceConditionException.class)
   public ResponseEntity<StandardResponse<ErrorResponse>> onTokenRaceCondition(
       final RefreshTokenRaceConditionException refreshTokenRaceConditionException) {
-    refreshTokenRaceConditionExceptionHandler.handleException(refreshTokenRaceConditionException);
+    refreshTokenService.handleRaceCondition(refreshTokenRaceConditionException.getTokenId());
     return apiResponse.error(
         HttpStatus.UNAUTHORIZED, exceptionsProperties.refreshTokenCompromised());
   }

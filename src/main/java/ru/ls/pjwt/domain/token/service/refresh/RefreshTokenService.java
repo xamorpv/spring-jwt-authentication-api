@@ -71,4 +71,26 @@ public class RefreshTokenService {
   public RefreshToken save(final CreatedRefreshToken createdRefreshToken, final User user) {
     return refreshTokenRepository.save(new RefreshToken(createdRefreshToken.uuid(), user));
   }
+
+  /**
+   * Handles a race condition on the refresh token with the given ID.
+   *
+   * <p>Loads the token and delegates to {@link RefreshTokenManager#compromiseIfUsed(RefreshToken)}
+   * to mark it as compromised if necessary.
+   *
+   * @param tokenId the ID of the refresh token involved in the race condition
+   * @throws JwtTokenRequestException if no refresh token is found for the given ID
+   */
+  @Transactional
+  public void handleRaceCondition(final Long tokenId) {
+    final RefreshToken compromisedRefreshToken =
+        refreshTokenRepository
+            .findById(tokenId)
+            .orElseThrow(() -> new JwtTokenRequestException("token not found"));
+
+    log.warn(
+        "RefreshToken race condition handled for token uuid: {}",
+        compromisedRefreshToken.getUuid());
+    refreshTokenManager.compromiseIfUsed(compromisedRefreshToken);
+  }
 }

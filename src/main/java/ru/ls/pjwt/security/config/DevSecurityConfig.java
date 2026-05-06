@@ -1,4 +1,4 @@
-package ru.ls.pjwt.domain.auth.security;
+package ru.ls.pjwt.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import ru.ls.pjwt.security.config.BaseSecurityConfig;
 import ru.ls.pjwt.security.filter.JwtFilter;
 
 @Configuration
